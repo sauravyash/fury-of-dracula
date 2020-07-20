@@ -1,2 +1,3 @@
-# Dracula
-COMP2521 Dracula Game
+# Fury of Dracula Game
+By Yash, Tom, Cindy, and Tara
+This is a game client written in C for the COMP2521 assignment 'Fury of Dracula'. 
