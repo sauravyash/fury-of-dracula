@@ -20,10 +20,21 @@
 #include "Places.h"
 // add your own #includes here
 
-// TODO: ADD YOUR OWN STRUCTS HERE
+struct playerData {
+	Player name;
+	int health;
+	//DLL location? or array (would cover move history as well)
+};
 
 struct gameView {
-	// TODO: ADD FIELDS HERE
+	Round roundNumber;
+	playerData player1;
+	playerData player2;
+	playerData player3;
+	playerData player4;
+	playerData dracula;
+	Player currentPlayer;
+
 };
 
 ////////////////////////////////////////////////////////////////////////
