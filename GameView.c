@@ -23,17 +23,29 @@
 struct playerData {
 	Player name;
 	int health;
-	//DLL location? or array (would cover move history as well)
+	DLL locationHistory;
+	//DLL for list of locations player has been at? or array (would cover move history as well)
+	//will also include move history
+};
+
+struct vampireData {
+		Round birthday	//round it was born on
+		PlaceId location;
 };
 
 struct gameView {
 	Round roundNumber;
+	int score;
+	Player currentPlayer;
+	//Player structs
 	playerData player1;
 	playerData player2;
 	playerData player3;
 	playerData player4;
 	playerData dracula;
-	Player currentPlayer;
+
+	vampireData vampire;		//only one vampire alive at any time
+	DLL traps;
 
 };
 
