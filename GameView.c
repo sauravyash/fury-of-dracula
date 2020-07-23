@@ -18,12 +18,13 @@
 #include "GameView.h"
 #include "Map.h"
 #include "Places.h"
+#include "DLList.h"
 // add your own #includes here
 
 struct playerData {
 	Player name;
 	int health;
-	DLL locationHistory;
+	DLList locationHistory;
 	//DLL for list of locations player has been at? or array (would cover move history as well)
 	//will also include move history
 };
@@ -45,7 +46,7 @@ struct gameView {
 	playerData dracula;
 
 	vampireData vampire;		//only one vampire alive at any time
-	DLL traps;
+	DLList traps;                  //make as a DLL? or dynamically allocated array...
 
 };
 
