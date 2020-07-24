@@ -13,6 +13,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "Game.h"
 #include "GameView.h"
@@ -110,7 +111,7 @@ static void initialiseGame (GameView gv) {
 
 static void parseMove (GameView gv, char * string){
 	char * c;
-	for (c = pastPlays; *c != '\0'; c++){
+	for (c = string; *c != '\0'; c++){
 	//parse through what those numbers mean
 	}
 }
@@ -127,9 +128,10 @@ GameView GvNew(char *pastPlays, Message messages[])
 	new->roundNumber = strlen(pastPlays) / (PLAY_S_SIZE + 1);				//each round info is 7 chars + 1 space deliminator
 	new->currentPlayer = new->roundNumber % 5;									//5 players that always go in order. returns 0 - 4
 
-	int * string = pastPlays;
+	char * string = pastPlays;
+
 	int i = 0;
-	int token = strtok(string, ' ');
+	char * token = strtok(string, " ");
 	while (token != NULL) {											//while not end of string
 
 	}
@@ -165,7 +167,7 @@ int GvGetScore(GameView gv)
 
 int GvGetHealth(GameView gv, Player player)
 {
-	return player->health;
+	return gv->allPlayers[player]->health;
 }
 
 PlaceId GvGetPlayerLocation(GameView gv, Player player)
@@ -177,7 +179,7 @@ PlaceId GvGetPlayerLocation(GameView gv, Player player)
 PlaceId GvGetVampireLocation(GameView gv)
 {
 	// TODO: REPLACE THIS WITH YOUR OWN IMPLEMENTATION
-	return gv->vampire->location;
+	return gv->vampire;
 }
 
 PlaceId *GvGetTrapLocations(GameView gv, int *numTraps)
