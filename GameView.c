@@ -26,6 +26,11 @@
 #define MAX_GAME_SCORE 366
 #define MAX_HUNTER_HEALTH 9
 #define START_DRAC_POINT 40
+#define LOCATION_ID_SIZE 2
+
+//some puns just for fun
+#define ITS_A_TRAP 'T'
+#define CLOSE_ENCOUNTERS_OF_THE_VTH_KIND 'V'
 
 typedef struct playerData *PlayerData;
 typedef struct vampireData *IVampire;
@@ -59,7 +64,8 @@ struct gameView {
 static void memoryError (const void * input);							//not sure if this works, but for sake of being lazy and not having to write this multiple times
 static void initialiseGame (GameView gv);			//initialise an empty game to fill in
 static void parseMove (GameView gv, char * string);			//parse through that string
-
+static void hunterMove(GameView gv, char * string, Player hunter);
+static void draculaMove(GameView gv, char * string);
 //these are here for now for easy access, will move them to bottom later
 static void memoryError (const void * input){
 	if (input == NULL) {
@@ -110,12 +116,61 @@ static void initialiseGame (GameView gv) {
 }
 
 static void parseMove (GameView gv, char * string){
-	char * c;
-	for (c = string; *c != '\0'; c++){
-	//parse through what those numbers mean
-	}
+	char * c = string;
+	//figure out who's move it was
+	switch(*c){
+			case 'G':
+			printf("it is Lord G\n");
+			hunterMove(gv, string, PLAYER_LORD_GODALMING);
+			case 'S':
+			printf("it is Dr S\n");
+			hunterMove(gv, string, PLAYER_DR_SEWARD);
+			case 'H':
+			printf("it is VH\n");
+			hunterMove(gv, string, PLAYER_VAN_HELSING);
+			case 'M':
+			printf("it is Mina\n");
+			hunterMove(gv, string, PLAYER_MINA_HARKER);
+			case 'D':
+			printf("it is Drac\n");
+			draculaMove(gv, string);
+		}
 }
 
+static void hunterMove(GameView gv, char * string, Player hunter){
+	assert(strlen(string) > 3);
+	int i = 1;
+
+	//first 2 characters after name always gives us the location abbreviation
+	char * location = malloc(sizeof(char *) * 2);
+	strncpy(location, string + i, LOCATION_ID_SIZE);
+	//find the placeID number for abbreviation and assign to hunter
+	//gv->allPlayers[hunter]->currentLocation = PLACEID
+	//add to the location history
+
+	//check the next characters
+	char * c;
+	while ( i < strlen(string)){
+		c = string[i];
+		switch(*c){
+			case ITS_A_TRAP:
+				//its a trap!
+				break;
+			case CLOSE_ENCOUNTERS_OF_THE_VTH_KIND:
+				//vampire encounter
+				break;
+			case 'D':
+				//dracula
+				break;
+			case '.':
+				//other characters include trialing '.'
+				break;
+		}
+		c++;
+	}
+
+
+}
 ////////////////////////////////////////////////////////////////////////
 // Constructor/Destructor
 
@@ -129,13 +184,14 @@ GameView GvNew(char *pastPlays, Message messages[])
 	new->currentPlayer = new->roundNumber % 5;									//5 players that always go in order. returns 0 - 4
 
 	char * string = pastPlays;
-
-	int i = 0;
+	const char * delim = " ";
+	//int i = 0;
 	char * token = strtok(string, " ");
 	while (token != NULL) {											//while not end of string
-
+		parseMove(new, token);
+		token = strtok(NULL, " ");
 	}
-	parseMove (new, pastPlays);
+
 	//fill out map???
 
 	return new;
