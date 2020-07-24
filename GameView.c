@@ -34,7 +34,7 @@ typedef struct vampireData *IVampire;
 struct playerData {
 	int health;
 	PlaceId * locationHistory;
-	PlaceId * currentLocation;
+	PlaceId currentLocation;
 	//DLL for list of locations player has been at? or array (would cover move history as well)
 	//will also include move history
 	//OR
@@ -56,9 +56,10 @@ struct gameView {
 // private functions
 
 static void memoryError (const void * input);							//not sure if this works, but for sake of being lazy and not having to write this multiple times
-static void initialiseGame (GameView gv, char * pastPlays);			//initialise an empty game to fill in
-static void parsePastPlays (GameView gv, char * pastPlays);			//parse through that string
+static void initialiseGame (GameView gv);			//initialise an empty game to fill in
+static void parseMove (GameView gv, char * string);			//parse through that string
 
+//these are here for now for easy access, will move them to bottom later
 static void memoryError (const void * input){
 	if (input == NULL) {
 		fprintf(stderr, "Couldn't allocate Memory!\n");
@@ -71,27 +72,31 @@ static void initialiseGame (GameView gv) {
 	gv->score = MAX_GAME_SCORE;
 	gv->currentPlayer = PLAYER_LORD_GODALMING; 		//always starts with G
 	//Allocate memory for players
-	gv->allPlayers[PLAYER_LORD_GODALMING] = malloc(sizeof( * PlayerData));
+	gv->allPlayers[PLAYER_LORD_GODALMING] = malloc(sizeof(PlayerData));
 	memoryError (gv->allPlayers[PLAYER_LORD_GODALMING]);
 	gv->allPlayers[PLAYER_LORD_GODALMING] -> health = MAX_HUNTER_HEALTH;
 	gv->allPlayers[PLAYER_LORD_GODALMING] -> currentLocation = NOWHERE;
 	gv->allPlayers[PLAYER_LORD_GODALMING] -> locationHistory = NULL;
-	gv->allPlayers[PLAYER_DR_SEWARD] = malloc(sizeof( * PlayerData));
+
+	gv->allPlayers[PLAYER_DR_SEWARD] = malloc(sizeof(PlayerData));
 	memoryError (gv->allPlayers[PLAYER_DR_SEWARD]);
 	gv->allPlayers[PLAYER_LORD_GODALMING] -> health = MAX_HUNTER_HEALTH;
 	gv->allPlayers[PLAYER_LORD_GODALMING] -> currentLocation = NOWHERE;
 	gv->allPlayers[PLAYER_LORD_GODALMING] -> locationHistory = NULL;
-	gv->allPlayers[PLAYER_VAN_HELSING] = malloc(sizeof( * PlayerData));
+
+	gv->allPlayers[PLAYER_VAN_HELSING] = malloc(sizeof(PlayerData));
 	memoryError (gv->allPlayers[PLAYER_VAN_HELSING]);
 	gv->allPlayers[PLAYER_LORD_GODALMING] -> health = MAX_HUNTER_HEALTH;
 	gv->allPlayers[PLAYER_LORD_GODALMING] -> currentLocation = NOWHERE;
 	gv->allPlayers[PLAYER_LORD_GODALMING] -> locationHistory = NULL;
-	gv->allPlayers[PLAYER_MINA_HARKER] = malloc(sizeof( * PlayerData));
+
+	gv->allPlayers[PLAYER_MINA_HARKER] = malloc(sizeof(PlayerData));
 	memoryError (gv->allPlayers[PLAYER_MINA_HARKER]);
 	gv->allPlayers[PLAYER_LORD_GODALMING] -> health = MAX_HUNTER_HEALTH;
 	gv->allPlayers[PLAYER_LORD_GODALMING] -> currentLocation = NOWHERE;
 	gv->allPlayers[PLAYER_LORD_GODALMING] -> locationHistory = NULL;
-	gv->allPlayers[PLAYER_DRACULA] = malloc(sizeof( * PlayerData));
+
+	gv->allPlayers[PLAYER_DRACULA] = malloc(sizeof(PlayerData));
 	memoryError (gv->allPlayers[PLAYER_DRACULA]);
 	gv->allPlayers[PLAYER_LORD_GODALMING] -> health = START_DRAC_POINT;
 	gv->allPlayers[PLAYER_LORD_GODALMING] -> currentLocation = NOWHERE;
@@ -103,9 +108,9 @@ static void initialiseGame (GameView gv) {
 
 }
 
-static void parsePastPlays (char * pastPlays){
+static void parseMove (GameView gv, char * string){
 	char * c;
-	for (c = pastPlays; *c != '\0'; c++)
+	for (c = pastPlays; *c != '\0'; c++){
 	//parse through what those numbers mean
 	}
 }
@@ -119,9 +124,17 @@ GameView GvNew(char *pastPlays, Message messages[])
 	GameView new = malloc(sizeof(*new));
 	memoryError(new);
 	initialiseGame (new);
-	gv->roundNumber = strlen(pastPlays) / (PLAY_S_SIZE + 1);				//each round info is 7 chars + 1 space deliminator
-	gv->currentPlayer = gv->roundNumber % 5;									//5 players that always go in order. returns 0 - 4
+	new->roundNumber = strlen(pastPlays) / (PLAY_S_SIZE + 1);				//each round info is 7 chars + 1 space deliminator
+	new->currentPlayer = new->roundNumber % 5;									//5 players that always go in order. returns 0 - 4
 
+	int * string = pastPlays;
+	int i = 0;
+	int token = strtok(string, ' ');
+	while (token != NULL) {											//while not end of string
+
+	}
+	parseMove (new, pastPlays);
+	//fill out map???
 
 	return new;
 }
@@ -137,25 +150,21 @@ void GvFree(GameView gv)
 
 Round GvGetRound(GameView gv)
 {
-	// TODO: REPLACE THIS WITH YOUR OWN IMPLEMENTATION
 	return gv->roundNumber;
 }
 
 Player GvGetPlayer(GameView gv)
 {
-	// TODO: REPLACE THIS WITH YOUR OWN IMPLEMENTATION
 	return gv->currentPlayer;
 }
 
 int GvGetScore(GameView gv)
 {
-	// TODO: REPLACE THIS WITH YOUR OWN IMPLEMENTATION
 	return gv->score;
 }
 
 int GvGetHealth(GameView gv, Player player)
 {
-	// TODO: REPLACE THIS WITH YOUR OWN IMPLEMENTATION
 	return player->health;
 }
 
