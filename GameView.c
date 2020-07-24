@@ -18,37 +18,97 @@
 #include "GameView.h"
 #include "Map.h"
 #include "Places.h"
-#include "DLList.h"
+//#include "DLList.h"
 // add your own #includes here
 
+#define PLAY_S_SIZE 7
+#define MAX_GAME_SCORE 366
+#define MAX_HUNTER_HEALTH 9
+#define START_DRAC_POINT 40
+
+typedef struct playerData *PlayerData;
+typedef struct vampireData *IVampire;
+
+
+//ADT for player statuses
 struct playerData {
-	Player name;
 	int health;
-	DLList locationHistory;
+	PlaceId * locationHistory;
+	PlaceId * currentLocation;
 	//DLL for list of locations player has been at? or array (would cover move history as well)
 	//will also include move history
-};
-
-struct vampireData {
-		Round birthday	//round it was born on
-		PlaceId location;
+	//OR
+	//dynamicallyy allocated array of PlaceID's lol
 };
 
 struct gameView {
 	Round roundNumber;
 	int score;
-	Player currentPlayer;
-	//Player structs
-	playerData player1;
-	playerData player2;
-	playerData player3;
-	playerData player4;
-	playerData dracula;
-
-	vampireData vampire;		//only one vampire alive at any time
-	DLList traps;                  //make as a DLL? or dynamically allocated array...
+	Player currentPlayer;			//looks like G always starts first? judging by the testfiles given G->S->H->M->D
+	PlayerData allPlayers[NUM_PLAYERS];
+	PlaceId * trapLocations;
+	PlaceId vampire;		//only one vampire alive at any time
+	Map map; 				//graph thats been typedefed already
 
 };
+
+
+// private functions
+
+static void memoryError (const void * input);							//not sure if this works, but for sake of being lazy and not having to write this multiple times
+static void initialiseGame (GameView gv, char * pastPlays);			//initialise an empty game to fill in
+static void parsePastPlays (GameView gv, char * pastPlays);			//parse through that string
+
+static void memoryError (const void * input){
+	if (input == NULL) {
+		fprintf(stderr, "Couldn't allocate Memory!\n");
+		exit(EXIT_FAILURE);
+	}
+}
+
+static void initialiseGame (GameView gv) {
+	gv->roundNumber = 0;
+	gv->score = MAX_GAME_SCORE;
+	gv->currentPlayer = PLAYER_LORD_GODALMING; 		//always starts with G
+	//Allocate memory for players
+	gv->allPlayers[PLAYER_LORD_GODALMING] = malloc(sizeof( * PlayerData));
+	memoryError (gv->allPlayers[PLAYER_LORD_GODALMING]);
+	gv->allPlayers[PLAYER_LORD_GODALMING] -> health = MAX_HUNTER_HEALTH;
+	gv->allPlayers[PLAYER_LORD_GODALMING] -> currentLocation = NOWHERE;
+	gv->allPlayers[PLAYER_LORD_GODALMING] -> locationHistory = NULL;
+	gv->allPlayers[PLAYER_DR_SEWARD] = malloc(sizeof( * PlayerData));
+	memoryError (gv->allPlayers[PLAYER_DR_SEWARD]);
+	gv->allPlayers[PLAYER_LORD_GODALMING] -> health = MAX_HUNTER_HEALTH;
+	gv->allPlayers[PLAYER_LORD_GODALMING] -> currentLocation = NOWHERE;
+	gv->allPlayers[PLAYER_LORD_GODALMING] -> locationHistory = NULL;
+	gv->allPlayers[PLAYER_VAN_HELSING] = malloc(sizeof( * PlayerData));
+	memoryError (gv->allPlayers[PLAYER_VAN_HELSING]);
+	gv->allPlayers[PLAYER_LORD_GODALMING] -> health = MAX_HUNTER_HEALTH;
+	gv->allPlayers[PLAYER_LORD_GODALMING] -> currentLocation = NOWHERE;
+	gv->allPlayers[PLAYER_LORD_GODALMING] -> locationHistory = NULL;
+	gv->allPlayers[PLAYER_MINA_HARKER] = malloc(sizeof( * PlayerData));
+	memoryError (gv->allPlayers[PLAYER_MINA_HARKER]);
+	gv->allPlayers[PLAYER_LORD_GODALMING] -> health = MAX_HUNTER_HEALTH;
+	gv->allPlayers[PLAYER_LORD_GODALMING] -> currentLocation = NOWHERE;
+	gv->allPlayers[PLAYER_LORD_GODALMING] -> locationHistory = NULL;
+	gv->allPlayers[PLAYER_DRACULA] = malloc(sizeof( * PlayerData));
+	memoryError (gv->allPlayers[PLAYER_DRACULA]);
+	gv->allPlayers[PLAYER_LORD_GODALMING] -> health = START_DRAC_POINT;
+	gv->allPlayers[PLAYER_LORD_GODALMING] -> currentLocation = NOWHERE;
+	gv->allPlayers[PLAYER_LORD_GODALMING] -> locationHistory = NULL;
+
+	gv->trapLocations = NULL; 		//no trap locations at start of game, therefore no array yet
+	gv->vampire = NOWHERE;
+	gv->map = MapNew();				//do we have to do anything else with map?
+
+}
+
+static void parsePastPlays (char * pastPlays){
+	char * c;
+	for (c = pastPlays; *c != '\0'; c++)
+	//parse through what those numbers mean
+	}
+}
 
 ////////////////////////////////////////////////////////////////////////
 // Constructor/Destructor
@@ -57,10 +117,11 @@ GameView GvNew(char *pastPlays, Message messages[])
 {
 	// TODO: REPLACE THIS WITH YOUR OWN IMPLEMENTATION
 	GameView new = malloc(sizeof(*new));
-	if (new == NULL) {
-		fprintf(stderr, "Couldn't allocate GameView!\n");
-		exit(EXIT_FAILURE);
-	}
+	memoryError(new);
+	initialiseGame (new);
+	gv->roundNumber = strlen(pastPlays) / (PLAY_S_SIZE + 1);				//each round info is 7 chars + 1 space deliminator
+	gv->currentPlayer = gv->roundNumber % 5;									//5 players that always go in order. returns 0 - 4
+
 
 	return new;
 }
@@ -77,25 +138,25 @@ void GvFree(GameView gv)
 Round GvGetRound(GameView gv)
 {
 	// TODO: REPLACE THIS WITH YOUR OWN IMPLEMENTATION
-	return 0;
+	return gv->roundNumber;
 }
 
 Player GvGetPlayer(GameView gv)
 {
 	// TODO: REPLACE THIS WITH YOUR OWN IMPLEMENTATION
-	return PLAYER_LORD_GODALMING;
+	return gv->currentPlayer;
 }
 
 int GvGetScore(GameView gv)
 {
 	// TODO: REPLACE THIS WITH YOUR OWN IMPLEMENTATION
-	return 0;
+	return gv->score;
 }
 
 int GvGetHealth(GameView gv, Player player)
 {
 	// TODO: REPLACE THIS WITH YOUR OWN IMPLEMENTATION
-	return 0;
+	return player->health;
 }
 
 PlaceId GvGetPlayerLocation(GameView gv, Player player)
@@ -107,7 +168,7 @@ PlaceId GvGetPlayerLocation(GameView gv, Player player)
 PlaceId GvGetVampireLocation(GameView gv)
 {
 	// TODO: REPLACE THIS WITH YOUR OWN IMPLEMENTATION
-	return NOWHERE;
+	return gv->vampire->location;
 }
 
 PlaceId *GvGetTrapLocations(GameView gv, int *numTraps)
