@@ -91,27 +91,27 @@ static void initialiseGame (GameView gv) {
 
 	gv->allPlayers[PLAYER_DR_SEWARD] = malloc(sizeof(PlayerData));
 	memoryError (gv->allPlayers[PLAYER_DR_SEWARD]);
-	gv->allPlayers[PLAYER_LORD_GODALMING] -> health = MAX_HUNTER_HEALTH;
-	gv->allPlayers[PLAYER_LORD_GODALMING] -> currentLocation = NOWHERE;
-	gv->allPlayers[PLAYER_LORD_GODALMING] -> locationHistory = NULL;
+	gv->allPlayers[PLAYER_DR_SEWARD] -> health = MAX_HUNTER_HEALTH;
+	gv->allPlayers[PLAYER_DR_SEWARD] -> currentLocation = NOWHERE;
+	gv->allPlayers[PLAYER_DR_SEWARD] -> locationHistory = NULL;
 
 	gv->allPlayers[PLAYER_VAN_HELSING] = malloc(sizeof(PlayerData));
 	memoryError (gv->allPlayers[PLAYER_VAN_HELSING]);
-	gv->allPlayers[PLAYER_LORD_GODALMING] -> health = MAX_HUNTER_HEALTH;
-	gv->allPlayers[PLAYER_LORD_GODALMING] -> currentLocation = NOWHERE;
-	gv->allPlayers[PLAYER_LORD_GODALMING] -> locationHistory = NULL;
+	gv->allPlayers[PLAYER_VAN_HELSING] -> health = MAX_HUNTER_HEALTH;
+	gv->allPlayers[PLAYER_VAN_HELSING] -> currentLocation = NOWHERE;
+	gv->allPlayers[PLAYER_VAN_HELSING] -> locationHistory = NULL;
 
 	gv->allPlayers[PLAYER_MINA_HARKER] = malloc(sizeof(PlayerData));
 	memoryError (gv->allPlayers[PLAYER_MINA_HARKER]);
-	gv->allPlayers[PLAYER_LORD_GODALMING] -> health = MAX_HUNTER_HEALTH;
-	gv->allPlayers[PLAYER_LORD_GODALMING] -> currentLocation = NOWHERE;
-	gv->allPlayers[PLAYER_LORD_GODALMING] -> locationHistory = NULL;
+	gv->allPlayers[PLAYER_MINA_HARKER] -> health = MAX_HUNTER_HEALTH;
+	gv->allPlayers[PLAYER_MINA_HARKER] -> currentLocation = NOWHERE;
+	gv->allPlayers[PLAYER_MINA_HARKER] -> locationHistory = NULL;
 
 	gv->allPlayers[PLAYER_DRACULA] = malloc(sizeof(PlayerData));
 	memoryError (gv->allPlayers[PLAYER_DRACULA]);
-	gv->allPlayers[PLAYER_LORD_GODALMING] -> health = START_DRAC_POINT;
-	gv->allPlayers[PLAYER_LORD_GODALMING] -> currentLocation = NOWHERE;
-	gv->allPlayers[PLAYER_LORD_GODALMING] -> locationHistory = NULL;
+	gv->allPlayers[PLAYER_DRACULA] -> health = START_DRAC_POINT;
+	gv->allPlayers[PLAYER_DRACULA] -> currentLocation = NOWHERE;
+	gv->allPlayers[PLAYER_DRACULA] -> locationHistory = NULL;
 
 	gv->trapLocations = NULL; 		//no trap locations at start of game, therefore no array yet
 	gv->vampire = NOWHERE;
