@@ -62,8 +62,8 @@ struct gameView {
 // private functions
 
 static void memoryError (const void * input);							//not sure if this works, but for sake of being lazy and not having to write this multiple times
-static void initialiseGame (GameView gv);			//initialise an empty game to fill in
-static void parseMove (GameView gv, char * string);			//parse through that string
+static void initialiseGame (GameView gv);								//initialise an empty game to fill in
+static void parseMove (GameView gv, char * string);						//parse through that string
 static void hunterMove(GameView gv, char * string, Player hunter);
 static void draculaMove(GameView gv, char * string);
 //these are here for now for easy access, will move them to bottom later
@@ -73,6 +73,10 @@ static void memoryError (const void * input){
 		exit(EXIT_FAILURE);
 	}
 }
+// location history functions
+PlaceId * newLocationHistory();
+static void hunterLocationHistoryAppend(PlayerData hunter, char *location);
+static void vampireLocationHistoryAppend(PlayerData hunter, char *location);
 
 static void initialiseGame (GameView gv) {
 	gv->roundNumber = 0;
@@ -113,6 +117,7 @@ static void initialiseGame (GameView gv) {
 	gv->vampire = NOWHERE;
 	gv->map = MapNew();				//do we have to do anything else with map?
 
+	// allocate initial memory for locationHistory
 }
 
 static void parseMove (GameView gv, char * string){
@@ -147,6 +152,7 @@ static void hunterMove(GameView gv, char * string, Player hunter){
 	//find the placeID number for abbreviation and assign to hunter
 	//gv->allPlayers[hunter]->currentLocation = PLACEID
 	//add to the location history
+	hunterLocationHistoryAppend(hunter, location); // todo currently passing 2 char abbrv. location, convert?
 
 	//check the next characters
 	char * c;
@@ -228,8 +234,7 @@ int GvGetHealth(GameView gv, Player player)
 
 PlaceId GvGetPlayerLocation(GameView gv, Player player)
 {
-	// TODO: REPLACE THIS WITH YOUR OWN IMPLEMENTATION
-	return NOWHERE;
+	return gv->allPlayers[player]->currentLocation;
 }
 
 PlaceId GvGetVampireLocation(GameView gv)
