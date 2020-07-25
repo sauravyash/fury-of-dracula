@@ -41,6 +41,16 @@
 typedef struct playerData *PlayerData;
 typedef struct vampireData *IVampire;
 
+//ADT for dracula statuses
+struct draculaData {
+	int health;
+	PlaceId locationHistory[MAX_LOCATION_HISTORY_SIZE / 2]; // since drac can move at most 1 tile/round
+	PlaceId currentLocation;					// current location
+	int currentLocationIndex;					// index of current location in locationHistory
+	bool canHide;								// can only hide when he hasnt hidden in 5 rounds, can't while at sea
+	bool canDoubleback;							// can only doubleback when he hasnt hidden in 5 rounds
+
+};
 
 //ADT for player statuses
 struct playerData {
