@@ -27,24 +27,37 @@
 #define MAX_HUNTER_HEALTH 9
 #define START_DRAC_POINT 40
 #define LOCATION_ID_SIZE 2
+#define MAX_LOCATION_HISTORY_SIZE (MAX_GAME_SCORE * 2 * 4)
+//DOUBLE CHECK THIS: max number of turns * most possible avg moves per turn (rounded up)  * bytes per move stored
 
 //some puns just for fun
 #define ITS_A_TRAP 'T'
 #define CLOSE_ENCOUNTERS_OF_THE_VTH_KIND 'V'
 
+//#defines to make things more readable?
+//#define gv->allPlayers[PLAYER_LORD_GODALMING] LORD_GODALMING or LordGodalming?
+//#define gv->allPlayers[hunter]->currentLocationIndex locationIndex
+
 typedef struct playerData *PlayerData;
 typedef struct vampireData *IVampire;
 
+//ADT for dracula statuses
+struct draculaData {
+	int health;
+	PlaceId locationHistory[MAX_LOCATION_HISTORY_SIZE / 2]; // since drac can move at most 1 tile/round
+	PlaceId currentLocation;					// current location
+	int currentLocationIndex;					// index of current location in locationHistory
+	bool canHide;								// can only hide when he hasnt hidden in 5 rounds, can't while at sea
+	bool canDoubleback;							// can only doubleback when he hasnt hidden in 5 rounds
+
+};
 
 //ADT for player statuses
 struct playerData {
 	int health;
-	PlaceId * locationHistory;
-	PlaceId currentLocation;
-	//DLL for list of locations player has been at? or array (would cover move history as well)
-	//will also include move history
-	//OR
-	//dynamicallyy allocated array of PlaceID's lol
+	PlaceId locationHistory[MAX_LOCATION_HISTORY_SIZE];
+	PlaceId currentLocation;					// current location
+	int currentLocationIndex;					// index of current location in locationHistory
 };
 
 struct gameView {
@@ -62,8 +75,8 @@ struct gameView {
 // private functions
 
 static void memoryError (const void * input);							//not sure if this works, but for sake of being lazy and not having to write this multiple times
-static void initialiseGame (GameView gv);			//initialise an empty game to fill in
-static void parseMove (GameView gv, char * string);			//parse through that string
+static void initialiseGame (GameView gv);								//initialise an empty game to fill in
+static void parseMove (GameView gv, char * string);						//parse through that string
 static void hunterMove(GameView gv, char * string, Player hunter);
 //static void draculaMove(GameView gv, char * string);
 //these are here for now for easy access, will move them to bottom later
@@ -74,6 +87,17 @@ static void memoryError (const void * input){
 	}
 }
 
+// appends input placeid to locationhistory, updates current location and index
+static void hunterLocationHistoryAppend(GameView gv, Player hunter, PlaceId location) {
+	int index = gv->allPlayers[hunter]->currentLocationIndex;
+	if (index < MAX_LOCATION_HISTORY_SIZE) {
+		gv->allPlayers[hunter]->locationHistory[index + 1] = location;
+		gv->allPlayers[hunter]->currentLocation = location;
+	}
+}
+static void vampireLocationHistoryAppend(GameView gv, Player hunter, char *location);
+
+
 static void initialiseGame (GameView gv) {
 	gv->roundNumber = 0;
 	gv->score = MAX_GAME_SCORE;
@@ -83,36 +107,42 @@ static void initialiseGame (GameView gv) {
 	memoryError (gv->allPlayers[PLAYER_LORD_GODALMING]);
 	gv->allPlayers[PLAYER_LORD_GODALMING] -> health = MAX_HUNTER_HEALTH;
 	gv->allPlayers[PLAYER_LORD_GODALMING] -> currentLocation = NOWHERE;
-	gv->allPlayers[PLAYER_LORD_GODALMING] -> locationHistory = NULL;
+	gv->allPlayers[PLAYER_LORD_GODALMING] -> currentLocationIndex = -1;
+	//gv->allPlayers[PLAYER_LORD_GODALMING] -> locationHistory = NULL;
 
 	gv->allPlayers[PLAYER_DR_SEWARD] = malloc(sizeof(PlayerData));
 	memoryError (gv->allPlayers[PLAYER_DR_SEWARD]);
-	gv->allPlayers[PLAYER_LORD_GODALMING] -> health = MAX_HUNTER_HEALTH;
-	gv->allPlayers[PLAYER_LORD_GODALMING] -> currentLocation = NOWHERE;
-	gv->allPlayers[PLAYER_LORD_GODALMING] -> locationHistory = NULL;
+	gv->allPlayers[PLAYER_DR_SEWARD] -> health = MAX_HUNTER_HEALTH;
+	gv->allPlayers[PLAYER_DR_SEWARD] -> currentLocation = NOWHERE;
+	gv->allPlayers[PLAYER_DR_SEWARD] -> currentLocationIndex = -1;
+	//gv->allPlayers[PLAYER_DR_SEWARD] -> locationHistory = NULL;
 
 	gv->allPlayers[PLAYER_VAN_HELSING] = malloc(sizeof(PlayerData));
 	memoryError (gv->allPlayers[PLAYER_VAN_HELSING]);
-	gv->allPlayers[PLAYER_LORD_GODALMING] -> health = MAX_HUNTER_HEALTH;
-	gv->allPlayers[PLAYER_LORD_GODALMING] -> currentLocation = NOWHERE;
-	gv->allPlayers[PLAYER_LORD_GODALMING] -> locationHistory = NULL;
+	gv->allPlayers[PLAYER_VAN_HELSING] -> health = MAX_HUNTER_HEALTH;
+	gv->allPlayers[PLAYER_VAN_HELSING] -> currentLocation = NOWHERE;
+	gv->allPlayers[PLAYER_VAN_HELSING] -> currentLocationIndex = -1;
+	//gv->allPlayers[PLAYER_VAN_HELSING] -> locationHistory = NULL;
 
 	gv->allPlayers[PLAYER_MINA_HARKER] = malloc(sizeof(PlayerData));
 	memoryError (gv->allPlayers[PLAYER_MINA_HARKER]);
-	gv->allPlayers[PLAYER_LORD_GODALMING] -> health = MAX_HUNTER_HEALTH;
-	gv->allPlayers[PLAYER_LORD_GODALMING] -> currentLocation = NOWHERE;
-	gv->allPlayers[PLAYER_LORD_GODALMING] -> locationHistory = NULL;
+	gv->allPlayers[PLAYER_MINA_HARKER] -> health = MAX_HUNTER_HEALTH;
+	gv->allPlayers[PLAYER_MINA_HARKER] -> currentLocation = NOWHERE;
+	gv->allPlayers[PLAYER_MINA_HARKER] -> currentLocationIndex = -1;
+	//gv->allPlayers[PLAYER_MINA_HARKER] -> locationHistory = NULL;
 
 	gv->allPlayers[PLAYER_DRACULA] = malloc(sizeof(PlayerData));
 	memoryError (gv->allPlayers[PLAYER_DRACULA]);
-	gv->allPlayers[PLAYER_LORD_GODALMING] -> health = START_DRAC_POINT;
-	gv->allPlayers[PLAYER_LORD_GODALMING] -> currentLocation = NOWHERE;
-	gv->allPlayers[PLAYER_LORD_GODALMING] -> locationHistory = NULL;
+	gv->allPlayers[PLAYER_DRACULA] -> health = START_DRAC_POINT;
+	gv->allPlayers[PLAYER_DRACULA] -> currentLocation = NOWHERE;
+	gv->allPlayers[PLAYER_DRACULA] -> currentLocationIndex = -1;
+	//gv->allPlayers[PLAYER_DRACULA] -> locationHistory = NULL;
 
 	gv->trapLocations = NULL; 		//no trap locations at start of game, therefore no array yet
 	gv->vampire = NOWHERE;
 	gv->map = MapNew();				//do we have to do anything else with map?
 
+	// allocate initial memory for locationHistory
 }
 
 static void parseMove (GameView gv, char * string){
@@ -145,8 +175,8 @@ static void hunterMove(GameView gv, char * string, Player hunter){
 	char * location = malloc(sizeof(char *) * 2);
 	strncpy(location, string + i, LOCATION_ID_SIZE);
 	//find the placeID number for abbreviation and assign to hunter
-	//gv->allPlayers[hunter]->currentLocation = PLACEID
-	//add to the location history
+	//add to the location history, update current location and index
+	//hunterLocationHistoryAppend(gv, hunter, PLACEID);
 
 	//check the next characters
 	char *c;
@@ -228,8 +258,7 @@ int GvGetHealth(GameView gv, Player player)
 
 PlaceId GvGetPlayerLocation(GameView gv, Player player)
 {
-	// TODO: REPLACE THIS WITH YOUR OWN IMPLEMENTATION
-	return NOWHERE;
+	return gv->allPlayers[player]->currentLocation;
 }
 
 PlaceId GvGetVampireLocation(GameView gv)
