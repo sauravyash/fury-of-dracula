@@ -27,6 +27,8 @@
 #define MAX_HUNTER_HEALTH 9
 #define START_DRAC_POINT 40
 #define LOCATION_ID_SIZE 2
+#define MAX_LOCATION_HISTORY_SIZE (MAX_GAME_SCORE * (7/4) * 4)
+//DOUBLE CHECK THIS: max number of turns * most possible avg moves per turn  * bytes per move stored
 
 //some puns just for fun
 #define ITS_A_TRAP 'T'
@@ -39,12 +41,8 @@ typedef struct vampireData *IVampire;
 //ADT for player statuses
 struct playerData {
 	int health;
-	PlaceId * locationHistory;
-	PlaceId currentLocation;
-	//DLL for list of locations player has been at? or array (would cover move history as well)
-	//will also include move history
-	//OR
-	//dynamicallyy allocated array of PlaceID's lol
+	PlaceId locationHistory[MAX_LOCATION_HISTORY_SIZE];
+	PlaceId currentLocation;					// pointer to current location
 };
 
 struct gameView {
