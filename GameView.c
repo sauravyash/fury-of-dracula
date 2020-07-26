@@ -76,9 +76,10 @@ struct gameView {
 
 static void memoryError (const void * input);							//not sure if this works, but for sake of being lazy and not having to write this multiple times
 static void initialiseGame (GameView gv);								//initialise an empty game to fill in
-static void parseMove (GameView gv, char * string);						//parse through that string
-static void hunterMove(GameView gv, char * string, Player hunter);
-static void draculaMove(GameView gv, char * string);
+static Player parseMove (GameView gv, char *string);	
+//parse through that string
+static void hunterMove(GameView gv, char *string, Player hunter);
+//static void draculaMove(GameView gv, char * string);
 //these are here for now for easy access, will move them to bottom later
 static void memoryError (const void * input){
 	if (input == NULL) {
@@ -88,14 +89,14 @@ static void memoryError (const void * input){
 }
 
 // appends input placeid to locationhistory, updates current location and index
-static void hunterLocationHistoryAppend(GameView gv, Player hunter, PlaceId location) {
+/*static void hunterLocationHistoryAppend(GameView gv, Player hunter, PlaceId location) {
 	int index = gv->allPlayers[hunter]->currentLocationIndex;
 	if (index < MAX_LOCATION_HISTORY_SIZE) {
 		gv->allPlayers[hunter]->locationHistory[index + 1] = location;
 		gv->allPlayers[hunter]->currentLocation = location;
 	}
 }
-static void vampireLocationHistoryAppend(GameView gv, Player hunter, char *location);
+static void vampireLocationHistoryAppend(GameView gv, Player hunter, char *location); */
 
 
 static void initialiseGame (GameView gv) {
@@ -108,35 +109,35 @@ static void initialiseGame (GameView gv) {
 	gv->allPlayers[PLAYER_LORD_GODALMING] -> health = MAX_HUNTER_HEALTH;
 	gv->allPlayers[PLAYER_LORD_GODALMING] -> currentLocation = NOWHERE;
 	gv->allPlayers[PLAYER_LORD_GODALMING] -> currentLocationIndex = -1;
-	//gv->allPlayers[PLAYER_LORD_GODALMING] -> locationHistory = NULL;
+	gv->allPlayers[PLAYER_LORD_GODALMING] -> locationHistory[0] = '\0';
 
 	gv->allPlayers[PLAYER_DR_SEWARD] = malloc(sizeof(PlayerData));
 	memoryError (gv->allPlayers[PLAYER_DR_SEWARD]);
 	gv->allPlayers[PLAYER_DR_SEWARD] -> health = MAX_HUNTER_HEALTH;
 	gv->allPlayers[PLAYER_DR_SEWARD] -> currentLocation = NOWHERE;
 	gv->allPlayers[PLAYER_DR_SEWARD] -> currentLocationIndex = -1;
-	//gv->allPlayers[PLAYER_DR_SEWARD] -> locationHistory = NULL;
+	gv->allPlayers[PLAYER_DR_SEWARD] -> locationHistory[0] = '\0';
 
 	gv->allPlayers[PLAYER_VAN_HELSING] = malloc(sizeof(PlayerData));
 	memoryError (gv->allPlayers[PLAYER_VAN_HELSING]);
 	gv->allPlayers[PLAYER_VAN_HELSING] -> health = MAX_HUNTER_HEALTH;
 	gv->allPlayers[PLAYER_VAN_HELSING] -> currentLocation = NOWHERE;
 	gv->allPlayers[PLAYER_VAN_HELSING] -> currentLocationIndex = -1;
-	//gv->allPlayers[PLAYER_VAN_HELSING] -> locationHistory = NULL;
+	gv->allPlayers[PLAYER_VAN_HELSING] -> locationHistory[0] = '\0';
 
 	gv->allPlayers[PLAYER_MINA_HARKER] = malloc(sizeof(PlayerData));
 	memoryError (gv->allPlayers[PLAYER_MINA_HARKER]);
 	gv->allPlayers[PLAYER_MINA_HARKER] -> health = MAX_HUNTER_HEALTH;
 	gv->allPlayers[PLAYER_MINA_HARKER] -> currentLocation = NOWHERE;
 	gv->allPlayers[PLAYER_MINA_HARKER] -> currentLocationIndex = -1;
-	//gv->allPlayers[PLAYER_MINA_HARKER] -> locationHistory = NULL;
+	gv->allPlayers[PLAYER_MINA_HARKER] -> locationHistory[0] = '\0';
 
 	gv->allPlayers[PLAYER_DRACULA] = malloc(sizeof(PlayerData));
 	memoryError (gv->allPlayers[PLAYER_DRACULA]);
 	gv->allPlayers[PLAYER_DRACULA] -> health = START_DRAC_POINT;
 	gv->allPlayers[PLAYER_DRACULA] -> currentLocation = NOWHERE;
 	gv->allPlayers[PLAYER_DRACULA] -> currentLocationIndex = -1;
-	//gv->allPlayers[PLAYER_DRACULA] -> locationHistory = NULL;
+	gv->allPlayers[PLAYER_DRACULA] -> locationHistory[0] = '\0';
 
 	gv->trapLocations = NULL; 		//no trap locations at start of game, therefore no array yet
 	gv->vampire = NOWHERE;
@@ -145,43 +146,90 @@ static void initialiseGame (GameView gv) {
 	// allocate initial memory for locationHistory
 }
 
-static void parseMove (GameView gv, char * string){
-	char * c = string;
+// TARA EDITED IN A PLAYER RETURN SO YOU CAN SIMULTANEOUSLY CHECK PLAYER BASED ON STRING OF PAST PLAYS...
+static Player parseMove (GameView gv, char *string){
+	char *c = string;
+	// THIS HEREEE...
+	Player curr_player;
+	
 	//figure out who's move it was
 	switch(*c){
 			case 'G':
-			printf("it is Lord G\n");
-			hunterMove(gv, string, PLAYER_LORD_GODALMING);
+			    printf("it is Lord G\n");
+			    hunterMove(gv, string, PLAYER_LORD_GODALMING);
+			    curr_player = PLAYER_DR_SEWARD;
+			    break;
 			case 'S':
-			printf("it is Dr S\n");
-			hunterMove(gv, string, PLAYER_DR_SEWARD);
+			    printf("it is Dr S\n");
+			    hunterMove(gv, string, PLAYER_DR_SEWARD);
+			    curr_player = PLAYER_MINA_HARKER;
+			    break;
 			case 'H':
-			printf("it is VH\n");
-			hunterMove(gv, string, PLAYER_VAN_HELSING);
+			    printf("it is VH\n");
+			    hunterMove(gv, string, PLAYER_VAN_HELSING);
+			    curr_player = PLAYER_VAN_HELSING;
+			    break;
 			case 'M':
-			printf("it is Mina\n");
-			hunterMove(gv, string, PLAYER_MINA_HARKER);
+			    printf("it is Mina\n");
+			    hunterMove(gv, string, PLAYER_MINA_HARKER);
+			    curr_player = PLAYER_DRACULA;
+			    break;
 			case 'D':
-			printf("it is Drac\n");
-			draculaMove(gv, string);
+			    printf("it is Drac\n");
+			    //draculaMove(gv, string);
+			    curr_player = PLAYER_LORD_GODALMING;
+			    break;
+			default: break;
 		}
+	
+	return curr_player;
 }
 
-static void hunterMove(GameView gv, char * string, Player hunter){
+static void hunterMove(GameView gv, char *string, Player hunter) {
+
+	assert (strlen(string) > LOCATION_ID_SIZE);
+	
+	char *city = malloc((LOCATION_ID_SIZE + 1)*sizeof(char));
+	city[0] = string[1];
+	city[1] = string[2];
+	city[2] = '\0';
+	
+	PlaceId curr_place = NOWHERE;
+	
+	for (int i = 0; i < NUM_REAL_PLACES; i++) {
+	    Place row = PLACES[i];
+	    if (strcmp(row.abbrev, city) == 0) {
+	        curr_place = row.id;
+	        break;
+	    }
+	}
+	
+	gv->allPlayers[hunter]->currentLocation = curr_place;
+	gv->allPlayers[hunter]->currentLocationIndex ++;
+	// If this is the first move.
+	if (gv->allPlayers[hunter]->locationHistory[0] == '\0') {
+	    gv->allPlayers[hunter]->locationHistory[0] = curr_place;
+	} else {
+	    printf("yet to do..\n");
+	    // Basically shuffle the array back :)
+	}
+	
+	
+	/*
 	assert(strlen(string) > 3);
 	int i = 1;
 
 	//first 2 characters after name always gives us the location abbreviation
-	char * location = malloc(sizeof(char *) * 2);
+	char *location = malloc(sizeof(char *) * 2);
 	strncpy(location, string + i, LOCATION_ID_SIZE);
 	//find the placeID number for abbreviation and assign to hunter
 	//add to the location history, update current location and index
 	//hunterLocationHistoryAppend(gv, hunter, PLACEID);
 
 	//check the next characters
-	char * c;
+	char *c;
 	while ( i < strlen(string)){
-		c = string[i];
+		c = string;
 		switch(*c){
 			case ITS_A_TRAP:
 				//its a trap!
@@ -196,9 +244,10 @@ static void hunterMove(GameView gv, char * string, Player hunter){
 				//other characters include trialing '.'
 				break;
 		}
-		c++;
-	}
+		i++;
+	}*/
 
+    return;
 
 }
 ////////////////////////////////////////////////////////////////////////
@@ -213,12 +262,12 @@ GameView GvNew(char *pastPlays, Message messages[])
 	new->roundNumber = strlen(pastPlays) / (PLAY_S_SIZE + 1);				//each round info is 7 chars + 1 space deliminator
 	new->currentPlayer = new->roundNumber % 5;									//5 players that always go in order. returns 0 - 4
 
-	char * string = pastPlays;
-	const char * delim = " ";
+	char *string = pastPlays;
+	//const char * delim = " ";
 	//int i = 0;
-	char * token = strtok(string, " ");
+	char *token = strtok(string, " ");
 	while (token != NULL) {											//while not end of string
-		parseMove(new, token);
+		new->currentPlayer = parseMove(new, token);
 		token = strtok(NULL, " ");
 	}
 
@@ -316,12 +365,84 @@ PlaceId *GvGetLastLocations(GameView gv, Player player, int numLocs,
 ////////////////////////////////////////////////////////////////////////
 // Making a Move
 
+// Tara was here :)
 PlaceId *GvGetReachable(GameView gv, Player player, Round round,
                         PlaceId from, int *numReturnedLocs)
 {
 	// TODO: REPLACE THIS WITH YOUR OWN IMPLEMENTATION
-	*numReturnedLocs = 0;
-	return NULL;
+	
+	// 1. We need to access the map :)
+	Map map = gv->map;
+	
+	// 2. Calculate the number of rails a hunter can travel.
+	int railDist = 0;
+	if (player != PLAYER_DRACULA) railDist = (round + player) % 4;
+	
+	// 3. Create temp array and store the locations within 1 path.
+	PlaceId temp_loc[NUM_REAL_PLACES];
+	for (int i = 0; i < NUM_REAL_PLACES; i++) {
+	    temp_loc[i] = '\0';
+	}
+	
+	// Get the connections from that point.
+	ConnList list = MapGetConnections(map, from);
+	
+	// Store viable connections in temp.
+	int loc = 0;
+	temp_loc[loc] = from;
+	loc = 1;
+	
+	while (loc < NUM_REAL_PLACES && list != NULL) {
+	    
+	    // Extra conditions for drac:
+	    if (player == PLAYER_DRACULA) {
+	        if (list->p == HOSPITAL_PLACE) continue;
+	        if (list->type == RAIL) continue;
+	    }
+	    
+	    // If it is a road type.
+	    if (list->type == ROAD) {
+	        temp_loc[loc] = list->p;
+	        loc++;
+	        // If it is a rail type check for hunter.
+	    } else if (list->type == RAIL && railDist >= 1) {
+	        temp_loc[loc] = list->p;
+	        loc++;
+	        // If it is a boat type.
+	    } else if (list->type == BOAT) {
+	        temp_loc[loc] = list->p;
+	        loc++;
+	    }
+	    
+	    list = list->next;
+	}
+	
+	// 4. Now alphabeticalizeee:
+	int i = 0;
+	while (i < NUM_REAL_PLACES && temp_loc[i] != '\0') {
+	    int j = i + 1;
+	    while (j < NUM_REAL_PLACES && temp_loc[j] != '\0') {
+	        if (temp_loc[j] < temp_loc[i]) {
+	            int change = temp_loc[i];
+	            temp_loc[i] = temp_loc[j];
+	            temp_loc[j] = change;
+	        }
+	        j++;
+	    }
+	    i++;
+	}
+	
+	// 5. Now copy into the dynamically allocated array.
+	int size = i - 1;
+	PlaceId *final_loc_list = malloc(size*sizeof(PlaceId));
+	i = 0;
+	while (i < size) {
+	    final_loc_list[i] = temp_loc[i];
+	    i++;
+	}
+	
+	*numReturnedLocs = size;
+	return final_loc_list;
 }
 
 PlaceId *GvGetReachableByType(GameView gv, Player player, Round round,
