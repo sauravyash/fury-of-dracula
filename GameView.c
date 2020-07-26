@@ -35,35 +35,29 @@
 #define CLOSE_ENCOUNTERS_OF_THE_VTH_KIND 'V'
 
 //#defines to make things more readable?
-//#define gv->hunters[PLAYER_LORD_GODALMING] LORD_GODALMING or LordGodalming?
-//#define gv->hunters[hunter]->currentLocationIndex locationIndex
+//#define gv->allPlayers[PLAYER_LORD_GODALMING] LORD_GODALMING or LordGodalming?
+//#define gv->allPlayers[hunter]->currentLocationIndex locationIndex
 
-typedef struct hunterData *hunterData;
+typedef struct playerData *playerData;
 typedef struct draculaData *draculaData;
 
-//ADT for dracula statuses
-struct draculaData {
-	int health;
-	PlaceId locationHistory[MAX_LOCATION_HISTORY_SIZE / 2]; // since drac can move at most 1 tile/round
-	PlaceId currentLocation;					// current location
-	int currentLocationIndex;					// index of current location in locationHistory
-	int lastHidden;								// round in which drac last hid
-	int lastDoubleback;							// round in which drac last doubled back
-};
 
-//ADT for hunter statuses
-struct hunterData {
+//ADT for player statuses
+struct playerData {
 	int health;
 	PlaceId locationHistory[MAX_LOCATION_HISTORY_SIZE];
 	PlaceId currentLocation;					// current location
 	int currentLocationIndex;					// index of current location in locationHistory
+	// BLOOD BOIS ONLY BEYOND THIS POINT
+	int lastHidden;								// round in which drac last hid
+	int lastDoubleback;							// round in which drac last doubled back
 };
 
 struct gameView {
 	Round roundNumber;
 	int score;
 	Player currentPlayer;						// looks like G always starts first? judging by the testfiles given G->S->H->M->D
-	hunterData hunters[NUM_PLAYERS - 1]; 		// -1 since drac not included
+	playerData allPlayers[NUM_PLAYERS - 1]; 		// -1 since drac not included
 	draculaData dracula;
 	PlaceId * trapLocations;
 	PlaceId vampire;							//only one vampire alive at any time
@@ -90,17 +84,17 @@ static void memoryError (const void * input){
 
 // appends input placeid to locationhistory, updates current location and index
 static void hunterLocationHistoryAppend(GameView gv, Player hunter, PlaceId location) {
-	int index = gv->hunters[hunter]->currentLocationIndex;
+	int index = gv->allPlayers[hunter]->currentLocationIndex;
 	if (index < MAX_LOCATION_HISTORY_SIZE) {
-		gv->hunters[hunter]->locationHistory[index + 1] = location;
-		gv->hunters[hunter]->currentLocation = location;
+		gv->allPlayers[hunter]->locationHistory[index + 1] = location;
+		gv->allPlayers[hunter]->currentLocation = location;
 	}
 }
 static void vampireLocationHistoryAppend(GameView gv, char *location) {
-	int index = gv->dracula->currentLocationIndex;
+	int index = gv->allPlayers[PLAYER_DRACULA]->currentLocationIndex;
 	if (index < MAX_LOCATION_HISTORY_SIZE) {
-		gv->dracula->locationHistory[index + 1] = location;
-		gv->dracula->currentLocation = location;
+		gv->allPlayers[PLAYER_DRACULA]->locationHistory[index + 1] = location;
+		gv->allPlayers[PLAYER_DRACULA]->currentLocation = location;
 	}
 }
 
@@ -109,42 +103,50 @@ static void initialiseGame (GameView gv) {
 	gv->score = MAX_GAME_SCORE;
 	gv->currentPlayer = PLAYER_LORD_GODALMING; 		//always starts with G
 	//Allocate memory for players
-	gv->hunters[PLAYER_LORD_GODALMING] = malloc(sizeof(hunterData));
-	memoryError (gv->hunters[PLAYER_LORD_GODALMING]);
-	gv->hunters[PLAYER_LORD_GODALMING] -> health = MAX_HUNTER_HEALTH;
-	gv->hunters[PLAYER_LORD_GODALMING] -> currentLocation = NOWHERE;
-	gv->hunters[PLAYER_LORD_GODALMING] -> currentLocationIndex = -1;
-	gv->hunters[PLAYER_LORD_GODALMING] -> locationHistory[0] = '\0';
+	gv->allPlayers[PLAYER_LORD_GODALMING] = malloc(sizeof(playerData));
+	memoryError (gv->allPlayers[PLAYER_LORD_GODALMING]);
+	gv->allPlayers[PLAYER_LORD_GODALMING] -> health = MAX_HUNTER_HEALTH;
+	gv->allPlayers[PLAYER_LORD_GODALMING] -> currentLocation = NOWHERE;
+	gv->allPlayers[PLAYER_LORD_GODALMING] -> currentLocationIndex = -1;
+	gv->allPlayers[PLAYER_LORD_GODALMING] -> locationHistory[0] = '\0';
+	gv->allPlayers[PLAYER_LORD_GODALMING] -> lastHidden = -2;
+	gv->allPlayers[PLAYER_LORD_GODALMING] -> lastDoubleback = -2;
 
-	gv->hunters[PLAYER_DR_SEWARD] = malloc(sizeof(hunterData));
-	memoryError (gv->hunters[PLAYER_DR_SEWARD]);
-	gv->hunters[PLAYER_DR_SEWARD] -> health = MAX_HUNTER_HEALTH;
-	gv->hunters[PLAYER_DR_SEWARD] -> currentLocation = NOWHERE;
-	gv->hunters[PLAYER_DR_SEWARD] -> currentLocationIndex = -1;
-	gv->hunters[PLAYER_DR_SEWARD] -> locationHistory[0] = '\0';
+	gv->allPlayers[PLAYER_DR_SEWARD] = malloc(sizeof(playerData));
+	memoryError (gv->allPlayers[PLAYER_DR_SEWARD]);
+	gv->allPlayers[PLAYER_DR_SEWARD] -> health = MAX_HUNTER_HEALTH;
+	gv->allPlayers[PLAYER_DR_SEWARD] -> currentLocation = NOWHERE;
+	gv->allPlayers[PLAYER_DR_SEWARD] -> currentLocationIndex = -1;
+	gv->allPlayers[PLAYER_DR_SEWARD] -> locationHistory[0] = '\0';
+	gv->allPlayers[PLAYER_DR_SEWARD] -> lastHidden = -2;
+	gv->allPlayers[PLAYER_DR_SEWARD] -> lastDoubleback = -2;
 
-	gv->hunters[PLAYER_VAN_HELSING] = malloc(sizeof(hunterData));
-	memoryError (gv->hunters[PLAYER_VAN_HELSING]);
-	gv->hunters[PLAYER_VAN_HELSING] -> health = MAX_HUNTER_HEALTH;
-	gv->hunters[PLAYER_VAN_HELSING] -> currentLocation = NOWHERE;
-	gv->hunters[PLAYER_VAN_HELSING] -> currentLocationIndex = -1;
-	gv->hunters[PLAYER_VAN_HELSING] -> locationHistory[0] = '\0';
+	gv->allPlayers[PLAYER_VAN_HELSING] = malloc(sizeof(playerData));
+	memoryError (gv->allPlayers[PLAYER_VAN_HELSING]);
+	gv->allPlayers[PLAYER_VAN_HELSING] -> health = MAX_HUNTER_HEALTH;
+	gv->allPlayers[PLAYER_VAN_HELSING] -> currentLocation = NOWHERE;
+	gv->allPlayers[PLAYER_VAN_HELSING] -> currentLocationIndex = -1;
+	gv->allPlayers[PLAYER_VAN_HELSING] -> locationHistory[0] = '\0';
+	gv->allPlayers[PLAYER_DR_SEWARD] -> lastHidden = -2;
+	gv->allPlayers[PLAYER_DR_SEWARD] -> lastDoubleback = -2;
 
-	gv->hunters[PLAYER_MINA_HARKER] = malloc(sizeof(hunterData));
-	memoryError (gv->hunters[PLAYER_MINA_HARKER]);
-	gv->hunters[PLAYER_MINA_HARKER] -> health = MAX_HUNTER_HEALTH;
-	gv->hunters[PLAYER_MINA_HARKER] -> currentLocation = NOWHERE;
-	gv->hunters[PLAYER_MINA_HARKER] -> currentLocationIndex = -1;
-	gv->hunters[PLAYER_MINA_HARKER] -> locationHistory[0] = '\0';
+	gv->allPlayers[PLAYER_MINA_HARKER] = malloc(sizeof(playerData));
+	memoryError (gv->allPlayers[PLAYER_MINA_HARKER]);
+	gv->allPlayers[PLAYER_MINA_HARKER] -> health = MAX_HUNTER_HEALTH;
+	gv->allPlayers[PLAYER_MINA_HARKER] -> currentLocation = NOWHERE;
+	gv->allPlayers[PLAYER_MINA_HARKER] -> currentLocationIndex = -1;
+	gv->allPlayers[PLAYER_MINA_HARKER] -> locationHistory[0] = '\0';
+	gv->allPlayers[PLAYER_MINA_HARKER] -> lastHidden = -2;
+	gv->allPlayers[PLAYER_MINA_HARKER] -> lastDoubleback = -2;
 
-	gv->dracula = malloc(sizeof(hunterData));
-	memoryError (gv->dracula);
-	gv->dracula -> health = START_DRAC_POINT;
-	gv->dracula -> currentLocation = NOWHERE;
-	gv->dracula -> currentLocationIndex = -1;
-	gv->dracula -> locationHistory[0] = '\0';
-	gv->dracula -> lastHidden = -1;
-	gv->dracula -> lastDoubleback = -1;
+	gv->allPlayers[PLAYER_DRACULA] = malloc(sizeof(playerData));
+	memoryError (gv->allPlayers[PLAYER_DRACULA]);
+	gv->allPlayers[PLAYER_DRACULA] -> health = START_DRAC_POINT;
+	gv->allPlayers[PLAYER_DRACULA] -> currentLocation = NOWHERE;
+	gv->allPlayers[PLAYER_DRACULA] -> currentLocationIndex = -1;
+	gv->allPlayers[PLAYER_DRACULA] -> locationHistory[0] = '\0';
+	gv->allPlayers[PLAYER_DRACULA] -> lastHidden = -1;
+	gv->allPlayers[PLAYER_DRACULA] -> lastDoubleback = -1;
 
 	gv->trapLocations = NULL; 		//no trap locations at start of game, therefore no array yet
 	gv->vampire = NOWHERE;
@@ -211,11 +213,11 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
 	    }
 	}
 	
-	gv->hunters[hunter]->currentLocation = curr_place;
-	gv->hunters[hunter]->currentLocationIndex ++;
+	gv->allPlayers[hunter]->currentLocation = curr_place;
+	gv->allPlayers[hunter]->currentLocationIndex ++;
 	// If this is the first move.
-	if (gv->hunters[hunter]->locationHistory[0] == '\0') {
-	    gv->hunters[hunter]->locationHistory[0] = curr_place;
+	if (gv->allPlayers[hunter]->locationHistory[0] == '\0') {
+	    gv->allPlayers[hunter]->locationHistory[0] = curr_place;
 	} else {
 	    printf("yet to do..\n");
 	    // Basically shuffle the array back :)
@@ -309,18 +311,18 @@ int GvGetScore(GameView gv)
 
 int GvGetHealth(GameView gv, Player player)
 {
-	return gv->hunters[player]->health;
+	return gv->allPlayers[player]->health;
 }
 
 PlaceId GvGetPlayerLocation(GameView gv, Player player)
 {
-	return gv->hunters[player]->currentLocation;
+	return gv->allPlayers[player]->currentLocation;
 }
 
 PlaceId GvGetVampireLocation(GameView gv)
 {
 	// TODO: REPLACE THIS WITH YOUR OWN IMPLEMENTATION
-	return gv->dracula->currentLocation;
+	return gv->allPlayers[PLAYER_DRACULA]->currentLocation;
 }
 
 PlaceId *GvGetTrapLocations(GameView gv, int *numTraps)
@@ -336,36 +338,49 @@ PlaceId *GvGetTrapLocations(GameView gv, int *numTraps)
 PlaceId *GvGetMoveHistory(GameView gv, Player player,
                           int *numReturnedMoves, bool *canFree)
 {
-	// can't free as is returning directly from data struct
-	canFree = false;
-	// pass number of moves
-	numReturnedMoves = gv->
-	return gv->hunters[player]->locationHistory;
+	*numReturnedMoves = 0;
+	*canFree = false;
+	return NULL;
 }
 
 PlaceId *GvGetLastMoves(GameView gv, Player player, int numMoves,
                         int *numReturnedMoves, bool *canFree)
 {
-	// allocate space for return array
-	PlaceId *lastNMoves =  malloc(sizeof(PlaceId) * numReturnedMoves);
+	// TODO: REPLACE THIS WITH YOUR OWN IMPLEMENTATION
+	*numReturnedMoves = 0;
+	*canFree = false;
+	return NULL;
 }
 
 PlaceId *GvGetLocationHistory(GameView gv, Player player,
                               int *numReturnedLocs, bool *canFree)
 {
-	// TODO: REPLACE THIS WITH YOUR OWN IMPLEMENTATION
-	*numReturnedLocs = 0;
+	// can't free as is returning directly from data struct
 	*canFree = false;
-	return NULL;
+	// pass number of moves
+	*numReturnedLocs = gv->allPlayers[player]->currentLocationIndex;
+	return gv->allPlayers[player]->locationHistory;
 }
 
 PlaceId *GvGetLastLocations(GameView gv, Player player, int numLocs,
                             int *numReturnedLocs, bool *canFree)
 {
-	// TODO: REPLACE THIS WITH YOUR OWN IMPLEMENTATION
-	*numReturnedLocs = 0;
-	*canFree = false;
-	return 0;
+	
+	// unless asking for more locations than have happened, return numlocs
+	if (gv->allPlayers[player]->currentLocationIndex >= numLocs) {
+		// can free as returning a separate array
+		*canFree = true;
+		*numReturnedLocs = numLocs;
+		// allocate space for return array
+		PlaceId *lastNLocs = malloc(sizeof(PlaceId) *numLocs);
+		// TODO most recent move first or last????
+		for (int i = 0; i < numLocs; i++) {
+			lastNLocs[i] = gv->allPlayers[player]->locationHistory[gv->allPlayers[player]->currentLocationIndex - numLocs + i];
+		}
+	}
+	// if asking for too many locations, only return all that exist
+	else
+		return GvGetLocationHistory(gv, player, *numReturnedLocs, *canFree);
 }
 
 ////////////////////////////////////////////////////////////////////////
