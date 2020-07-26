@@ -89,19 +89,20 @@ static void memoryError (const void * input){
 }
 
 // appends input placeid to locationhistory, updates current location and index
-/*static void hunterLocationHistoryAppend(GameView gv, Player hunter, PlaceId location) {
+static void hunterLocationHistoryAppend(GameView gv, Player hunter, PlaceId location) {
 	int index = gv->hunters[hunter]->currentLocationIndex;
 	if (index < MAX_LOCATION_HISTORY_SIZE) {
 		gv->hunters[hunter]->locationHistory[index + 1] = location;
 		gv->hunters[hunter]->currentLocation = location;
 	}
 }
-static void vampireLocationHistoryAppend(GameView gv, char *location); */
-	int index = gv->hunters[PLAYER_DRACULA]->currentLocationIndex;
+static void vampireLocationHistoryAppend(GameView gv, char *location) {
+	int index = gv->dracula->currentLocationIndex;
 	if (index < MAX_LOCATION_HISTORY_SIZE) {
-		gv->hunters[hunter]->locationHistory[index + 1] = location;
-		gv->hunters[hunter]->currentLocation = location;
+		gv->dracula->locationHistory[index + 1] = location;
+		gv->dracula->currentLocation = location;
 	}
+}
 
 static void initialiseGame (GameView gv) {
 	gv->roundNumber = 0;
@@ -136,12 +137,14 @@ static void initialiseGame (GameView gv) {
 	gv->hunters[PLAYER_MINA_HARKER] -> currentLocationIndex = -1;
 	gv->hunters[PLAYER_MINA_HARKER] -> locationHistory[0] = '\0';
 
-	gv->hunters[PLAYER_DRACULA] = malloc(sizeof(hunterData));
-	memoryError (gv->hunters[PLAYER_DRACULA]);
-	gv->hunters[PLAYER_DRACULA] -> health = START_DRAC_POINT;
-	gv->hunters[PLAYER_DRACULA] -> currentLocation = NOWHERE;
-	gv->hunters[PLAYER_DRACULA] -> currentLocationIndex = -1;
-	gv->hunters[PLAYER_DRACULA] -> locationHistory[0] = '\0';
+	gv->dracula = malloc(sizeof(hunterData));
+	memoryError (gv->dracula);
+	gv->dracula -> health = START_DRAC_POINT;
+	gv->dracula -> currentLocation = NOWHERE;
+	gv->dracula -> currentLocationIndex = -1;
+	gv->dracula -> locationHistory[0] = '\0';
+	gv->dracula -> lastHidden = -1;
+	gv->dracula -> lastDoubleback = -1;
 
 	gv->trapLocations = NULL; 		//no trap locations at start of game, therefore no array yet
 	gv->vampire = NOWHERE;
@@ -317,7 +320,7 @@ PlaceId GvGetPlayerLocation(GameView gv, Player player)
 PlaceId GvGetVampireLocation(GameView gv)
 {
 	// TODO: REPLACE THIS WITH YOUR OWN IMPLEMENTATION
-	return gv->vampire;
+	return gv->dracula->;
 }
 
 PlaceId *GvGetTrapLocations(GameView gv, int *numTraps)
