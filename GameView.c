@@ -35,10 +35,10 @@
 //#defines to make things more readable?
 //C: I like this, makes things a bit more readable
 #define  LORD_GODALMING gv->allPlayers[PLAYER_LORD_GODALMING]
-#define gv->allPlayers[PLAYER_DR_SEWARD] DR_SEWARD
-#define gv->allPlayers[PLAYER_VAN_HELSING] VAN_HELSING
-#define gv->allPlayers[PLAYER_MINA_HARKER] MINA_HARKER
-#define gv->allPlayers[PLAYER_DRACULA] DRACULA
+#define  DR_SEWARD gv->allPlayers[PLAYER_DR_SEWARD]
+#define VAN_HELSING  gv->allPlayers[PLAYER_VAN_HELSING]
+#define  MINA_HARKER gv->allPlayers[PLAYER_MINA_HARKER]
+#define  DRACULA gv->allPlayers[PLAYER_DRACULA]
 //#define gv->allPlayers[hunter]->currentLocationIndex locationIndex
 
 typedef struct playerData *PlayerData;
@@ -76,7 +76,7 @@ struct gameView {
 
 
 // private functions
-static PlaceId binarySearch (int * array, int l, int mid, int h, char * string);				//Iterative binsary search for PLACES[]
+static PlaceId binarySearch ( int l, int r, char * string);				//Iterative binsary search for PLACES[]
 static void memoryError (const void * input);							//not sure if this works, but for sake of being lazy and not having to write this multiple times
 static void initialiseGame (GameView gv);								//initialise an empty game to fill in
 static Player parseMove (GameView gv, char *string);
@@ -101,31 +101,23 @@ static void memoryError (const void * input){
 }
 static void vampireLocationHistoryAppend(GameView gv, Player hunter, char *location); */
 
-static PlaceId binarySearch (int * array, int l, int r, char * string){
-/*	for (int i = 0; i < NUM_REAL_PLACES; i++) {
-		 Place row = PLACES[i];
-		 if (strcmp(row.abbrev, city) == 0) {
-			  curr_place = row.id;
-			  break;
-		 }
-	}
-*/
-	//Place row;
+static PlaceId binarySearch ( int l, int r, char * string){
+	Place row;
 	while ( l <= r){
 		int m = 1 + (r-1) /2;
-		//row = PLACES[m];
+		row = PLACES[m];
 		//Check if x is preset at mid
-		if (strcmp(array[m].abbrev, string) == 0) return array[m].id;
+		if (strcmp(row.abbrev, string) == 0) return row.id;
 		//If x is greater, ignore left half
-		if (strcmp(array[m].abbrev, string) < 0) {
+		if (strcmp(row.abbrev, string) < 0) {
 			l = m + 1;
 		//If x is smaller, ignore right half
 		} else {
 			r = m - 1;
 		}
-		string was not found
-		return -1;
 	}
+    //string was not found
+	return -1;
 }
 
 static void initialiseGame (GameView gv) {
@@ -236,7 +228,7 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
 	        break;
 	    }
 	}
-	curr_place = binarySearch (PLACES, 0, NUM_REAL_PLACES, *city);
+	curr_place = binarySearch ( 0, NUM_REAL_PLACES, city);
 
 
 
@@ -254,12 +246,13 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
 	//Parsing through characters after location iD
 
 	//check the next characters
-	i = 3;
+
 	char *c;
-	for ( i = 3; i < strlen(string); i++) {
+	for ( int i = 3; i < strlen(string); i++) {
 		c = string;
 		switch(*c){
 			case ITS_A_TRAP:
+            //i++;
 				//its a trap!
 				break;
 			case CLOSE_ENCOUNTERS_OF_THE_VTH_KIND:
