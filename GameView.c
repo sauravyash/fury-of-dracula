@@ -34,7 +34,7 @@
 
 //#defines to make things more readable?
 //C: I like this, makes things a bit more readable
-#define gv->allPlayers[PLAYER_LORD_GODALMING] LORD_GODALMING
+#define  LORD_GODALMING gv->allPlayers[PLAYER_LORD_GODALMING]
 #define gv->allPlayers[PLAYER_DR_SEWARD] DR_SEWARD
 #define gv->allPlayers[PLAYER_VAN_HELSING] VAN_HELSING
 #define gv->allPlayers[PLAYER_MINA_HARKER] MINA_HARKER
