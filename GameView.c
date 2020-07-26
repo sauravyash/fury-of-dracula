@@ -101,23 +101,23 @@ static void memoryError (const void * input){
 }
 static void vampireLocationHistoryAppend(GameView gv, Player hunter, char *location); */
 
-static PlaceId binarySearch ( int l, int r, char * string){
+static PlaceId binarySearch ( int l, int r, char * city){
 	Place row;
 	while ( l <= r){
 		int m = 1 + (r-1) /2;
 		row = PLACES[m];
 		//Check if x is preset at mid
-		if (strcmp(row.abbrev, string) == 0) return row.id;
+		if (strcmp(row.abbrev, city) == 0) return row.id;
 		//If x is greater, ignore left half
-		if (strcmp(row.abbrev, string) < 0) {
+		if (strcmp(row.abbrev, city) < 0) {
 			l = m + 1;
 		//If x is smaller, ignore right half
 		} else {
 			r = m - 1;
 		}
 	}
-    //string was not found
-	return -1;
+    //City not found!
+	return NOWHERE;
 }
 
 static void initialiseGame (GameView gv) {
@@ -219,17 +219,12 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
 
 	PlaceId curr_place = NOWHERE;
 
-	//find which location ID corresponds to
-	//O(n) complexity at max?			-> do a binary search on the array?
-	for (int i = 0; i < NUM_REAL_PLACES; i++) {
-	    Place row = PLACES[i];
-	    if (strcmp(row.abbrev, city) == 0) {
-	        curr_place = row.id;
-	        break;
-	    }
-	}
+	
 	curr_place = binarySearch ( 0, NUM_REAL_PLACES, city);
-
+    if (curr_place == NOWHERE) {
+        fprintf(stderr, "City not found!\n");
+		exit(EXIT_FAILURE);
+    }
 
 
 
