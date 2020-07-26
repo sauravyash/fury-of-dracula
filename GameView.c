@@ -76,7 +76,7 @@ struct gameView {
 
 
 // private functions
-static PlaceId binarySearch ( int l, int r, char * string);				//Iterative binsary search for PLACES[]
+static PlaceId binarySearchPlaceId ( int l, int r, char * string);				//Iterative binsary search for PLACES[]
 static void memoryError (const void * input);							//not sure if this works, but for sake of being lazy and not having to write this multiple times
 static void initialiseGame (GameView gv);								//initialise an empty game to fill in
 static Player parseMove (GameView gv, char *string);
@@ -101,7 +101,7 @@ static void memoryError (const void * input){
 }
 static void vampireLocationHistoryAppend(GameView gv, Player hunter, char *location); */
 
-static PlaceId binarySearch ( int l, int r, char * city){
+static PlaceId binarySearchPlaceId ( int l, int r, char * city){
 	Place row;
 	while ( l <= r){
 		int m = 1 + (r-1) /2;
@@ -219,8 +219,8 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
 
 	PlaceId curr_place = NOWHERE;
 
-	
-	curr_place = binarySearch ( 0, NUM_REAL_PLACES, city);
+
+	curr_place = binarySearchPlaceId ( 0, NUM_REAL_PLACES, city);
     if (curr_place == NOWHERE) {
         fprintf(stderr, "City not found!\n");
 		exit(EXIT_FAILURE);
