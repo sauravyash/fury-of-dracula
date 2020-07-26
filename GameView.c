@@ -76,7 +76,7 @@ struct gameView {
 
 
 // private functions
-
+static PlaceId binarySearch (int * array, int l, int mid, int h, char * string);				//Iterative binsary search for PLACES[]
 static void memoryError (const void * input);							//not sure if this works, but for sake of being lazy and not having to write this multiple times
 static void initialiseGame (GameView gv);								//initialise an empty game to fill in
 static Player parseMove (GameView gv, char *string);
@@ -101,6 +101,32 @@ static void memoryError (const void * input){
 }
 static void vampireLocationHistoryAppend(GameView gv, Player hunter, char *location); */
 
+static PlaceId binarySearch (int * array, int l, int r, char * string){
+/*	for (int i = 0; i < NUM_REAL_PLACES; i++) {
+		 Place row = PLACES[i];
+		 if (strcmp(row.abbrev, city) == 0) {
+			  curr_place = row.id;
+			  break;
+		 }
+	}
+*/
+	//Place row;
+	while ( l <= r){
+		int m = 1 + (r-1) /2;
+		//row = PLACES[m];
+		//Check if x is preset at mid
+		if (strcmp(array[m].abbrev, string) == 0) return array[m].id;
+		//If x is greater, ignore left half
+		if (strcmp(array[m].abbrev, string) < 0) {
+			l = m + 1;
+		//If x is smaller, ignore right half
+		} else {
+			r = m - 1;
+		}
+		string was not found
+		return -1;
+	}
+}
 
 static void initialiseGame (GameView gv) {
 	gv->roundNumber = 0;
@@ -210,6 +236,10 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
 	        break;
 	    }
 	}
+	curr_place = binarySearch (PLACES, 0, NUM_REAL_PLACES, *city);
+
+
+
 
 	gv->allPlayers[hunter]->currentLocation = curr_place;
 	gv->allPlayers[hunter]->currentLocationIndex ++;
