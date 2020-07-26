@@ -62,12 +62,12 @@ struct hunterData {
 struct gameView {
 	Round roundNumber;
 	int score;
-	Player currentPlayer;			//looks like G always starts first? judging by the testfiles given G->S->H->M->D
-	hunterData hunters[NUM_PLAYERS - 1];
+	Player currentPlayer;						// looks like G always starts first? judging by the testfiles given G->S->H->M->D
+	hunterData hunters[NUM_PLAYERS - 1]; 		// -1 since drac not included
 	draculaData dracula;
 	PlaceId * trapLocations;
-	PlaceId vampire;		//only one vampire alive at any time
-	Map map; 				//graph thats been typedefed already
+	PlaceId vampire;							//only one vampire alive at any time
+	Map map; 									//graph thats been typedefed already
 
 };
 
@@ -320,7 +320,7 @@ PlaceId GvGetPlayerLocation(GameView gv, Player player)
 PlaceId GvGetVampireLocation(GameView gv)
 {
 	// TODO: REPLACE THIS WITH YOUR OWN IMPLEMENTATION
-	return gv->dracula->;
+	return gv->dracula->currentLocation;
 }
 
 PlaceId *GvGetTrapLocations(GameView gv, int *numTraps)
@@ -336,19 +336,18 @@ PlaceId *GvGetTrapLocations(GameView gv, int *numTraps)
 PlaceId *GvGetMoveHistory(GameView gv, Player player,
                           int *numReturnedMoves, bool *canFree)
 {
-	// TODO: REPLACE THIS WITH YOUR OWN IMPLEMENTATION
-	*numReturnedMoves = 0;
-	*canFree = false;
-	return NULL;
+	// can't free as is returning directly from data struct
+	canFree = false;
+	// pass number of moves
+	numReturnedMoves = gv->
+	return gv->hunters[player]->locationHistory;
 }
 
 PlaceId *GvGetLastMoves(GameView gv, Player player, int numMoves,
                         int *numReturnedMoves, bool *canFree)
 {
-	// TODO: REPLACE THIS WITH YOUR OWN IMPLEMENTATION
-	*numReturnedMoves = 0;
-	*canFree = false;
-	return NULL;
+	// allocate space for return array
+	PlaceId *lastNMoves =  malloc(sizeof(PlaceId) * numReturnedMoves);
 }
 
 PlaceId *GvGetLocationHistory(GameView gv, Player player,
