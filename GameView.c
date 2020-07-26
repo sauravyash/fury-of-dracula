@@ -34,7 +34,11 @@
 
 //#defines to make things more readable?
 //C: I like this, makes things a bit more readable
-#define gv->allPlayers[PLAYER_LORD_GODALMING] LORD_GODALMING or LordGodalming?
+#define gv->allPlayers[PLAYER_LORD_GODALMING] LORD_GODALMING
+#define gv->allPlayers[PLAYER_DR_SEWARD] DR_SEWARD
+#define gv->allPlayers[PLAYER_VAN_HELSING] VAN_HELSING
+#define gv->allPlayers[PLAYER_MINA_HARKER] MINA_HARKER
+#define gv->allPlayers[PLAYER_DRACULA] DRACULA
 //#define gv->allPlayers[hunter]->currentLocationIndex locationIndex
 
 typedef struct playerData *PlayerData;
@@ -104,40 +108,40 @@ static void initialiseGame (GameView gv) {
 	gv->currentPlayer = PLAYER_LORD_GODALMING; 		//always starts with G
 
 	//Allocate memory for players & Initialise starting information
-	gv->allPlayers[PLAYER_LORD_GODALMING] = malloc(sizeof(PlayerData));
-	memoryError (gv->allPlayers[PLAYER_LORD_GODALMING]);
-	gv->allPlayers[PLAYER_LORD_GODALMING] -> health = 	GAME_START_HUNTER_LIFE_POINTS;
-	gv->allPlayers[PLAYER_LORD_GODALMING] -> currentLocation = NOWHERE;
-	gv->allPlayers[PLAYER_LORD_GODALMING] -> currentLocationIndex = -1;
-	gv->allPlayers[PLAYER_LORD_GODALMING] -> locationHistory[0] = '\0';
+	LORD_GODALMING = malloc(sizeof(PlayerData));
+	memoryError (LORD_GODALMING);
+	LORD_GODALMING -> health = 	GAME_START_HUNTER_LIFE_POINTS;
+	LORD_GODALMING -> currentLocation = NOWHERE;
+	LORD_GODALMING -> currentLocationIndex = -1;
+	LORD_GODALMING -> locationHistory[0] = '\0';
 
-	gv->allPlayers[PLAYER_DR_SEWARD] = malloc(sizeof(PlayerData));
-	memoryError (gv->allPlayers[PLAYER_DR_SEWARD]);
-	gv->allPlayers[PLAYER_DR_SEWARD] -> health = 	GAME_START_HUNTER_LIFE_POINTS;
-	gv->allPlayers[PLAYER_DR_SEWARD] -> currentLocation = NOWHERE;
-	gv->allPlayers[PLAYER_DR_SEWARD] -> currentLocationIndex = -1;
-	gv->allPlayers[PLAYER_DR_SEWARD] -> locationHistory[0] = '\0';
+	DR_SEWARD = malloc(sizeof(PlayerData));
+	memoryError (DR_SEWARD);
+	DR_SEWARD -> health = 	GAME_START_HUNTER_LIFE_POINTS;
+	DR_SEWARD -> currentLocation = NOWHERE;
+	DR_SEWARD -> currentLocationIndex = -1;
+	DR_SEWARD -> locationHistory[0] = '\0';
 
-	gv->allPlayers[PLAYER_VAN_HELSING] = malloc(sizeof(PlayerData));
-	memoryError (gv->allPlayers[PLAYER_VAN_HELSING]);
-	gv->allPlayers[PLAYER_VAN_HELSING] -> health = 	GAME_START_HUNTER_LIFE_POINTS;
-	gv->allPlayers[PLAYER_VAN_HELSING] -> currentLocation = NOWHERE;
-	gv->allPlayers[PLAYER_VAN_HELSING] -> currentLocationIndex = -1;
-	gv->allPlayers[PLAYER_VAN_HELSING] -> locationHistory[0] = '\0';
+	VAN_HELSING = malloc(sizeof(PlayerData));
+	memoryError (VAN_HELSING);
+	VAN_HELSING -> health = 	GAME_START_HUNTER_LIFE_POINTS;
+	VAN_HELSING -> currentLocation = NOWHERE;
+	VAN_HELSING -> currentLocationIndex = -1;
+	VAN_HELSING -> locationHistory[0] = '\0';
 
-	gv->allPlayers[PLAYER_MINA_HARKER] = malloc(sizeof(PlayerData));
-	memoryError (gv->allPlayers[PLAYER_MINA_HARKER]);
-	gv->allPlayers[PLAYER_MINA_HARKER] -> health = 	GAME_START_HUNTER_LIFE_POINTS;
-	gv->allPlayers[PLAYER_MINA_HARKER] -> currentLocation = NOWHERE;
-	gv->allPlayers[PLAYER_MINA_HARKER] -> currentLocationIndex = -1;
-	gv->allPlayers[PLAYER_MINA_HARKER] -> locationHistory[0] = '\0';
+	MINA_HARKER = malloc(sizeof(PlayerData));
+	memoryError (MINA_HARKER);
+	MINA_HARKER -> health = 	GAME_START_HUNTER_LIFE_POINTS;
+	MINA_HARKER -> currentLocation = NOWHERE;
+	MINA_HARKER -> currentLocationIndex = -1;
+	MINA_HARKER -> locationHistory[0] = '\0';
 
-	gv->allPlayers[PLAYER_DRACULA] = malloc(sizeof(PlayerData));
-	memoryError (gv->allPlayers[PLAYER_DRACULA]);
-	gv->allPlayers[PLAYER_DRACULA] -> health = GAME_START_BLOOD_POINTS;
-	gv->allPlayers[PLAYER_DRACULA] -> currentLocation = NOWHERE;
-	gv->allPlayers[PLAYER_DRACULA] -> currentLocationIndex = -1;
-	gv->allPlayers[PLAYER_DRACULA] -> locationHistory[0] = '\0';
+	DRACULA = malloc(sizeof(PlayerData));
+	memoryError (DRACULA);
+	DRACULA -> health = GAME_START_BLOOD_POINTS;
+	DRACULA -> currentLocation = NOWHERE;
+	DRACULA -> currentLocationIndex = -1;
+	DRACULA -> locationHistory[0] = '\0';
 
 	gv->trapLocations = NULL; 		//no trap locations at start of game, therefore no array yet -> will need to assign
 	gv->vampire = NOWHERE;
@@ -220,8 +224,9 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
 	//Parsing through characters after location iD
 
 	//check the next characters
+	i = 3;
 	char *c;
-	while ( i < strlen(string)){
+	for ( i = 3; i < strlen(string); i++) {
 		c = string;
 		switch(*c){
 			case ITS_A_TRAP:
