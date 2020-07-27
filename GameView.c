@@ -73,10 +73,11 @@ struct gameView {
 
 
 // private functions
+int comparator(const void *p, const void *q);
 
 static void memoryError (const void * input);							//not sure if this works, but for sake of being lazy and not having to write this multiple times
 static void initialiseGame (GameView gv);								//initialise an empty game to fill in
-static Player parseMove (GameView gv, char *string);	
+static Player parseMove (GameView gv, char *string);
 //parse through that string
 static void hunterMove(GameView gv, char *string, Player hunter);
 //static void draculaMove(GameView gv, char * string);
@@ -88,6 +89,18 @@ static void memoryError (const void * input){
 	}
 }
 
+int comparator(const void *p, const void *q)
+{
+	//Return value meaning:
+	//<0 The element pointed by p goes before the element pointed by q
+	//0  The element pointed by p is equivalent to the element pointed by q
+	//>0 The element pointed by p goes after the element pointed by q
+
+    // Get the values at given addresses
+    char * l = (char *)p;
+    char * r = (char *)q;
+ 	return (strcmp(l,r));
+}
 // appends input placeid to locationhistory, updates current location and index
 /*static void hunterLocationHistoryAppend(GameView gv, Player hunter, PlaceId location) {
 	int index = gv->allPlayers[hunter]->currentLocationIndex;
@@ -151,7 +164,7 @@ static Player parseMove (GameView gv, char *string){
 	char *c = string;
 	// THIS HEREEE...
 	Player curr_player;
-	
+
 	//figure out who's move it was
 	switch(*c){
 			case 'G':
@@ -181,21 +194,21 @@ static Player parseMove (GameView gv, char *string){
 			    break;
 			default: break;
 		}
-	
+
 	return curr_player;
 }
 
 static void hunterMove(GameView gv, char *string, Player hunter) {
 
 	assert (strlen(string) > LOCATION_ID_SIZE);
-	
+
 	char *city = malloc((LOCATION_ID_SIZE + 1)*sizeof(char));
 	city[0] = string[1];
 	city[1] = string[2];
 	city[2] = '\0';
-	
+
 	PlaceId curr_place = NOWHERE;
-	
+
 	for (int i = 0; i < NUM_REAL_PLACES; i++) {
 	    Place row = PLACES[i];
 	    if (strcmp(row.abbrev, city) == 0) {
@@ -203,7 +216,7 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
 	        break;
 	    }
 	}
-	
+
 	gv->allPlayers[hunter]->currentLocation = curr_place;
 	gv->allPlayers[hunter]->currentLocationIndex ++;
 	// If this is the first move.
@@ -213,8 +226,8 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
 	    printf("yet to do..\n");
 	    // Basically shuffle the array back :)
 	}
-	
-	
+
+
 	/*
 	assert(strlen(string) > 3);
 	int i = 1;
@@ -370,53 +383,51 @@ PlaceId *GvGetReachable(GameView gv, Player player, Round round,
                         PlaceId from, int *numReturnedLocs)
 {
 	// TODO: REPLACE THIS WITH YOUR OWN IMPLEMENTATION
-	
+
 	// 1. We need to access the map :)
 	Map map = gv->map;
-	
+
 	// 2. Calculate the number of rails a hunter can travel.
 	int railDist = 0;
 	if (player != PLAYER_DRACULA) railDist = (round + player) % 4;
-	
+
 	// 3. Create temp array and store the locations within 1 path.
 	PlaceId temp_loc[NUM_REAL_PLACES];
 	for (int i = 0; i < NUM_REAL_PLACES; i++) {
 	    temp_loc[i] = '\0';
 	}
-	
+
 	// Get the connections from that point.
 	ConnList list = MapGetConnections(map, from);
-	
+
 	// Store viable connections in temp.
 	int loc = 0;
 	temp_loc[loc] = from;
 	loc = 1;
-	
+
 	while (loc < NUM_REAL_PLACES && list != NULL) {
-	    
+
 	    // Extra conditions for drac:
 	    if (player == PLAYER_DRACULA) {
 	        if (list->p == HOSPITAL_PLACE) continue;
 	        if (list->type == RAIL) continue;
 	    }
-	    
+
 	    // If it is a road type.
 	    if (list->type == ROAD) {
 	        temp_loc[loc] = list->p;
-	        loc++;
 	        // If it is a rail type check for hunter.
 	    } else if (list->type == RAIL && railDist >= 1) {
 	        temp_loc[loc] = list->p;
-	        loc++;
 	        // If it is a boat type.
 	    } else if (list->type == BOAT) {
 	        temp_loc[loc] = list->p;
-	        loc++;
 	    }
-	    
+	    loc++;
 	    list = list->next;
 	}
-	
+	int array_len = sizeof(temp_loc) / sizeof(temp_loc[0]);
+	qsort(temp_loc,array_len, sizeof(temp_loc[0]), comparator);
 	// 4. Now alphabeticalizeee:
 	int i = 0;
 	while (i < NUM_REAL_PLACES && temp_loc[i] != '\0') {
@@ -431,7 +442,7 @@ PlaceId *GvGetReachable(GameView gv, Player player, Round round,
 	    }
 	    i++;
 	}
-	
+
 	// 5. Now copy into the dynamically allocated array.
 	int size = i - 1;
 	PlaceId *final_loc_list = malloc(size*sizeof(PlaceId));
@@ -440,7 +451,7 @@ PlaceId *GvGetReachable(GameView gv, Player player, Round round,
 	    final_loc_list[i] = temp_loc[i];
 	    i++;
 	}
-	
+
 	*numReturnedLocs = size;
 	return final_loc_list;
 }
