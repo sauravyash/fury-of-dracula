@@ -100,7 +100,8 @@ static void vampireLocationHistoryAppend(GameView gv, char *location) {
 		gv->allPlayers[PLAYER_DRACULA]->locationHistory[index + 1] = location;
 		gv->allPlayers[PLAYER_DRACULA]->currentLocation = location;
 	}
-
+}
+/*
 static PlaceId binarySearchPlaceId ( int l, int r, char * city){
 	Place row;
 	while ( l <= r){
@@ -118,7 +119,7 @@ static PlaceId binarySearchPlaceId ( int l, int r, char * city){
 	}
     //City not found!
 	return NOWHERE;
-}
+}*/
 
 static void initialiseGame (GameView gv) {
 	gv->roundNumber = 0;
@@ -355,6 +356,7 @@ int GvGetHealth(GameView gv, Player player)
 
 PlaceId GvGetPlayerLocation(GameView gv, Player player)
 {
+	// todo visibility of dracula depends on draculamove implementation
 	if (player == PLAYER_DRACULA) {
 		// todo if has been revealed
 		return gv->allPlayers[player]->currentLocation;
@@ -406,26 +408,46 @@ PlaceId *GvGetLastMoves(GameView gv, Player player, int numMoves,
 		*numReturnedMoves = numMoves;
 		// allocate space for return array
 		PlaceId *lastNMoves = malloc(sizeof(PlaceId) *numMoves);
-		// TODO most recent move first or last????
+		// copy desired values from locationHistory to return array
 		for (int i = 0; i < numMoves; i++) {
 			lastNMoves[i] = gv->allPlayers[player]->locationHistory[gv->allPlayers[player]->currentLocationIndex - numMoves + i];
 		}
+		return lastNMoves;
 	}
 	// if asking for too many locations, only return all that exist
-	else
-		return GvGetLocationHistory(gv, player, *numReturnedMoves, *canFree);
+	return GvGetLocationHistory(gv, player, numReturnedMoves, canFree);
 }
 
 PlaceId *GvGetLocationHistory(GameView gv, Player player,
                               int *numReturnedLocs, bool *canFree)
 {
 	
-	// can't free as is returning directly from data struct
-	*canFree = false;
+	// can free as allocating new array
+	*canFree = true;
 	// pass number of moves
-	*numReturnedLocs = gv->allPlayers[player]->currentLocationIndex;
-	// dracula case should be handled by this
-	return GvGetPlayerLocation(gv, player);
+	int index = gv->allPlayers[player]->currentLocationIndex;
+	*numReturnedLocs = index;
+	PlaceId *allLocs = malloc(sizeof(PlaceId) * index);
+
+	if (player == PLAYER_DRACULA) {
+		// todo make sure rounds when drac not visible returned as unknowns
+		// depends on how visibility is parsed in dracmove
+
+		// add locs to all locs, checking if drac visible, and if not adding as unknown
+		for (int i = 0; i <= index; i++) {
+			// if visible
+			allLocs[i] = gv->allPlayers[player]->locationHistory[i];
+			/* else if not visible
+				// return unknown sea
+				if (placeIdToType(gv->allPlayers[player]->currentLocation) == SEA)
+					return SEA_UNKNOWN;
+				// or return unknown city
+				else
+					return CITY_UNKNOWN;*/
+		}
+		return allLocs;
+	}
+	return GvGetMoveHistory(gv, player, numReturnedLocs, canFree);
 }
 
 PlaceId *GvGetLastLocations(GameView gv, Player player, int numLocs,
@@ -443,10 +465,10 @@ PlaceId *GvGetLastLocations(GameView gv, Player player, int numLocs,
 		for (int i = 0; i < numLocs; i++) {
 			lastNLocs[i] = gv->allPlayers[player]->locationHistory[gv->allPlayers[player]->currentLocationIndex - numLocs + i];
 		}
+		return lastNLocs;
 	}
 	// if asking for too many locations, only return all that exist
-	else
-		return GvGetLocationHistory(gv, player, *numReturnedLocs, *canFree);
+	return GvGetLocationHistory(gv, player, numReturnedLocs, canFree);
 }
 
 ////////////////////////////////////////////////////////////////////////
