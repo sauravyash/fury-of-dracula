@@ -26,7 +26,7 @@
 //#define START_DRAC_POINT 40						GAME_START_BLOOD_POINTS is #defined in game.h
 #define LOCATION_ID_SIZE 2
 
-#define MAX_LOCATION_HISTORY_SIZE (MAX_GAME_SCORE * 2 * 4)
+#define MAX_LOCATION_HISTORY_SIZE (GAME_START_SCORE * 2 * 4)
 #define OUR_ARBITRARY_ARRAY_SIZE 10
 
 //DOUBLE CHECK THIS: max number of turns * most possible avg moves per turn (rounded up)  * bytes per move stored
@@ -44,7 +44,7 @@
 #define  DRACULA gv->allPlayers[PLAYER_DRACULA]
 //#define gv->allPlayers[hunter]->currentLocationIndex locationIndex
 
-typedef struct playerData *playerData;
+typedef struct playerData *PlayerData;
 typedef struct vampireData *IVampire;
 
 
@@ -64,7 +64,7 @@ struct gameView {
 	Round roundNumber;
 	int score;
 	Player currentPlayer;						// looks like G always starts first? judging by the testfiles given G->S->H->M->D
-	playerData allPlayers[NUM_PLAYERS];
+	PlayerData allPlayers[NUM_PLAYERS];
 	PlaceId *trapLocations;
 	PlaceId vampire;							//only one vampire alive at any time
 	Map map; 									//graph thats been typedefed already
@@ -105,6 +105,7 @@ int comparator(const void *p, const void *q)
     char * r = (char *)q;
  	return (strcmp(l,r));
 }
+
 // appends input placeid to locationhistory, updates current location and index
 static void hunterLocationHistoryAppend(GameView gv, Player hunter, PlaceId location) {
 	int index = gv->allPlayers[hunter]->currentLocationIndex;
@@ -114,13 +115,14 @@ static void hunterLocationHistoryAppend(GameView gv, Player hunter, PlaceId loca
 	}
 }
 
-static void vampireLocationHistoryAppend(GameView gv, char *location) {
+static void vampireLocationHistoryAppend(GameView gv, PlaceId location) {
 	int index = gv->allPlayers[PLAYER_DRACULA]->currentLocationIndex;
 	if (index < MAX_LOCATION_HISTORY_SIZE) {
 		gv->allPlayers[PLAYER_DRACULA]->locationHistory[index + 1] = location;
 		gv->allPlayers[PLAYER_DRACULA]->currentLocation = location;
 	}
-
+}
+/*
 static PlaceId binarySearchPlaceId ( int l, int r, char * city){
 	Place row;
 	while ( l <= r){
@@ -139,6 +141,7 @@ static PlaceId binarySearchPlaceId ( int l, int r, char * city){
     //City not found!
 	return NOWHERE;
 }
+*/
 
 static void initialiseGame (GameView gv) {
 	gv->roundNumber = 0;
@@ -221,7 +224,6 @@ static Player parseMove (GameView gv, char *string){
 			    //draculaMove(gv, string);
 			    curr_player = PLAYER_LORD_GODALMING;
 			    break;
-			default: break;
 		}
 
 	return curr_player;
@@ -258,7 +260,7 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
 	//check the next characters
 
 	char *c;
-	for ( int i = 3; i < strlen(string); i++) {
+	for (int i = 3; i < strlen(string); i++) {
 		c = string;
 		switch(*c){
 			case ITS_A_TRAP:
@@ -275,7 +277,6 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
 				//other characters include trialing '.'
 				break;
 		}
-		i++;
 	}
 
     return;
@@ -380,8 +381,7 @@ PlaceId *GvGetMoveHistory(GameView gv, Player player,
 
 PlaceId *GvGetLastMoves(GameView gv, Player player, int numMoves,
                         int *numReturnedMoves, bool *canFree)
-{
-	
+{	
 	// unless asking for more locations than have happened, return numlocs
 	if (gv->allPlayers[player]->currentLocationIndex >= numMoves) {
 		// can free as returning a separate array
@@ -402,7 +402,6 @@ PlaceId *GvGetLastMoves(GameView gv, Player player, int numMoves,
 PlaceId *GvGetLocationHistory(GameView gv, Player player,
                               int *numReturnedLocs, bool *canFree)
 {
-	
 	// can't free as is returning directly from data struct
 	*canFree = false;
 	// pass number of moves
