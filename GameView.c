@@ -327,6 +327,14 @@ GameView GvNew(char *pastPlays, Message messages[])
 void GvFree(GameView gv)
 {
 	// TODO: REPLACE THIS WITH YOUR OWN IMPLEMENTATION
+	//is there anythign strduped or otherwise malloced?
+
+	for (int i = 0; i < NUM_PLAYERS; i++){
+		free(gv->allPlayers[i]->locationHistory);			//locationhistory is malloced
+		free(gv->allPlayers[i]);								//frees playerData struct (including dracula? if ADT reverted)
+	}
+	MapFree(gv->map);												//frees map (given in map.h)
+	free(gv->trapLocations);									//a malloced array
 	free(gv);
 }
 
