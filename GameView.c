@@ -39,7 +39,7 @@
 //#define gv->allPlayers[hunter]->currentLocationIndex locationIndex
 
 typedef struct playerData *playerData;
-typedef struct draculaData *draculaData;
+typedef struct vampireData *IVampire;
 
 
 //ADT for player statuses
@@ -51,15 +51,15 @@ struct playerData {
 	// BLOOD BOIS ONLY BEYOND THIS POINT
 	int lastHidden;								// round in which drac last hid
 	int lastDoubleback;							// round in which drac last doubled back
+	// bool isVisible							// something to indicate whether hunters know drac curr location
 };
 
 struct gameView {
 	Round roundNumber;
 	int score;
 	Player currentPlayer;						// looks like G always starts first? judging by the testfiles given G->S->H->M->D
-	playerData allPlayers[NUM_PLAYERS - 1]; 		// -1 since drac not included
-	draculaData dracula;
-	PlaceId * trapLocations;
+	playerData allPlayers[NUM_PLAYERS];
+	PlaceId *trapLocations;
 	PlaceId vampire;							//only one vampire alive at any time
 	Map map; 									//graph thats been typedefed already
 
@@ -316,13 +316,22 @@ int GvGetHealth(GameView gv, Player player)
 
 PlaceId GvGetPlayerLocation(GameView gv, Player player)
 {
-	return gv->allPlayers[player]->currentLocation;
+	if (player == PLAYER_DRACULA) {
+		// todo if has been revealed
+		return gv->allPlayers[player]->currentLocation;
+		// else return SEA/CITY
+		if (placeIdToType(gv->allPlayers[player]->currentLocation) == SEA)
+			return SEA_UNKNOWN;
+		else
+			return CITY_UNKNOWN;
+	}
+	else
+		return gv->allPlayers[player]->currentLocation;
 }
 
 PlaceId GvGetVampireLocation(GameView gv)
 {
-	// TODO: REPLACE THIS WITH YOUR OWN IMPLEMENTATION
-	return gv->allPlayers[PLAYER_DRACULA]->currentLocation;
+	return gv->vampire;
 }
 
 PlaceId *GvGetTrapLocations(GameView gv, int *numTraps)
@@ -338,28 +347,44 @@ PlaceId *GvGetTrapLocations(GameView gv, int *numTraps)
 PlaceId *GvGetMoveHistory(GameView gv, Player player,
                           int *numReturnedMoves, bool *canFree)
 {
-	*numReturnedMoves = 0;
+	// can't free as is returning directly from data struct
 	*canFree = false;
-	return NULL;
+	// pass number of moves
+	*numReturnedMoves = gv->allPlayers[player]->currentLocationIndex;
+	return gv->allPlayers[player]->locationHistory;
 }
 
 PlaceId *GvGetLastMoves(GameView gv, Player player, int numMoves,
                         int *numReturnedMoves, bool *canFree)
 {
-	// TODO: REPLACE THIS WITH YOUR OWN IMPLEMENTATION
-	*numReturnedMoves = 0;
-	*canFree = false;
-	return NULL;
+	
+	// unless asking for more locations than have happened, return numlocs
+	if (gv->allPlayers[player]->currentLocationIndex >= numMoves) {
+		// can free as returning a separate array
+		*canFree = true;
+		*numReturnedMoves = numMoves;
+		// allocate space for return array
+		PlaceId *lastNMoves = malloc(sizeof(PlaceId) *numMoves);
+		// TODO most recent move first or last????
+		for (int i = 0; i < numMoves; i++) {
+			lastNMoves[i] = gv->allPlayers[player]->locationHistory[gv->allPlayers[player]->currentLocationIndex - numMoves + i];
+		}
+	}
+	// if asking for too many locations, only return all that exist
+	else
+		return GvGetLocationHistory(gv, player, *numReturnedMoves, *canFree);
 }
 
 PlaceId *GvGetLocationHistory(GameView gv, Player player,
                               int *numReturnedLocs, bool *canFree)
 {
+	
 	// can't free as is returning directly from data struct
 	*canFree = false;
 	// pass number of moves
 	*numReturnedLocs = gv->allPlayers[player]->currentLocationIndex;
-	return gv->allPlayers[player]->locationHistory;
+	// dracula case should be handled by this
+	return GvGetPlayerLocation(gv, player);
 }
 
 PlaceId *GvGetLastLocations(GameView gv, Player player, int numLocs,
@@ -373,7 +398,7 @@ PlaceId *GvGetLastLocations(GameView gv, Player player, int numLocs,
 		*numReturnedLocs = numLocs;
 		// allocate space for return array
 		PlaceId *lastNLocs = malloc(sizeof(PlaceId) *numLocs);
-		// TODO most recent move first or last????
+		// loop throught location history, adding to lastn in chronological order
 		for (int i = 0; i < numLocs; i++) {
 			lastNLocs[i] = gv->allPlayers[player]->locationHistory[gv->allPlayers[player]->currentLocationIndex - numLocs + i];
 		}
