@@ -119,7 +119,7 @@ int comparator(const void *p, const void *q)
 }
 /* COMMENTED OUT FOR NOW TO AVOID NOT USED WARNING
 // appends input placeid to locationhistory, updates current location and index
-/*
+
 static void hunterLocationHistoryAppend(GameView gv, Player hunter, PlaceId location) {
 	int index = gv->allPlayers[hunter]->currentLocationIndex;
 	if (index < MAX_LOCATION_HISTORY_SIZE) {
@@ -136,7 +136,7 @@ static void vampireLocationHistoryAppend(GameView gv, PlaceId location) {
 	}
 }
 
-/*
+
 static PlaceId binarySearchPlaceId ( int l, int r, char * city){
 	Place row;
 	while ( l <= r){
