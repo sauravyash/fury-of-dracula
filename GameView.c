@@ -72,18 +72,30 @@ struct gameView {
 };
 
 
-// private functions
+// Private function declarations:
 
+//------------- MAKING A MOVE
+// Helper function for reachables:
+static int Find_Rails (Map map, PlaceId place, PlaceId from, PlaceId *array, int i);
+
+//------------- GENERAL FUNCTIONS
+// Qsort comparator:
 int comparator(const void *p, const void *q);
-static int railList (GameView gv, PlaceId from, int railDistance, PlaceId * array, int sizeArray, PlaceId * visited, PlaceId place);
-int addToArray (PlaceId * array, int sizeArray, PlaceId place, PlaceId * visited);
+// Memory error test:
+// not sure if this works, but for sake of being lazy and not having to write 
+// this multiple times
+static void memoryError (const void * input);							
 
-static void memoryError (const void * input);							//not sure if this works, but for sake of being lazy and not having to write this multiple times
-static void initialiseGame (GameView gv);								//initialise an empty game to fill in
+//------------- CONSTRUCTOR/ DESTRUCTOR
+// Initialise an empty game to fill in:
+static void initialiseGame (GameView gv);
+// Parse through that string
 static Player parseMove (GameView gv, char *string);
-//parse through that string
 static void hunterMove(GameView gv, char *string, Player hunter);
 //static void draculaMove(GameView gv, char * string);
+
+
+
 
 //these are here for now for easy access, will move them to bottom later
 static void memoryError (const void * input){
@@ -107,6 +119,7 @@ int comparator(const void *p, const void *q)
 }
 
 // appends input placeid to locationhistory, updates current location and index
+/*
 static void hunterLocationHistoryAppend(GameView gv, Player hunter, PlaceId location) {
 	int index = gv->allPlayers[hunter]->currentLocationIndex;
 	if (index < MAX_LOCATION_HISTORY_SIZE) {
@@ -122,6 +135,7 @@ static void vampireLocationHistoryAppend(GameView gv, PlaceId location) {
 		gv->allPlayers[PLAYER_DRACULA]->currentLocation = location;
 	}
 }
+*/
 /*
 static PlaceId binarySearchPlaceId ( int l, int r, char * city){
 	Place row;
@@ -372,16 +386,19 @@ PlaceId *GvGetTrapLocations(GameView gv, int *numTraps)
 PlaceId *GvGetMoveHistory(GameView gv, Player player,
                           int *numReturnedMoves, bool *canFree)
 {
+
 	// can't free as is returning directly from data struct
 	*canFree = false;
 	// pass number of moves
 	*numReturnedMoves = gv->allPlayers[player]->currentLocationIndex;
 	return gv->allPlayers[player]->locationHistory;
+
 }
 
 PlaceId *GvGetLastMoves(GameView gv, Player player, int numMoves,
                         int *numReturnedMoves, bool *canFree)
 {	
+
 	// unless asking for more locations than have happened, return numlocs
 	if (gv->allPlayers[player]->currentLocationIndex >= numMoves) {
 		// can free as returning a separate array
@@ -397,23 +414,26 @@ PlaceId *GvGetLastMoves(GameView gv, Player player, int numMoves,
 	// if asking for too many locations, only return all that exist
 	else
 		return GvGetLocationHistory(gv, player, *numReturnedMoves, *canFree);
+	
 }
 
 PlaceId *GvGetLocationHistory(GameView gv, Player player,
                               int *numReturnedLocs, bool *canFree)
 {
+
 	// can't free as is returning directly from data struct
 	*canFree = false;
 	// pass number of moves
 	*numReturnedLocs = gv->allPlayers[player]->currentLocationIndex;
 	// dracula case should be handled by this
 	return GvGetPlayerLocation(gv, player);
+	
 }
 
 PlaceId *GvGetLastLocations(GameView gv, Player player, int numLocs,
                             int *numReturnedLocs, bool *canFree)
 {
-	
+
 	// unless asking for more locations than have happened, return numlocs
 	if (gv->allPlayers[player]->currentLocationIndex >= numLocs) {
 		// can free as returning a separate array
@@ -429,16 +449,128 @@ PlaceId *GvGetLastLocations(GameView gv, Player player, int numLocs,
 	// if asking for too many locations, only return all that exist
 	else
 		return GvGetLocationHistory(gv, player, *numReturnedLocs, *canFree);
+
 }
 
 ////////////////////////////////////////////////////////////////////////
 // Making a Move
 
-// Tara was here :)
+// REACHABLE FUNCTIONS: Help to find all possible moves for the next play based
+// on round score, player, starting place, and other game deets.
+// Author: Tara
+// Status: Fully functioning for hunter- passed all given tests plus own tests 
+// and works with any railDist, player and round. Need to test Drac...
 PlaceId *GvGetReachable(GameView gv, Player player, Round round,
                         PlaceId from, int *numReturnedLocs)
 {
-	// TODO: REPLACE THIS WITH YOUR OWN IMPLEMENTATION
+	
+	// 1. We need to access the map :)
+	Map map = gv->map;
+
+	// 2. Calculate the number of rails a hunter can travel.
+	int railDist = 0;
+	if (player != PLAYER_DRACULA) railDist = (round + player) % 4;
+
+	// Create temp array to keep track of  locations visited in this function.
+	PlaceId visited[NUM_REAL_PLACES];
+	PlaceId *visited_rail = malloc(NUM_REAL_PLACES * sizeof(PlaceId));
+	for (int j = 0; j < NUM_REAL_PLACES; j++) {
+	    visited_rail[j] = '\0';
+	    visited[j] = '\0';
+	}
+
+	// Get the connections from that point.
+	ConnList list = MapGetConnections(map, from);
+	
+	// 3. Iterate through...
+	int loc_num = 0;
+	int rail_num = 0;
+	visited[loc_num] = from;
+	loc_num = 1;
+	
+	while (loc_num < NUM_REAL_PLACES && rail_num < NUM_REAL_PLACES) {
+	    
+	    // Extra conditions for drac:
+	    if (player == PLAYER_DRACULA) {
+	        if (list->p == HOSPITAL_PLACE) continue;
+	        if (list->type == RAIL) continue;
+	    }
+	    
+	    // If it is a road type.
+	    if (list->type == ROAD) {
+	        visited[loc_num] = list->p;
+	        loc_num++;
+	        // If it is a rail type check for hunter.
+	    } else if (list->type == RAIL && railDist >= 1) {
+	        visited_rail[rail_num] = list->p;
+	        rail_num++;
+	        // If it is a boat type.
+	    } else if (list->type == BOAT) {
+	        visited[loc_num] = list->p;
+	        loc_num++;
+	    }
+	    
+	    if (list->next == NULL) break;
+	    list = list->next;
+	}
+	
+	// Consider more rails...
+	// 2 Rails:
+	int i = 0;
+	int conn_new = 0;
+	if (railDist > 1) {
+	    while (i < rail_num) {
+	        int index = rail_num + conn_new;
+	        conn_new = conn_new + Find_Rails (map, visited_rail[i], from, visited_rail, index);
+	        i++;
+	    }
+	    rail_num = rail_num + conn_new;
+	
+	    // 3 Rails:
+	    i = 0;
+	    if (railDist > 2) {
+	    i = rail_num - conn_new;
+	    conn_new = 0;
+	        while (i < rail_num) {
+	            int index = rail_num + conn_new;
+	            conn_new = conn_new + Find_Rails (map, visited_rail[i], from, visited_rail, index);
+	            i++;
+	        }
+	        rail_num = rail_num + conn_new;
+	    }
+	}
+	
+	// 4. Combine arrays!!
+	// So we know the number of locs/ rails in each array;
+	i = 0;
+	int j = loc_num;
+	while (i < rail_num && j < NUM_REAL_PLACES) {
+	    
+	    visited[j] = visited_rail[i];
+	    j++;
+	    i++;
+	
+	}
+	int total_locs = j;
+	
+	// 5. Now copy into the dynamically allocated array.
+	PlaceId *final_loc_list = malloc(total_locs * sizeof(PlaceId));
+	i = 0;
+	while (i < total_locs) {
+	    final_loc_list[i] = visited[i];
+	    i++;
+	}
+	
+    // Return values...
+	*numReturnedLocs = total_locs;
+	return final_loc_list;
+
+}
+
+PlaceId *GvGetReachableByType(GameView gv, Player player, Round round,
+                              PlaceId from, bool road, bool rail,
+                              bool boat, int *numReturnedLocs)
+{
 
 	// 1. We need to access the map :)
 	Map map = gv->map;
@@ -447,168 +579,150 @@ PlaceId *GvGetReachable(GameView gv, Player player, Round round,
 	int railDist = 0;
 	if (player != PLAYER_DRACULA) railDist = (round + player) % 4;
 
-	//array to keep track of  locations visited in this function (so theres no duplicates)
-	PlaceId visited[NUM_REAL_PLACES] = {-1};
-
-	//---- Cindy was here
-	// Get the connections from that point.
-	ConnList list = MapGetConnections(map, from);
-	//intialise array to our arbitrary 10 size to reduce computing
-	int sizeArray = 0;
-	PlaceId * array = malloc(OUR_ARBITRARY_ARRAY_SIZE * sizeof(PlaceId));
-	//prevent adding source city itself to list
-	visited[from] = from;
-	//step through all available connections
-	int i = 0;
-	while (i < NUM_REAL_PLACES && list != NULL) {
-
-/*
-	// 3. Create temp array and store the locations within 1 path.
-	PlaceId temp_loc[NUM_REAL_PLACES];
-	for (int i = 0; i < NUM_REAL_PLACES; i++) {
-	    temp_loc[i] = '\0';
+	// Create temp array to keep track of  locations visited in this function.
+	PlaceId visited[NUM_REAL_PLACES];
+	PlaceId *visited_rail = malloc(NUM_REAL_PLACES * sizeof(PlaceId));
+	for (int j = 0; j < NUM_REAL_PLACES; j++) {
+	    visited_rail[j] = '\0';
+	    visited[j] = '\0';
 	}
 
 	// Get the connections from that point.
 	ConnList list = MapGetConnections(map, from);
-
-	// Store viable connections in temp.
-	int loc = 0;
-	temp_loc[loc] = from;
-	loc = 1;
-
-	while (loc < NUM_REAL_PLACES && list != NULL) {*/
-
-
+	
+	// 3. Iterate through...
+	int loc_num = 0;
+	int rail_num = 0;
+	visited[loc_num] = from;
+	loc_num = 1;
+	
+	while (loc_num < NUM_REAL_PLACES && rail_num < NUM_REAL_PLACES) {
+	    
 	    // Extra conditions for drac:
 	    if (player == PLAYER_DRACULA) {
 	        if (list->p == HOSPITAL_PLACE) continue;
 	        if (list->type == RAIL) continue;
 	    }
-
+	    
 	    // If it is a road type.
-	    if (list->type == ROAD) {
-
-			  sizeArray = addToArray(array, sizeArray, list->p, visited);
-			  visited[list->p] = from;				//update visited array
-		//if it is boat type
-	   } else if (list->type == BOAT) {
-			sizeArray = addToArray(array, sizeArray, list->p, visited);
-			visited[list->p] = from;				//update visited array
-		// If it is a rail type check for hunter.
-		} else if (list->type == RAIL && railDist > 0) {
-			//add this location and all recursively accesibly by rail locations
-			sizeArray = railList(gv, from, railDist, array, sizeArray, visited, list->p);
-			visited[list->p] = from;				//update visited array
-		}
-	    i++;
-	    list = list->next;
-	}
-	//int array_len = sizeof(temp_loc) / sizeof(temp_loc[0]);
-	//qsort(temp_loc,array_len, sizeof(temp_loc[0]), comparator);
-
-/*	        temp_loc[loc] = list->p;
-	        loc++;
+	    if (list->type == ROAD && road == true) {
+	        visited[loc_num] = list->p;
+	        loc_num++;
 	        // If it is a rail type check for hunter.
-	    } else if (list->type == RAIL && railDist >= 1) {
-	        temp_loc[loc] = list->p;
-	        loc++;
+	    } else if (list->type == RAIL && railDist >= 1 && rail == true) {
+	        visited_rail[rail_num] = list->p;
+	        rail_num++;
 	        // If it is a boat type.
-	    } else if (list->type == BOAT) {
-	        temp_loc[loc] = list->p;
-	        loc++;
+	    } else if (list->type == BOAT && boat == true) {
+	        visited[loc_num] = list->p;
+	        loc_num++;
 	    }
-
+	    
+	    if (list->next == NULL) break;
 	    list = list->next;
-	}*/
-
-	// 4. Now alphabeticalizeee:
-
-	/* while (i < NUM_REAL_PLACES && temp_loc[i] != '\0') {
-	    int j = i + 1;
-	    while (j < NUM_REAL_PLACES && temp_loc[j] != '\0') {
-	        if (temp_loc[j] < temp_loc[i]) {
-	            int change = temp_loc[i];
-	            temp_loc[i] = temp_loc[j];
-	            temp_loc[j] = change;
-	        }
-	        j++;
+	}
+	
+	// Consider more rails...
+	// 2 Rails:
+	int i = 0;
+	int conn_new = 0;
+	if (railDist > 1) {
+	    while (i < rail_num) {
+	        int index = rail_num + conn_new;
+	        conn_new = conn_new + Find_Rails (map, visited_rail[i], from, visited_rail, index);
+	        i++;
 	    }
-	    i++;
+	    rail_num = rail_num + conn_new;
+	
+	    // 3 Rails:
+	    i = 0;
+	    if (railDist > 2) {
+	    i = rail_num - conn_new;
+	    conn_new = 0;
+	        while (i < rail_num) {
+	            int index = rail_num + conn_new;
+	            conn_new = conn_new + Find_Rails (map, visited_rail[i], from, visited_rail, index);
+	            i++;
+	        }
+	        rail_num = rail_num + conn_new;
+	    }
 	}
-
-	*/
-
-	// 5. Now copy into the dynamically allocated array.
-	/*int size = i - 1;
-	PlaceId *final_loc_list = malloc(size*sizeof(PlaceId));
+	
+	// 4. Combine arrays!!
+	// So we know the number of locs/ rails in each array;
 	i = 0;
-	while (i < size) {
-	    final_loc_list[i] = temp_loc[i];
+	int j = loc_num;
+	while (i < rail_num && j < NUM_REAL_PLACES) {
+	    
+	    visited[j] = visited_rail[i];
+	    j++;
+	    i++;
+	
+	}
+	int total_locs = j;
+	
+	// 5. Now copy into the dynamically allocated array.
+	PlaceId *final_loc_list = malloc(total_locs * sizeof(PlaceId));
+	i = 0;
+	while (i < total_locs) {
+	    final_loc_list[i] = visited[i];
 	    i++;
 	}
-
-*/
-	*numReturnedLocs = sizeArray;
-	//the array will have extra spaces, but will be constrained by numReturnedLocs anyways when being accessed
-	return array;
-
-/*	*numReturnedLocs = size;
-	return final_loc_list;*/
-
-}
-
-PlaceId *GvGetReachableByType(GameView gv, Player player, Round round,
-                              PlaceId from, bool road, bool rail,
-                              bool boat, int *numReturnedLocs)
-{
-	// TODO: REPLACE THIS WITH YOUR OWN IMPLEMENTATION
-	*numReturnedLocs = 0;
-	return NULL;
+	
+    // Return values...
+	*numReturnedLocs = total_locs;
+	return final_loc_list;
 }
 
 ////////////////////////////////////////////////////////////////////////
 // Your own interface functions
 
-//recusrive helper function to find all rail CONNECTIONS?
-//returns size of array
-static int railList (GameView gv, PlaceId from, int railDistance, PlaceId * array, int sizeArray, PlaceId * visited, PlaceId place){
-	//CONCERNS: return type of sizeArray might screw with everything??? will need to check
+// FIND EXTRA RAIL LOCS: Helper function for reachables to find rail CONNECTIONS.
+// -- INPUT: Map, starting place, original place to check as duplicate, array of
+// visited rail locations to check for duplicates and add to, and index (since we
+// are editing a used array).
+// -- OUTPUT: An updated array of visited rail locations and number of locations
+// added in this instance.
+// -- Author: Tara
+static int Find_Rails (Map map, PlaceId place, PlaceId from, PlaceId *array, int i) {
+    
+    // Check things exist:
+    if (place == '\0') return 0;
+    if (array[0] == '\0') return 0;
+    
+    // Find list of connections to current place.
+    ConnList list = MapGetConnections(map, place);
+    int places_added = 0;
+    
+    // Iterate through to find rail types...
+    while (i < NUM_REAL_PLACES) {
+        
+        int skip = 0;
+        // Check for repeats;
+        if (list->p == from) {
+            skip = 1;
+        }
 
-	//End of rail journey/ no more rail tickets
-	if(railDistance == 0) return sizeArray;						//check for redundancy in this line?
-	//add current place to the array
-	sizeArray = addToArray(array, sizeArray, place, visited);
-	visited[place] = from;
-	//saves computing time from getting map of connections unecessary if already end of rail
-	if (railDistance - 1 == 0) return sizeArray;					//check for redundancy in this line?
-	//otherwise find all other rail connections to current location
-	Map map = gv->map;
-	ConnList connections = MapGetConnections(map, place);
-	int i = 0;
-	while (i < NUM_REAL_PLACES && connections != NULL){
-		//move to next connection if not of type RAIL
-		if(connections->type == RAIL){
-			sizeArray = railList(gv, place, railDistance - 1, array, sizeArray, visited, connections->p);
-		}
-		i++;
-		connections = connections->next;
-  }
-  return sizeArray;
+        int repeat = 0;
+        for (int j = 0; array[j] != '\0'; j++) {
+            if (array[j] == list->p) {
+                repeat++;
+            }
+        }
+        if (repeat > 0) skip = 1;
+        
+        // Now, add to array.
+        if (list->type == RAIL && skip == 0) {
+            printf("CASE\n");
+            array[i] = list->p;  
+            places_added++;
+        }
+        
+        // Increment.
+        if (list->next == NULL) break;
+        list = list->next; 
+    }
+    
+    return places_added;  
 }
 
-//returns new size of array, adds place to array if not already visited, update visited array
-int addToArray (PlaceId * array, int sizeArray, PlaceId place, PlaceId * visited){
-	//if place is already added to array/ visited, do nothing
-	if (visited[place] != -1) return sizeArray;
-
-	//check if more space needs to be allocated (in blocks of 10)
-	if( (sizeArray != 0) && (sizeArray % 10 == 0) ){
-		array = realloc(array, OUR_ARBITRARY_ARRAY_SIZE * sizeof(PlaceId));
-		memoryError(array);				//check memory was allocated
-	}
-	//add to array
-	array[sizeArray] = place;
-	//update sizeArray
-	return sizeArray + 1;
-}
