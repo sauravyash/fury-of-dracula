@@ -36,10 +36,10 @@
 //C: I like this, makes things a bit more readable
 #define  LORD_GODALMING gv->allPlayers[PLAYER_LORD_GODALMING]
 #define  DR_SEWARD gv->allPlayers[PLAYER_DR_SEWARD]
-#define VAN_HELSING  gv->allPlayers[PLAYER_VAN_HELSING]
+#define  VAN_HELSING  gv->allPlayers[PLAYER_VAN_HELSING]
 #define  MINA_HARKER gv->allPlayers[PLAYER_MINA_HARKER]
 #define  DRACULA gv->allPlayers[PLAYER_DRACULA]
-//#define gv->allPlayers[hunter]->currentLocationIndex locationIndex
+#define  PLAYER gv->allPlayers[PLAYER]
 
 typedef struct playerData *PlayerData;
 typedef struct vampireData *IVampire;
