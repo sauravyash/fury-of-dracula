@@ -36,9 +36,10 @@
 //C: I like this, makes things a bit more readable
 #define  LORD_GODALMING gv->allPlayers[PLAYER_LORD_GODALMING]
 #define  DR_SEWARD gv->allPlayers[PLAYER_DR_SEWARD]
-#define VAN_HELSING  gv->allPlayers[PLAYER_VAN_HELSING]
+#define  VAN_HELSING  gv->allPlayers[PLAYER_VAN_HELSING]
 #define  MINA_HARKER gv->allPlayers[PLAYER_MINA_HARKER]
 #define  DRACULA gv->allPlayers[PLAYER_DRACULA]
+#define  HUNTER gv->allPlayers[hunter]
 //#define gv->allPlayers[hunter]->currentLocationIndex locationIndex
 
 typedef struct playerData *PlayerData;
@@ -76,6 +77,8 @@ struct gameView {
 
 
 // private functions
+static void gameScoreCheck (GameView gv);					//unfinished
+static bool hunterHealthCheck (GameView gv, Player hunter);				//unfinished
 static PlaceId binarySearchPlaceId ( int l, int r, char * string);				//Iterative binsary search for PLACES[]
 static void memoryError (const void * input);							//not sure if this works, but for sake of being lazy and not having to write this multiple times
 static void initialiseGame (GameView gv);								//initialise an empty game to fill in
@@ -100,7 +103,12 @@ static void memoryError (const void * input){
 	}
 }
 static void vampireLocationHistoryAppend(GameView gv, Player hunter, char *location); */
-
+static void gameScoreCheck (GameView gv){
+	if(gv->score <=0) {
+		//end game
+		printf("Game Over!\n");
+	}
+}
 static PlaceId binarySearchPlaceId ( int l, int r, char * city){
 	Place row;
 	while ( l <= r){
@@ -168,6 +176,18 @@ static void initialiseGame (GameView gv) {
 	// allocate initial memory for locationHistory
 }
 
+static bool hunterHealthCheck (GameView gv, Player hunter){
+	if (HUNTER->health <= 0) {
+		//move to Hospital
+		gv->score -= 6;
+		gameScoreCheck(gv);
+		//end turn
+		return false;
+	} else {
+		return true;
+	}
+}
+
 // TARA EDITED IN A PLAYER RETURN SO YOU CAN SIMULTANEOUSLY CHECK PLAYER BASED ON STRING OF PAST PLAYS...
 static Player parseMove (GameView gv, char *string){
 	char *c = string;
@@ -219,14 +239,11 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
 
 	PlaceId curr_place = NOWHERE;
 
-
 	curr_place = binarySearchPlaceId ( 0, NUM_REAL_PLACES, city);
     if (curr_place == NOWHERE) {
-        fprintf(stderr, "City not found!\n");
-		exit(EXIT_FAILURE);
+       	fprintf(stderr, "City not found!\n");			//how should we handle this error?
+			exit(EXIT_FAILURE);
     }
-
-
 
 	gv->allPlayers[hunter]->currentLocation = curr_place;
 	gv->allPlayers[hunter]->currentLocationIndex ++;
@@ -239,62 +256,35 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
 	}
 
 	//Parsing through characters after location iD
-
-	//check the next characters
-
 	char *c;
-	for ( int i = 3; i < strlen(string); i++) {
+	bool roundOver = false;			//used to end turn if hunter is in hospital?
+	for ( int i = 3; (i < strlen(string)) && (roundOver == false); i++) {
 		c = string;
 		switch(*c){
-			case ITS_A_TRAP:
-            //i++;
-				//its a trap!
+			case ITS_A_TRAP:				//trap encounter
+            HUNTER->health -= LIFE_LOSS_TRAP_ENCOUNTER;
+				if (hunterHealthCheck (gv, hunter) == false) {
+					roundOver = true;
+				}
+				//remove trap from location function
 				break;
-			case CLOSE_ENCOUNTERS_OF_THE_VTH_KIND:
-				//vampire encounter
+			case CLOSE_ENCOUNTERS_OF_THE_VTH_KIND:		//vampire encounter
+				//Destroy immature vampire
+				gv->vampire = NOWHERE;
+				
+				printf("Vampire destroyed!\n");
 				break;
-			case 'D':
-				//dracula
+			case 'D':						//dracula encounter
+				HUNTER->health -= LIFE_LOSS_DRACULA_ENCOUNTER;
+				if (hunterHealthCheck (gv, hunter) == false) {
+					roundOver = true;
+				}
 				break;
-			case '.':
-				//other characters include trialing '.'
-				break;
+			default: break;											//other characters include trialing '.'does nothing
 		}
 		i++;
 	}
-
-	/*
-	assert(strlen(string) > 3);
-	int i = 1;
-
-	//first 2 characters after name always gives us the location abbreviation
-	char *location = malloc(sizeof(char *) * 2);
-	strncpy(location, string + i, LOCATION_ID_SIZE);
-	//find the placeID number for abbreviation and assign to hunter
-	//add to the location history, update current location and index
-	//hunterLocationHistoryAppend(gv, hunter, PLACEID);
-
-	//check the next characters
-	char *c;
-	while ( i < strlen(string)){
-		c = string;
-		switch(*c){
-			case ITS_A_TRAP:
-				//its a trap!
-				break;
-			case CLOSE_ENCOUNTERS_OF_THE_VTH_KIND:
-				//vampire encounter
-				break;
-			case 'D':
-				//dracula
-				break;
-			case '.':
-				//other characters include trialing '.'
-				break;
-		}
-		i++;
-	}*/
-
+	//end of hunter's round
     return;
 
 }
