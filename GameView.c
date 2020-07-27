@@ -404,7 +404,7 @@ PlaceId *GvGetReachable(GameView gv, Player player, Round round,
 	int loc = 0;
 	temp_loc[loc] = from;
 	loc = 1;
-
+	int i = 0;
 	while (loc < NUM_REAL_PLACES && list != NULL) {
 
 	    // Extra conditions for drac:
@@ -416,12 +416,15 @@ PlaceId *GvGetReachable(GameView gv, Player player, Round round,
 	    // If it is a road type.
 	    if (list->type == ROAD) {
 	        temp_loc[loc] = list->p;
+			  i++;
 	        // If it is a rail type check for hunter.
 	    } else if (list->type == RAIL && railDist >= 1) {
 	        temp_loc[loc] = list->p;
+			  i++;
 	        // If it is a boat type.
 	    } else if (list->type == BOAT) {
 	        temp_loc[loc] = list->p;
+			  i++;
 	    }
 	    loc++;
 	    list = list->next;
@@ -429,8 +432,8 @@ PlaceId *GvGetReachable(GameView gv, Player player, Round round,
 	int array_len = sizeof(temp_loc) / sizeof(temp_loc[0]);
 	qsort(temp_loc,array_len, sizeof(temp_loc[0]), comparator);
 	// 4. Now alphabeticalizeee:
-	int i = 0;
-	while (i < NUM_REAL_PLACES && temp_loc[i] != '\0') {
+
+	/* while (i < NUM_REAL_PLACES && temp_loc[i] != '\0') {
 	    int j = i + 1;
 	    while (j < NUM_REAL_PLACES && temp_loc[j] != '\0') {
 	        if (temp_loc[j] < temp_loc[i]) {
@@ -442,6 +445,7 @@ PlaceId *GvGetReachable(GameView gv, Player player, Round round,
 	    }
 	    i++;
 	}
+	*/
 
 	// 5. Now copy into the dynamically allocated array.
 	int size = i - 1;
