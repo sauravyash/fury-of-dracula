@@ -41,7 +41,7 @@
 #define  DRACULA gv->allPlayers[PLAYER_DRACULA]
 //#define gv->allPlayers[hunter]->currentLocationIndex locationIndex
 
-typedef struct playerData *playerData;
+typedef struct playerData *PlayerData;
 typedef struct vampireData *IVampire;
 
 
@@ -61,7 +61,7 @@ struct gameView {
 	Round roundNumber;
 	int score;
 	Player currentPlayer;						// looks like G always starts first? judging by the testfiles given G->S->H->M->D
-	playerData allPlayers[NUM_PLAYERS];
+	PlayerData allPlayers[NUM_PLAYERS];
 	PlaceId *trapLocations;
 	PlaceId vampire;							//only one vampire alive at any time
 	Map map; 									//graph thats been typedefed already
