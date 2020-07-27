@@ -79,7 +79,7 @@ struct gameView {
 // private functions
 static void gameScoreCheck (GameView gv);					//unfinished
 static bool hunterHealthCheck (GameView gv, Player hunter);				//unfinished
-static PlaceId binarySearchPlaceId ( int l, int r, char * string);				//Iterative binsary search for PLACES[]
+//static PlaceId binarySearchPlaceId ( int l, int r, char * string);				//Iterative binsary search for PLACES[]
 static void memoryError (const void * input);							//not sure if this works, but for sake of being lazy and not having to write this multiple times
 static void initialiseGame (GameView gv);								//initialise an empty game to fill in
 static Player parseMove (GameView gv, char *string);
@@ -109,7 +109,7 @@ static void gameScoreCheck (GameView gv){
 		printf("Game Over!\n");
 	}
 }
-static PlaceId binarySearchPlaceId ( int l, int r, char * city){
+/* static PlaceId binarySearchPlaceId ( int l, int r, char * city){
 	Place row;
 	while ( l <= r){
 		int m = 1 + (r-1) /2;
@@ -127,6 +127,7 @@ static PlaceId binarySearchPlaceId ( int l, int r, char * city){
     //City not found!
 	return NOWHERE;
 }
+*/
 
 static void initialiseGame (GameView gv) {
 	gv->roundNumber = 0;
@@ -179,6 +180,10 @@ static void initialiseGame (GameView gv) {
 static bool hunterHealthCheck (GameView gv, Player hunter){
 	if (HUNTER->health <= 0) {
 		//move to Hospital
+		//update location history
+		HUNTER->currentLocation = HOSPITAL_PLACE;
+		//this is supposed to be an int, meant to be the row number? do we need it?
+		//HUNTER->currentLocationIndex = ?
 		gv->score -= 6;
 		gameScoreCheck(gv);
 		//end turn
@@ -239,11 +244,7 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
 
 	PlaceId curr_place = NOWHERE;
 
-	curr_place = binarySearchPlaceId ( 0, NUM_REAL_PLACES, city);
-    if (curr_place == NOWHERE) {
-       	fprintf(stderr, "City not found!\n");			//how should we handle this error?
-			exit(EXIT_FAILURE);
-    }
+	curr_place = placeAbbrevToId(city);
 
 	gv->allPlayers[hunter]->currentLocation = curr_place;
 	gv->allPlayers[hunter]->currentLocationIndex ++;
@@ -271,7 +272,7 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
 			case CLOSE_ENCOUNTERS_OF_THE_VTH_KIND:		//vampire encounter
 				//Destroy immature vampire
 				gv->vampire = NOWHERE;
-				
+
 				printf("Vampire destroyed!\n");
 				break;
 			case 'D':						//dracula encounter
