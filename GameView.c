@@ -28,6 +28,7 @@
 #define START_DRAC_POINT 40
 #define LOCATION_ID_SIZE 2
 #define MAX_LOCATION_HISTORY_SIZE (MAX_GAME_SCORE * 2 * 4)
+#define OUR_ARBITRARY_ARRAY_SIZE 2
 //DOUBLE CHECK THIS: max number of turns * most possible avg moves per turn (rounded up)  * bytes per move stored
 
 //some puns just for fun
@@ -74,7 +75,8 @@ struct gameView {
 
 // private functions
 int comparator(const void *p, const void *q);
-
+static int railList (GameView gv, PlaceId from, int railDistance, PlaceId * array, int sizeArray, PlaceId * visited, PlaceId place);
+int addToArray (PlaceId * array, int sizeArray, PlaceId place, PlaceId * visited);
 static void memoryError (const void * input);							//not sure if this works, but for sake of being lazy and not having to write this multiple times
 static void initialiseGame (GameView gv);								//initialise an empty game to fill in
 static Player parseMove (GameView gv, char *string);
@@ -390,22 +392,20 @@ PlaceId *GvGetReachable(GameView gv, Player player, Round round,
 	// 2. Calculate the number of rails a hunter can travel.
 	int railDist = 0;
 	if (player != PLAYER_DRACULA) railDist = (round + player) % 4;
+	//array to keep track of  locations visited in this function (so theres no duplicates)
+	PlaceId visited[NUM_REAL_PLACES] = {-1};
 
-	// 3. Create temp array and store the locations within 1 path.
-	PlaceId temp_loc[NUM_REAL_PLACES];
-	for (int i = 0; i < NUM_REAL_PLACES; i++) {
-	    temp_loc[i] = '\0';
-	}
-
+	//---- Cindy was here
 	// Get the connections from that point.
 	ConnList list = MapGetConnections(map, from);
-
-	// Store viable connections in temp.
-	int loc = 0;
-	temp_loc[loc] = from;
-	loc = 1;
+	//intialise array to our arbitrary 10 size to reduce computing
+	int sizeArray = 0;
+	PlaceId * array = malloc(OUR_ARBITRARY_ARRAY_SIZE * sizeof(PlaceId));
+	//prevent adding source city itself to list
+	visited[from] = from;
+	//step through all available connections
 	int i = 0;
-	while (loc < NUM_REAL_PLACES && list != NULL) {
+	while (i < NUM_REAL_PLACES && list != NULL) {
 
 	    // Extra conditions for drac:
 	    if (player == PLAYER_DRACULA) {
@@ -415,22 +415,23 @@ PlaceId *GvGetReachable(GameView gv, Player player, Round round,
 
 	    // If it is a road type.
 	    if (list->type == ROAD) {
-	        temp_loc[loc] = list->p;
-			  i++;
-	        // If it is a rail type check for hunter.
-	    } else if (list->type == RAIL && railDist >= 1) {
-	        temp_loc[loc] = list->p;
-			  i++;
-	        // If it is a boat type.
-	    } else if (list->type == BOAT) {
-	        temp_loc[loc] = list->p;
-			  i++;
-	    }
-	    loc++;
+			  sizeArray = addToArray(array, sizeArray, list->p, visited);
+			  visited[list->p] = from;				//update visited array
+		//if it is boat type
+	   } else if (list->type == BOAT) {
+			sizeArray = addToArray(array, sizeArray, list->p, visited);
+			visited[list->p] = from;				//update visited array
+		// If it is a rail type check for hunter.
+		} else if (list->type == RAIL && railDist > 0) {
+			//add this location and all recursively accesibly by rail locations
+			sizeArray = railList(gv, from, railDist, array, sizeArray, visited, list->p);
+			visited[list->p] = from;				//update visited array
+		}
+	    i++;
 	    list = list->next;
 	}
-	int array_len = sizeof(temp_loc) / sizeof(temp_loc[0]);
-	qsort(temp_loc,array_len, sizeof(temp_loc[0]), comparator);
+	//int array_len = sizeof(temp_loc) / sizeof(temp_loc[0]);
+	//qsort(temp_loc,array_len, sizeof(temp_loc[0]), comparator);
 	// 4. Now alphabeticalizeee:
 
 	/* while (i < NUM_REAL_PLACES && temp_loc[i] != '\0') {
@@ -448,16 +449,17 @@ PlaceId *GvGetReachable(GameView gv, Player player, Round round,
 	*/
 
 	// 5. Now copy into the dynamically allocated array.
-	int size = i - 1;
+	/*int size = i - 1;
 	PlaceId *final_loc_list = malloc(size*sizeof(PlaceId));
 	i = 0;
 	while (i < size) {
 	    final_loc_list[i] = temp_loc[i];
 	    i++;
 	}
-
-	*numReturnedLocs = size;
-	return final_loc_list;
+*/
+	*numReturnedLocs = sizeArray;
+	//the array will have extra spaces, but will be constrained by numReturnedLocs anyways when being accessed
+	return array;
 }
 
 PlaceId *GvGetReachableByType(GameView gv, Player player, Round round,
@@ -472,4 +474,45 @@ PlaceId *GvGetReachableByType(GameView gv, Player player, Round round,
 ////////////////////////////////////////////////////////////////////////
 // Your own interface functions
 
-// TODO
+//recusrive helper function to find all rail CONNECTIONS?
+//returns size of array
+static int railList (GameView gv, PlaceId from, int railDistance, PlaceId * array, int sizeArray, PlaceId * visited, PlaceId place){
+	//CONCERNS: return type of sizeArray might screw with everything??? will need to check
+
+	//End of rail journey/ no more rail tickets
+	if(railDistance == 0) return sizeArray;						//check for redundancy in this line?
+	//add current place to the array
+	sizeArray = addToArray(array, sizeArray, place, visited);
+	visited[place] = from;
+	//saves computing time from getting map of connections unecessary if already end of rail
+	if (railDistance - 1 == 0) return sizeArray;					//check for redundancy in this line?
+	//otherwise find all other rail connections to current location
+	Map map = gv->map;
+	ConnList connections = MapGetConnections(map, place);
+	int i = 0;
+	while (i < NUM_REAL_PLACES && connections != NULL){
+		//move to next connection if not of type RAIL
+		if(connections->type == RAIL){
+			sizeArray = railList(gv, place, railDistance - 1, array, sizeArray, visited, connections->p);
+		}
+		i++;
+		connections = connections->next;
+  }
+  return sizeArray;
+}
+
+//returns new size of array, adds place to array if not already visited, update visited array
+int addToArray (PlaceId * array, int sizeArray, PlaceId place, PlaceId * visited){
+	//if place is already added to array/ visited, do nothing
+	if (visited[place] != -1) return sizeArray;
+
+	//check if more space needs to be allocated (in blocks of 10)
+	if( (sizeArray != 0) && (sizeArray % 10 == 0) ){
+		array = realloc(array, OUR_ARBITRARY_ARRAY_SIZE * sizeof(PlaceId));
+		memoryError(array);				//check memory was allocated
+	}
+	//add to array
+	array[sizeArray] = place;
+	//update sizeArray
+	return sizeArray + 1;
+}
