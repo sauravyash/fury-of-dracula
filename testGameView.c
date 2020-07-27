@@ -489,6 +489,10 @@ int main(void)
 			assert(locs[0] == ATHENS);
 			free(locs);
 		}
+        // CustomTests
+        {
+            
+        }
 
 		GvFree(gv);
 		printf("Test passed!\n");
