@@ -134,12 +134,8 @@ static void vampireLocationHistoryAppend(GameView gv, PlaceId location) {
 		gv->allPlayers[PLAYER_DRACULA]->locationHistory[index + 1] = location;
 		gv->allPlayers[PLAYER_DRACULA]->currentLocation = location;
 	}
-<<<<<<< HEAD
 }
-*/
-=======
-}*/
->>>>>>> 53546746a368fb661a1f74a018d5025299454d89
+
 /*
 static PlaceId binarySearchPlaceId ( int l, int r, char * city){
 	Place row;
@@ -418,30 +414,15 @@ PlaceId *GvGetLastMoves(GameView gv, Player player, int numMoves,
 		}
 		return lastNMoves;
 	}
-	// if asking for too many locations, only return all that exist
-<<<<<<< HEAD
-	else
-		return GvGetLocationHistory(gv, player, *numReturnedMoves, *canFree);
 	
-=======
+	// if asking for too many locations, only return all that exist
 	return GvGetLocationHistory(gv, player, numReturnedMoves, canFree);
->>>>>>> 53546746a368fb661a1f74a018d5025299454d89
+
 }
 
 PlaceId *GvGetLocationHistory(GameView gv, Player player,
                               int *numReturnedLocs, bool *canFree)
 {
-<<<<<<< HEAD
-
-	// can't free as is returning directly from data struct
-	*canFree = false;
-	// pass number of moves
-	*numReturnedLocs = gv->allPlayers[player]->currentLocationIndex;
-	// dracula case should be handled by this
-	return GvGetPlayerLocation(gv, player);
-	
-=======
-	
 	// can free as allocating new array
 	*canFree = true;
 
@@ -469,7 +450,6 @@ PlaceId *GvGetLocationHistory(GameView gv, Player player,
 		return allLocs;
 	}
 	return GvGetMoveHistory(gv, player, numReturnedLocs, canFree);
->>>>>>> 53546746a368fb661a1f74a018d5025299454d89
 }
 
 PlaceId *GvGetLastLocations(GameView gv, Player player, int numLocs,
@@ -490,13 +470,7 @@ PlaceId *GvGetLastLocations(GameView gv, Player player, int numLocs,
 		return lastNLocs;
 	}
 	// if asking for too many locations, only return all that exist
-<<<<<<< HEAD
-	else
-		return GvGetLocationHistory(gv, player, *numReturnedLocs, *canFree);
-
-=======
 	return GvGetLocationHistory(gv, player, numReturnedLocs, canFree);
->>>>>>> 53546746a368fb661a1f74a018d5025299454d89
 }
 
 ////////////////////////////////////////////////////////////////////////
