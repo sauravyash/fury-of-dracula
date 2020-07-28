@@ -230,7 +230,8 @@ static void initialiseGame (GameView gv) {
 
 	// Nothing else to do for map- read Map.c --> the functions take care of
 	// adding all connections.
-	gv->map = MapNew();
+	//gv->map = MapNew();
+	return;
 
 }
 
