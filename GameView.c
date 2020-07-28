@@ -65,7 +65,7 @@ struct gameView {
 	int score;
 	Player currentPlayer;						// looks like G always starts first? judging by the testfiles given G->S->H->M->D
 	PlayerData allPlayers[NUM_PLAYERS];
-	PlaceId *trapLocations;
+	PlaceId trapLocations[MAX_LOCATION_HISTORY_SIZE];
 	int trapLocationsIndex;
 	PlaceId vampire;							//only one vampire alive at any time
 	Map map; 									//graph thats been typedefed already
@@ -231,7 +231,7 @@ static void initialiseGame (GameView gv) {
 	DRACULA -> locationHistory[0] = '\0';
 
     // No trap locations at start of game, therefore no array yet..
-	gv->trapLocations = NULL;
+	//gv->trapLocations = NULL;
 	gv->vampire = NOWHERE;
 
 	// Nothing else to do for map- read Map.c --> the functions take care of
@@ -494,6 +494,13 @@ GameView GvNew(char *pastPlays, Message messages[])
 void GvFree(GameView gv)
 {
 	// TODO: REPLACE THIS WITH YOUR OWN IMPLEMENTATION
+	free(gv->allPlayers[0]);
+	free(gv->allPlayers[1]);
+	free(gv->allPlayers[2]);
+	free(gv->allPlayers[3]);
+	free(gv->allPlayers[4]);
+	MapFree(gv->map);
+
 	free(gv);
 }
 
