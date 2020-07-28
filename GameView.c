@@ -117,17 +117,19 @@ int comparator(const void *p, const void *q)
     char * r = (char *)q;
  	return (strcmp(l,r));
 }
-/* COMMENTED OUT FOR NOW TO AVOID NOT USED WARNING
-// appends input placeid to locationhistory, updates current location and index
+// COMMENTED OUT FOR NOW TO AVOID NOT USED WARNING
 
+// appends input placeid to locationhistory, updates current location and index
 static void hunterLocationHistoryAppend(GameView gv, Player hunter, PlaceId location) {
 	int index = gv->allPlayers[hunter]->currentLocationIndex;
 	if (index < MAX_LOCATION_HISTORY_SIZE) {
 		gv->allPlayers[hunter]->locationHistory[index + 1] = location;
 		gv->allPlayers[hunter]->currentLocation = location;
+		gv->allPlayers[hunter]->currentLocationIndex++;
 	}
+	return;
 }
-
+/*
 static void vampireLocationHistoryAppend(GameView gv, PlaceId location) {
 	int index = gv->allPlayers[PLAYER_DRACULA]->currentLocationIndex;
 	if (index < MAX_LOCATION_HISTORY_SIZE) {
@@ -135,18 +137,21 @@ static void vampireLocationHistoryAppend(GameView gv, PlaceId location) {
 		gv->allPlayers[PLAYER_DRACULA]->currentLocation = location;
 	}
 }
+*/
 
-
-static PlaceId binarySearchPlaceId ( int l, int r, char * city){
+// NOT FUNCTIONABLE ATM- INFINITE LOOP...
+/*
+static PlaceId binarySearchPlaceId (int l, int r, char * city){
+	
 	Place row;
 	while ( l <= r){
-		int m = 1 + (r-1) /2;
+		int m = 1 + (r-1) / 2;
 		row = PLACES[m];
 		//Check if x is preset at mid
 		if (strcmp(row.abbrev, city) == 0) return row.id;
 		//If x is greater, ignore left half
 		if (strcmp(row.abbrev, city) < 0) {
-			l = m + 1;
+			l = m + 1; 
 		//If x is smaller, ignore right half
 		} else {
 			r = m - 1;
@@ -208,34 +213,34 @@ static void initialiseGame (GameView gv) {
 
 // TARA EDITED IN A PLAYER RETURN SO YOU CAN SIMULTANEOUSLY CHECK PLAYER BASED ON STRING OF PAST PLAYS...
 static Player parseMove (GameView gv, char *string){
+	
 	char *c = string;
-	// THIS HEREEE...
-	Player curr_player;
+	Player curr_player = false;
 
 	//figure out who's move it was
 	switch(*c){
 			case 'G':
-			    printf("it is Lord G\n");
+			    //printf("it is Lord G\n");
 			    hunterMove(gv, string, PLAYER_LORD_GODALMING);
 			    curr_player = PLAYER_DR_SEWARD;
 			    break;
 			case 'S':
-			    printf("it is Dr S\n");
+			    //printf("it is Dr S\n");
 			    hunterMove(gv, string, PLAYER_DR_SEWARD);
-			    curr_player = PLAYER_MINA_HARKER;
-			    break;
-			case 'H':
-			    printf("it is VH\n");
-			    hunterMove(gv, string, PLAYER_VAN_HELSING);
 			    curr_player = PLAYER_VAN_HELSING;
 			    break;
+			case 'H':
+			    //printf("it is VH\n");
+			    hunterMove(gv, string, PLAYER_VAN_HELSING);
+			    curr_player = PLAYER_MINA_HARKER;
+			    break;
 			case 'M':
-			    printf("it is Mina\n");
+			    //printf("it is Mina\n");
 			    hunterMove(gv, string, PLAYER_MINA_HARKER);
 			    curr_player = PLAYER_DRACULA;
 			    break;
 			case 'D':
-			    printf("it is Drac\n");
+			    //printf("it is Drac\n");
 			    //draculaMove(gv, string);
 			    curr_player = PLAYER_LORD_GODALMING;
 			    break;
@@ -245,41 +250,37 @@ static Player parseMove (GameView gv, char *string){
 }
 
 static void hunterMove(GameView gv, char *string, Player hunter) {
-	//string must be of valid size
+	
+	// String must be of valid size
 	assert (strlen(string) > LOCATION_ID_SIZE);
 
-
-	//store locationID into city[]
+	// Store locationID into city[]:
 	char *city = malloc((LOCATION_ID_SIZE + 1)*sizeof(char));
 	city[0] = string[1];
 	city[1] = string[2];
 	city[2] = '\0';
-
+    
+    // Compare and find city by abbreviation:
 	PlaceId curr_place = NOWHERE;
+	// This find works (until you can get the binary working..?
+	for (int i = 0; i < NUM_REAL_PLACES; i++) {
+ 	    Place row = PLACES[i];
+ 	    if (strcmp(row.abbrev, city) == 0) {
+ 	        curr_place = row.id;
+ 	        break;
+ 	    }
+ 	}
 
-  // TODO: insert extra merge code
+    // Append history and current location:
+    hunterLocationHistoryAppend(gv, hunter, curr_place);
 
-	gv->allPlayers[hunter]->currentLocation = curr_place;
-	gv->allPlayers[hunter]->currentLocationIndex ++;
-	// If this is the first move.
-	if (gv->allPlayers[hunter]->locationHistory[0] == '\0') {
-	    gv->allPlayers[hunter]->locationHistory[0] = curr_place;
-	} else {
-	    printf("yet to do..\n");
-	    // Basically shuffle the array back :)
-	}
-
-
-	//Parsing through characters after location iD
-
-	//check the next characters
-
+	// Parsing through characters after location iD
+	// check the next characters
 	char *c;
 	for (int i = 3; i < strlen(string); i++) {
-		c = string;
+		c = &string[i];
 		switch(*c){
 			case ITS_A_TRAP:
-            //i++;
 				//its a trap!
 				break;
 			case CLOSE_ENCOUNTERS_OF_THE_VTH_KIND:
@@ -302,18 +303,33 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
 
 GameView GvNew(char *pastPlays, Message messages[])
 {
-	//Allocate memory for new GV
+	// Allocate memory for new GV
 	GameView new = malloc(sizeof(*new));
-	//Check if memory was allocated correctly
+	
+	// Check if memory was allocated correctly
 	memoryError(new);
 	initialiseGame (new);
-
-	new->roundNumber = strlen(pastPlays) / (PLAY_S_SIZE + 1);				//Number of Rounds can be determined from size of string ( each play is 7 chars + space)
-	new->currentPlayer = new->roundNumber % 5;									//5 players that always go in order of G->S->H->M->D. returns 0 - 4
-
-	char *string = pastPlays;
+    
+    // Number of Rounds can be determined from size of string 
+    // ( each play is 7 chars + space)
+    // Note last move has no space...
+    // Note each round is 5 plays...
+	new->roundNumber = (strlen(pastPlays) + 1) / ((PLAY_S_SIZE + 1)*5);
+	
+	// 5 players that always go in order of G->S->H->M->D. returns 0 - 4
+	// Player is not dependent on round...	
+	// Just set it here to player zero- the zero case, then change in parsMove.		
+	new->currentPlayer = PLAYER_LORD_GODALMING;									
+    
+    // Need to create a copy of pastPlays rather than just pointing to it.
+	char string[strlen(pastPlays)];
+	strcpy(string, pastPlays);
+	
+	// Iterate through past plays...
 	char *token = strtok(string, " ");
-	while (token != NULL) {											//while not end of string
+	// while not end of string
+	while (token != NULL) {											
+		// printf("current token: %d\n", token);
 		new->currentPlayer = parseMove(new, token);
 		token = strtok(NULL, " ");
 	}
