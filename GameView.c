@@ -302,7 +302,7 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
     hunterLocationHistoryAppend(gv, hunter, curr_place);
 	/*	Removed this: this is taken care of by pastPlays string "GGEVD"; This bit should probably be in the hunt implementation
     // If Dracula is currently in same city, run...
-	
+
     PlaceId Drac_pos = GvGetVampireLocation(gv);
     if (Drac_pos == curr_place) {
         DRACULA->health -= LIFE_LOSS_HUNTER_ENCOUNTER;
@@ -386,14 +386,16 @@ static void draculaMove(GameView gv, char *string) {
 		//convert ascii number to int
 
 		//convert int to #define
-		draculaLocationHistoryAppend(gv, curr_place);
+		//draculaLocationHistoryAppend(gv, curr_place);
 		//if double back is to sea, remove health
 		//retrieve dracula's trail
 		int numReturnedLocs = 0;
-		printf("i think something is wrong with trail[] here\n");
+		//printf("i think something is wrong with trail[] here\n");
 		bool canFree = false;
 		PlaceId * trail = GvGetLastLocations(gv, PLAYER_DRACULA , TRAIL_SIZE,
 									&numReturnedLocs, &canFree);
+		PlaceId returnPlace = trail[PlaceIdToAsciiDoubleBack(curr_place)-1];
+		draculaLocationHistoryAppend(gv, returnPlace);
 		if(trail[PlaceIdToAsciiDoubleBack(curr_place)-1] == SEA_UNKNOWN) DRACULA->health -= (LIFE_LOSS_SEA);
 		DRACULA->lastDoubleback = gv->roundNumber;
 
