@@ -194,35 +194,35 @@ static void initialiseGame (GameView gv) {
 	LORD_GODALMING -> health = 	GAME_START_HUNTER_LIFE_POINTS;
 	LORD_GODALMING -> currentLocation = NOWHERE;
 	LORD_GODALMING -> currentLocationIndex = -1;
-	LORD_GODALMING -> locationHistory[0] = '\0';
+	LORD_GODALMING -> locationHistory[0] = NOWHERE;
 
 	DR_SEWARD = malloc(sizeof(PlayerData));
 	memoryError (DR_SEWARD);
 	DR_SEWARD -> health = 	GAME_START_HUNTER_LIFE_POINTS;
 	DR_SEWARD -> currentLocation = NOWHERE;
 	DR_SEWARD -> currentLocationIndex = -1;
-	DR_SEWARD -> locationHistory[0] = '\0';
+	DR_SEWARD -> locationHistory[0] = NOWHERE;
 
 	VAN_HELSING = malloc(sizeof(PlayerData));
 	memoryError (VAN_HELSING);
 	VAN_HELSING -> health = 	GAME_START_HUNTER_LIFE_POINTS;
 	VAN_HELSING -> currentLocation = NOWHERE;
 	VAN_HELSING -> currentLocationIndex = -1;
-	VAN_HELSING -> locationHistory[0] = '\0';
+	VAN_HELSING -> locationHistory[0] = NOWHERE;
 
 	MINA_HARKER = malloc(sizeof(PlayerData));
 	memoryError (MINA_HARKER);
 	MINA_HARKER -> health = 	GAME_START_HUNTER_LIFE_POINTS;
 	MINA_HARKER -> currentLocation = NOWHERE;
 	MINA_HARKER -> currentLocationIndex = -1;
-	MINA_HARKER -> locationHistory[0] = '\0';
+	MINA_HARKER -> locationHistory[0] = NOWHERE;
 
 	DRACULA = malloc(sizeof(PlayerData));
 	memoryError (DRACULA);
 	DRACULA -> health = GAME_START_BLOOD_POINTS;
 	DRACULA -> currentLocation = NOWHERE;
 	DRACULA -> currentLocationIndex = -1;
-	DRACULA -> locationHistory[0] = '\0';
+	DRACULA -> locationHistory[0] = NOWHERE;
 
     // No trap locations at start of game, therefore no array yet..
 	gv->trapLocations = NULL;
@@ -373,7 +373,7 @@ static void draculaMove(GameView gv, char *string) {
 	} else if (strcmp(city,"S?") == 0) {
 		printf("unknown sea move\n");
 		DRACULA->health -= (LIFE_LOSS_SEA);
-		draculaLocationHistoryAppend(gv, SEA_UNKNOWN);
+		draculaLocationHistoryAppend(gv, location);
 	//Hide move ->stays in the city for another round
 	} else if (strcmp(city,"HI") == 0) {
 		printf("hide move\n");
