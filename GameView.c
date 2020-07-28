@@ -373,7 +373,7 @@ static void draculaMove(GameView gv, char *string) {
 	} else if (strcmp(city,"S?") == 0) {
 		printf("unknown sea move\n");
 		DRACULA->health -= (LIFE_LOSS_SEA);
-		draculaLocationHistoryAppend(gv, location);
+		draculaLocationHistoryAppend(gv, SEA_UNKNOWN);
 	//Hide move ->stays in the city for another round
 	} else if (strcmp(city,"HI") == 0) {
 		printf("hide move\n");
