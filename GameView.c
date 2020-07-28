@@ -445,7 +445,7 @@ static void draculaMove(GameView gv, char *string) {
 GameView GvNew(char *pastPlays, Message messages[])
 {
 	// Allocate memory for new GV
-	GameView new = malloc(sizeof(*new));
+	GameView new = malloc(sizeof(GameView));
 
 	// Check if memory was allocated correctly
 	memoryError(new);
