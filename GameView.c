@@ -337,7 +337,7 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
 				break;
 		}
 	}
-
+	free(city);
     return;
 }
 
@@ -363,7 +363,7 @@ static void draculaMove(GameView gv, char *string) {
 	curr_place =  placeAbbrevToId(city);
 	
     // If Drac had this turn, then edit game score.
-    gv->score -= SCORE_LOSS_DRACULA_TURN;
+    //gv->score -= SCORE_LOSS_DRACULA_TURN;
     
     // Append history and current location:
 	//Unknown city move
@@ -437,7 +437,8 @@ static void draculaMove(GameView gv, char *string) {
 	}
 	//gamescore decreases by 1 when dracula finishes his turns
 	gv->score--;
-    return;
+	free(city);
+	return;
 
 }
 ////////////////////////////////////////////////////////////////////////
@@ -446,7 +447,7 @@ static void draculaMove(GameView gv, char *string) {
 GameView GvNew(char *pastPlays, Message messages[])
 {
 	// Allocate memory for new GV
-	GameView new = malloc(sizeof(GameView));
+	GameView new = malloc(sizeof(*new));
 
 	// Check if memory was allocated correctly
 	memoryError(new);
@@ -484,7 +485,11 @@ GameView GvNew(char *pastPlays, Message messages[])
 void GvFree(GameView gv)
 {
 	// TODO: REPLACE THIS WITH YOUR OWN IMPLEMENTATION
+	// free all playerData structs individually
+	for (int i = 0; i < 5; i++)
+		free(gv->allPlayers[i]);
 	free(gv);
+
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -519,8 +524,7 @@ PlaceId GvGetPlayerLocation(GameView gv, Player player)
 		// else return SEA/CITY
 		if (placeIdToType(gv->allPlayers[player]->currentLocation) == SEA)
 			return SEA_UNKNOWN;
-		else
-			return CITY_UNKNOWN;
+		return CITY_UNKNOWN;
 	}
 	else
 		return gv->allPlayers[player]->currentLocation;
@@ -546,7 +550,6 @@ PlaceId *GvGetTrapLocations(GameView gv, int *numTraps)
 PlaceId *GvGetMoveHistory(GameView gv, Player player,
                           int *numReturnedMoves, bool *canFree)
 {
-
 	// can't free as is returning directly from data struct
 	*canFree = false;
 	// pass number of moves
@@ -558,7 +561,6 @@ PlaceId *GvGetMoveHistory(GameView gv, Player player,
 PlaceId *GvGetLastMoves(GameView gv, Player player, int numMoves,
                         int *numReturnedMoves, bool *canFree)
 {
-
 	// unless asking for more locations than have happened, return numlocs
 	if (gv->allPlayers[player]->currentLocationIndex >= numMoves) {
 		// can free as returning a separate array
@@ -587,11 +589,12 @@ PlaceId *GvGetLocationHistory(GameView gv, Player player,
 	// pass number of moves
 	int index = gv->allPlayers[player]->currentLocationIndex;
 	*numReturnedLocs = index;
-	PlaceId *allLocs = malloc(sizeof(PlaceId) * index);
 
 	if (player == PLAYER_DRACULA) {
 		// todo make sure rounds when drac not visible returned as unknowns
 		// depends on how visibility is parsed in dracmove
+
+		PlaceId *allLocs = malloc(sizeof(PlaceId) * index);
 
 		// add locs to all locs, checking if drac visible, and if not adding as unknown
 		for (int i = 0; i <= index; i++) {
