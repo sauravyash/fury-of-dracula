@@ -167,9 +167,9 @@ static void hunterLocationHistoryAppend(GameView gv, Player hunter, PlaceId loca
 		gv->allPlayers[hunter]->currentLocation = location;
 		gv->allPlayers[hunter]->currentLocationIndex++;
 	}
-	return;
+	return
 }
-//Only for revealed moves (doesnt include C?, S?, Hi, Dn, Tp)
+// for all drac moves
 static void draculaLocationHistoryAppend(GameView gv, PlaceId location) {
 	int index = gv->allPlayers[PLAYER_DRACULA]->currentLocationIndex;
 	if (index < MAX_LOCATION_HISTORY_SIZE) {
@@ -177,6 +177,7 @@ static void draculaLocationHistoryAppend(GameView gv, PlaceId location) {
 		DRACULA->currentLocation = location;
 		DRACULA->currentLocationIndex++;
 	}
+	return
 }
 
 
