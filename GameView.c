@@ -293,18 +293,19 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
 	PlaceId curr_place = NOWHERE;
 	//Using provided function from Place.h
 	curr_place =  placeAbbrevToId(city);
-	// This find works (until you can get the binary working..?
-	/*for (int i = 0; i < NUM_REAL_PLACES; i++) {
- 	    Place row = PLACES[i];
- 	    if (strcmp(row.abbrev, city) == 0) {
- 	        curr_place = row.id;
- 	        break;
- 	    }
- 	}
-	*/
+	
+ 	if (curr_place == NOWHERE) printf("Error: Place not found...\n");
+
     // Append history and current location:
     hunterLocationHistoryAppend(gv, hunter, curr_place);
-
+    
+    // If Dracula is currently in same city, run...
+    PlaceId Drac_pos = GvGetVampireLocation(gv);
+    if (Drac_pos == curr_place) {
+        DRACULA->health -= LIFE_LOSS_HUNTER_ENCOUNTER;
+        gv->allPlayers[hunter]->health -= LIFE_LOSS_DRACULA_ENCOUNTER;
+    }
+    
 	// Parsing through characters after location iD
 	// check the next characters
 	char *c;
@@ -358,16 +359,10 @@ static void draculaMove(GameView gv, char *string) {
 	PlaceId curr_place = NOWHERE;
 	//Using provided function from Place.h
 	curr_place =  placeAbbrevToId(city);
-	// This find works (until you can get the binary working..?
-	/*for (int i = 0; i < NUM_REAL_PLACES; i++) {
- 	    Place row = PLACES[i];
- 	    if (strcmp(row.abbrev, city) == 0) {
- 	        curr_place = row.id;
- 	        break;
- 	    }
- 	}
-	*/
-
+	
+    // If Drac had this turn, then edit game score.
+    gv->score -= SCORE_LOSS_DRACULA_TURN;
+    
     // Append history and current location:
 	//Unknown city move
 	if (strcmp(city, "C?") == 0) {
@@ -895,7 +890,6 @@ static int Find_Rails (Map map, PlaceId place, PlaceId from, PlaceId *array, int
 
         // Now, add to array.
         if (list->type == RAIL && skip == 0) {
-            printf("CASE\n");
             array[i] = list->p;
             places_added++;
         }
