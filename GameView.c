@@ -283,10 +283,19 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
  	        break;
  	    }
  	}
+ 	
+ 	if (curr_place == NOWHERE) printf("Error: Place not found...\n");
 
     // Append history and current location:
     hunterLocationHistoryAppend(gv, hunter, curr_place);
-
+    
+    // If Dracula is currently in same city, run...
+    PlaceId Drac_pos = GvGetVampireLocation(gv);
+    if (Drac_pos == curr_place) {
+        DRACULA->health -= LIFE_LOSS_HUNTER_ENCOUNTER;
+        gv->allPlayers[hunter]->health -= LIFE_LOSS_DRACULA_ENCOUNTER;
+    }
+    
 	// Parsing through characters after location iD
 	// check the next characters
 	char *c;
@@ -337,7 +346,12 @@ static void draculaMove(GameView gv, char *string) {
  	        break;
  	    }
  	}
-
+ 	// If Drac was not in a real city, then store as city unkown or wateva...
+ 	if (curr_place == NOWHERE) curr_place = placeAbbrevToId(city);
+    
+    // If Drac had this turn, then edit game score.
+    gv->score -= SCORE_LOSS_DRACULA_TURN;
+    
     // Append history and current location:
     vampireLocationHistoryAppend(gv, curr_place);
 
