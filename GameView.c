@@ -92,7 +92,7 @@ static void initialiseGame (GameView gv);
 // Parse through that string
 static Player parseMove (GameView gv, char *string);
 static void hunterMove(GameView gv, char *string, Player hunter);
-//static void draculaMove(GameView gv, char * string);
+static void draculaMove(GameView gv, char * string);
 
 
 
@@ -129,15 +129,16 @@ static void hunterLocationHistoryAppend(GameView gv, Player hunter, PlaceId loca
 	}
 	return;
 }
-/*
+
 static void vampireLocationHistoryAppend(GameView gv, PlaceId location) {
 	int index = gv->allPlayers[PLAYER_DRACULA]->currentLocationIndex;
 	if (index < MAX_LOCATION_HISTORY_SIZE) {
 		gv->allPlayers[PLAYER_DRACULA]->locationHistory[index + 1] = location;
 		gv->allPlayers[PLAYER_DRACULA]->currentLocation = location;
+		gv->allPlayers[PLAYER_DRACULA]->currentLocationIndex++;
 	}
 }
-*/
+
 
 // NOT FUNCTIONABLE ATM- INFINITE LOOP...
 /*
@@ -164,11 +165,13 @@ static PlaceId binarySearchPlaceId (int l, int r, char * city){
 
 
 static void initialiseGame (GameView gv) {
+	
 	gv->roundNumber = 0;
 	gv->score = GAME_START_SCORE;
-	gv->currentPlayer = PLAYER_LORD_GODALMING; 		//always starts with G
+	//Always starts with G
+	gv->currentPlayer = PLAYER_LORD_GODALMING;
 
-	//Allocate memory for players & Initialise starting information
+	// Allocate memory for players & Initialise starting information
 	LORD_GODALMING = malloc(sizeof(PlayerData));
 	memoryError (LORD_GODALMING);
 	LORD_GODALMING -> health = 	GAME_START_HUNTER_LIFE_POINTS;
@@ -204,14 +207,20 @@ static void initialiseGame (GameView gv) {
 	DRACULA -> currentLocationIndex = -1;
 	DRACULA -> locationHistory[0] = '\0';
 
-	gv->trapLocations = NULL; 		//no trap locations at start of game, therefore no array yet -> will need to assign
+    // No trap locations at start of game, therefore no array yet.. 
+	gv->trapLocations = NULL;
 	gv->vampire = NOWHERE;
-	gv->map = MapNew();				//do we have to do anything else with map?
+	
+	// Nothing else to do for map- read Map.c --> the functions take care of
+	// adding all connections.
+	gv->map = MapNew();
 
-	// allocate initial memory for locationHistory
 }
 
-// TARA EDITED IN A PLAYER RETURN SO YOU CAN SIMULTANEOUSLY CHECK PLAYER BASED ON STRING OF PAST PLAYS...
+// PARSE MOVE: 
+// -- Input:
+// -- Output:
+// Author: Cindy (Tara edited)
 static Player parseMove (GameView gv, char *string){
 	
 	char *c = string;
@@ -241,7 +250,7 @@ static Player parseMove (GameView gv, char *string){
 			    break;
 			case 'D':
 			    //printf("it is Drac\n");
-			    //draculaMove(gv, string);
+			    draculaMove(gv, string);
 			    curr_player = PLAYER_LORD_GODALMING;
 			    break;
 		}
@@ -249,6 +258,10 @@ static Player parseMove (GameView gv, char *string){
 	return curr_player;
 }
 
+// HUNTER MOVE: 
+// -- Input:
+// -- Output:
+// Author: Cindy (Tara edited)
 static void hunterMove(GameView gv, char *string, Player hunter) {
 	
 	// String must be of valid size
@@ -296,6 +309,60 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
 	}
 
     return;
+}
+
+// DRACULA MOVE: 
+// -- Input:
+// -- Output:
+// Author:
+static void draculaMove(GameView gv, char *string) {
+	
+	// String must be of valid size
+	assert (strlen(string) > LOCATION_ID_SIZE);
+
+	// Store locationID into city[]:
+	char *city = malloc((LOCATION_ID_SIZE + 1)*sizeof(char));
+	city[0] = string[1];
+	city[1] = string[2];
+	city[2] = '\0';
+    
+    // EDIT THIS FOR DRAC FOR CITY UNKNOWN ETC..
+    // Compare and find city by abbreviation:
+	PlaceId curr_place = NOWHERE;
+	// This find works (until you can get the binary working..?
+	for (int i = 0; i < NUM_REAL_PLACES; i++) {
+ 	    Place row = PLACES[i];
+ 	    if (strcmp(row.abbrev, city) == 0) {
+ 	        curr_place = row.id;
+ 	        break;
+ 	    }
+ 	}
+
+    // Append history and current location:
+    vampireLocationHistoryAppend(gv, curr_place);
+
+	// Parsing through characters after location iD
+	// check the next characters
+	char *c;
+	for (int i = 3; i < strlen(string); i++) {
+		c = &string[i];
+		switch(*c){
+			case ITS_A_TRAP:
+				//its a trap!
+				break;
+			case CLOSE_ENCOUNTERS_OF_THE_VTH_KIND:
+				//vampire encounter
+				break;
+			case 'D':
+				//dracula
+				break;
+			case '.':
+				//other characters include trialing '.'
+				break;
+		}
+	}
+
+    return;
 
 }
 ////////////////////////////////////////////////////////////////////////
@@ -318,8 +385,8 @@ GameView GvNew(char *pastPlays, Message messages[])
 	
 	// 5 players that always go in order of G->S->H->M->D. returns 0 - 4
 	// Player is not dependent on round...	
-	// Just set it here to player zero- the zero case, then change in parsMove.		
-	new->currentPlayer = PLAYER_LORD_GODALMING;									
+	// Just set it here to player zero- the zero case, then change in parsMove.
+	// Already done in initialiseGame.											
     
     // Need to create a copy of pastPlays rather than just pointing to it.
 	char string[strlen(pastPlays)];
