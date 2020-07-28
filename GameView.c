@@ -302,11 +302,11 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
     hunterLocationHistoryAppend(gv, hunter, curr_place);
     
     // If Dracula is currently in same city, run...
-    PlaceId Drac_pos = GvGetVampireLocation(gv);
+    /*PlaceId Drac_pos = GvGetVampireLocation(gv);
     if (Drac_pos == curr_place) {
         DRACULA->health -= LIFE_LOSS_HUNTER_ENCOUNTER;
         gv->allPlayers[hunter]->health -= LIFE_LOSS_DRACULA_ENCOUNTER;
-    }
+    }*/
     
 	// Parsing through characters after location iD
 	// check the next characters
