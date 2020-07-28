@@ -167,7 +167,7 @@ static void hunterLocationHistoryAppend(GameView gv, Player hunter, PlaceId loca
 		gv->allPlayers[hunter]->currentLocation = location;
 		gv->allPlayers[hunter]->currentLocationIndex++;
 	}
-	return
+	return;
 }
 // for all drac moves
 static void draculaLocationHistoryAppend(GameView gv, PlaceId location) {
@@ -177,7 +177,7 @@ static void draculaLocationHistoryAppend(GameView gv, PlaceId location) {
 		DRACULA->currentLocation = location;
 		DRACULA->currentLocationIndex++;
 	}
-	return
+	return;
 }
 
 
