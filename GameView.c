@@ -172,6 +172,12 @@ static void hunterLocationHistoryAppend(GameView gv, Player hunter, PlaceId loca
 // for all drac moves
 static void draculaLocationHistoryAppend(GameView gv, PlaceId location) {
 	int index = gv->allPlayers[PLAYER_DRACULA]->currentLocationIndex;
+	//if dracula is at sea, he loses health
+	printf("appending location %s\n",placeIdToName(location) );
+	if(placeIdToType(location) == SEA) {
+		printf("dracula is getting seasick!\n");
+		DRACULA->health -= (LIFE_LOSS_SEA);
+	}
 	if (index < MAX_LOCATION_HISTORY_SIZE) {
 		DRACULA->locationHistory[index + 1] = location;
 		DRACULA->currentLocation = location;
@@ -374,7 +380,7 @@ static void draculaMove(GameView gv, char *string) {
 	//Unknown sea move
 	} else if (strcmp(city,"S?") == 0) {
 		printf("unknown sea move\n");
-		DRACULA->health -= (LIFE_LOSS_SEA);
+		//DRACULA->health -= (LIFE_LOSS_SEA);
 		draculaLocationHistoryAppend(gv, SEA_UNKNOWN);
 	//Hide move ->stays in the city for another round
 	} else if (strcmp(city,"HI") == 0) {
@@ -396,7 +402,7 @@ static void draculaMove(GameView gv, char *string) {
 									&numReturnedLocs, &canFree);
 		PlaceId returnPlace = trail[PlaceIdToAsciiDoubleBack(curr_place)-1];
 		draculaLocationHistoryAppend(gv, returnPlace);
-		if(trail[PlaceIdToAsciiDoubleBack(curr_place)-1] == SEA_UNKNOWN) DRACULA->health -= (LIFE_LOSS_SEA);
+		//if(trail[PlaceIdToAsciiDoubleBack(curr_place)-1] == SEA_UNKNOWN) DRACULA->health -= (LIFE_LOSS_SEA);
 		DRACULA->lastDoubleback = gv->roundNumber;
 
 
