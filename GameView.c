@@ -66,6 +66,7 @@ struct gameView {
 	Player currentPlayer;						// looks like G always starts first? judging by the testfiles given G->S->H->M->D
 	PlayerData allPlayers[NUM_PLAYERS];
 	PlaceId *trapLocations;
+	int trapLocationsIndex;
 	PlaceId vampire;							//only one vampire alive at any time
 	Map map; 									//graph thats been typedefed already
 
@@ -118,7 +119,22 @@ int comparator(const void *p, const void *q)
  	return (strcmp(l,r));
 }
 // COMMENTED OUT FOR NOW TO AVOID NOT USED WARNING
+// appends input placeid to locationhistory, updates current location and index
+static void trapLocationAppend(GameView gv, PlaceId location) {
+	int index = gv->trapLocationsIndex;
+	if (index < MAX_LOCATION_HISTORY_SIZE) {
+		gv->trapLocations[index + 1] = location;
+		gv->trapLocationsIndex++;
+	}
+	return;
+}
 
+static void trapLocationRemove(GameView gv, PlaceId location) {
+	//find index of trap location
+	//remove from location
+	//shuffle array
+	return;
+}
 // appends input placeid to locationhistory, updates current location and index
 static void hunterLocationHistoryAppend(GameView gv, Player hunter, PlaceId location) {
 	int index = gv->allPlayers[hunter]->currentLocationIndex;
@@ -129,7 +145,7 @@ static void hunterLocationHistoryAppend(GameView gv, Player hunter, PlaceId loca
 	}
 	return;
 }
-
+//Only for revealed moves (doesnt include C?, S?, Hi, Dn, Tp)
 static void vampireLocationHistoryAppend(GameView gv, PlaceId location) {
 	int index = gv->allPlayers[PLAYER_DRACULA]->currentLocationIndex;
 	if (index < MAX_LOCATION_HISTORY_SIZE) {
@@ -138,30 +154,6 @@ static void vampireLocationHistoryAppend(GameView gv, PlaceId location) {
 		gv->allPlayers[PLAYER_DRACULA]->currentLocationIndex++;
 	}
 }
-
-
-// NOT FUNCTIONABLE ATM- INFINITE LOOP...
-/*
-static PlaceId binarySearchPlaceId (int l, int r, char * city){
-
-	Place row;
-	while ( l <= r){
-		int m = 1 + (r-1) / 2;
-		row = PLACES[m];
-		//Check if x is preset at mid
-		if (strcmp(row.abbrev, city) == 0) return row.id;
-		//If x is greater, ignore left half
-		if (strcmp(row.abbrev, city) < 0) {
-			l = m + 1;
-		//If x is smaller, ignore right half
-		} else {
-			r = m - 1;
-		}
-	}
-    //City not found!
-	return NOWHERE;
-}
-*/
 
 
 static void initialiseGame (GameView gv) {
@@ -344,29 +336,64 @@ static void draculaMove(GameView gv, char *string) {
 	*/
 
     // Append history and current location:
-    vampireLocationHistoryAppend(gv, curr_place);
+	//Unknown city move
+	if (strcmp(city, "C?") == 0) {
+		printf("unknown city move\n");
+	//Unknown sea move
+	} else if (strcmp(city,"S?") == 0) {
+		printf("unknown sea move\n");
+	//Hide move ->stays in the city for another round
+	} else if (strcmp(city,"HI") == 0) {
+		printf("hide move\n");
+		DRACULA->lastHidden = gv->roundNumber;
+		vampireLocationHistoryAppend(gv, curr_place);
+	//Double back move
+} else if (strncmp(city,"D",1) == 0) {
+		//ascii 0 is 48
+		int doubleBack = atoi(&city[1]);
+		DRACULA->lastDoubleback = gv->roundNumber;
+		doubleBack++;								//just to make compile ignore unused variable
+		//convert this to the #define DOUBLE_BACK_1 etc?
+
+	//TPs to castle dracula
+	} else if (strcmp(city,"TP") == 0) {
+		vampireLocationHistoryAppend(gv, TELEPORT);
+	//Location move that was revealed (ie all other cases)
+	} else {
+    	vampireLocationHistoryAppend(gv, curr_place);
+	}
 
 	// Parsing through characters after location iD
 	// check the next characters
 	char *c;
-	for (int i = 3; i < strlen(string); i++) {
-		c = &string[i];
-		switch(*c){
-			case ITS_A_TRAP:
-				//its a trap!
-				break;
-			case CLOSE_ENCOUNTERS_OF_THE_VTH_KIND:
-				//vampire encounter
-				break;
-			case 'D':
-				//dracula
-				break;
-			case '.':
-				//other characters include trialing '.'
-				break;
-		}
-	}
+	int i = 3;
 
+	while ( i < strlen(string)) {
+		c = &string[i];
+		if ( i > 4) {
+			if (strcmp(c,"M") == 0) {
+				printf("Trap has left trail!\n");
+				int * numReturnedLocs = NULL;
+				PlaceId * trail = GvGetLastLocations(gv, PLAYER_DR_SEWARD , TRAIL_SIZE,
+				                            numReturnedLocs, false);
+				PlaceId brokenTrap = trail[0];
+				trapLocationRemove(gv, brokenTrap);
+				//remove from trapLocations
+				//trap leaves trail (from the move that left trail?)
+			} else if (strcmp(c,"V") == 0) {
+				//vampire matures
+				printf("Vampire matured! -%d game points\n", SCORE_LOSS_VAMPIRE_MATURES);
+				gv->vampire = NOWHERE;
+				gv->score -= SCORE_LOSS_VAMPIRE_MATURES;
+			}
+		} else {
+			if (*c == ITS_A_TRAP) trapLocationAppend(gv, curr_place);
+			if (*c == CLOSE_ENCOUNTERS_OF_THE_VTH_KIND) gv->vampire = curr_place;
+		}
+		i++;
+	}
+	//gamescore decreases by 1 when dracula finishes his turns
+	gv->score--;
     return;
 
 }
