@@ -504,7 +504,7 @@ int main(void)
 			assert(locs[1] == FLORENCE);
 			assert(locs[2] == NAPLES);
 			assert(locs[3] == ROME);
-			free(locs); 
+			free(locs);
         }
 
 		GvFree(gv);
