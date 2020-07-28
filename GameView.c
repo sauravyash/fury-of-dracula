@@ -98,7 +98,8 @@ static int PlaceIdToAsciiDoubleBack (PlaceId place);
 //static PlaceId asciiToPlaceIdDoubleBack (char * c);
 static void trapLocationAppend(GameView gv, PlaceId location);
 static void trapLocationRemove(GameView gv, PlaceId location);
-
+static void checkHunterHealth(GameView gv,Player hunter);\
+//Checks current hunter's health and sends them to hospital if needed
 
 //these are here for now for easy access, will move them to bottom later
 static void memoryError (const void * input){
@@ -186,6 +187,15 @@ static void draculaLocationHistoryAppend(GameView gv, PlaceId location) {
 	return;
 }
 
+static void checkHunterHealth(GameView gv,Player hunter){
+	if(gv->allPlayers[hunter]->health <= 0) {
+		printf("hunter died!\n");
+		gv->allPlayers[hunter]->health = 0;
+		gv->score -= SCORE_LOSS_HUNTER_HOSPITAL;
+		hunterLocationHistoryAppend(gv, hunter, HOSPITAL_PLACE);
+	}
+	return;
+}
 
 static void initialiseGame (GameView gv) {
 
@@ -325,6 +335,7 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
 				//its a trap!
 				printf("Hunter encountered trap!\n");
 				gv->allPlayers[hunter]->health -= LIFE_LOSS_TRAP_ENCOUNTER;
+				checkHunterHealth(gv, hunter);
 				//remove trap
 				trapLocationRemove(gv, curr_place);
 				break;
@@ -336,9 +347,17 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
 			case 'D':
 				//dracula encounter
 				printf("Hunter encountered dracula!\n");
+				//i think this part is needed? judging by test line 238 of testGameView, makes it seem like this is whats meant to happen
+				//dracula must be in this city!
+
+
+
 				printf("current health is %d\n", gv->allPlayers[hunter]->health);
 				gv->allPlayers[hunter]->health -= LIFE_LOSS_DRACULA_ENCOUNTER;
+				checkHunterHealth(gv, hunter);
 				DRACULA->health -= LIFE_LOSS_HUNTER_ENCOUNTER;
+				printf("hunter health is now %d\n", gv->allPlayers[hunter]->health);
+				draculaLocationHistoryAppend(gv, curr_place);
 				break;
 			case '.':
 				//other characters include trialing '.'
@@ -432,6 +451,7 @@ static void draculaMove(GameView gv, char *string) {
 				trapLocationRemove(gv, brokenTrap);
 				//remove from trapLocations
 				//trap leaves trail (from the move that left trail?)
+				free(trail);
 			} else if (strcmp(c,"V") == 0) {
 				//vampire matures
 				printf("Vampire matured! -%d game points\n", SCORE_LOSS_VAMPIRE_MATURES);
@@ -445,6 +465,7 @@ static void draculaMove(GameView gv, char *string) {
 		i++;
 	}
 	// game score decreases each tiem drac finishes turn
+	printf("game score decreased by drac turn\n");
     gv->score -= SCORE_LOSS_DRACULA_TURN;
     return;
 
