@@ -300,14 +300,15 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
 
     // Append history and current location:
     hunterLocationHistoryAppend(gv, hunter, curr_place);
-
+	/*	Removed this: this is taken care of by pastPlays string "GGEVD"; This bit should probably be in the hunt implementation
     // If Dracula is currently in same city, run...
+	
     PlaceId Drac_pos = GvGetVampireLocation(gv);
     if (Drac_pos == curr_place) {
         DRACULA->health -= LIFE_LOSS_HUNTER_ENCOUNTER;
         gv->allPlayers[hunter]->health -= LIFE_LOSS_DRACULA_ENCOUNTER;
     }
-
+	*/
 	// Parsing through characters after location iD
 	// check the next characters
 	char *c;
@@ -329,6 +330,7 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
 			case 'D':
 				//dracula encounter
 				printf("Hunter encountered dracula!\n");
+				printf("current health is %d\n", gv->allPlayers[hunter]->health);
 				gv->allPlayers[hunter]->health -= LIFE_LOSS_DRACULA_ENCOUNTER;
 				DRACULA->health -= LIFE_LOSS_HUNTER_ENCOUNTER;
 				break;
@@ -362,8 +364,7 @@ static void draculaMove(GameView gv, char *string) {
 	//Using provided function from Place.h
 	curr_place =  placeAbbrevToId(city);
 
-    // If Drac had this turn, then edit game score.
-    gv->score -= SCORE_LOSS_DRACULA_TURN;
+
 
     // Append history and current location:
 	//Unknown city move
@@ -435,8 +436,8 @@ static void draculaMove(GameView gv, char *string) {
 		}
 		i++;
 	}
-	//gamescore decreases by 1 when dracula finishes his turns
-	gv->score--;
+	// game score decreases each tiem drac finishes turn
+    gv->score -= SCORE_LOSS_DRACULA_TURN;
     return;
 
 }
