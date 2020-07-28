@@ -493,6 +493,32 @@ int main(void)
 		GvFree(gv);
 		printf("Test passed!\n");
 	}
-
+    {
+        printf("Checking Dracula moving to one of the previous 5 places\n");
+        {
+            printf("\tChecking place 1 of 5.\n");
+            // TODO
+        }
+        {
+            printf("\tChecking place 2 of 5.\n");
+            // TODO 
+        }
+        {
+            printf("\tChecking place 3 of 5.\n");
+            // TODO
+        }
+        {
+            printf("\tChecking place 4 of 5.\n");
+            // TODO
+        }
+        {
+            printf("\tChecking place 5 of 5.\n");
+            // TODO
+        }
+        printf("Test Passed!\n");
+    }
+    {
+        
+    }
 	return EXIT_SUCCESS;
 }
