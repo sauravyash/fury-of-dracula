@@ -82,9 +82,9 @@ static int Find_Rails (Map map, PlaceId place, PlaceId from, PlaceId *array, int
 // Qsort comparator:
 int comparator(const void *p, const void *q);
 // Memory error test:
-// not sure if this works, but for sake of being lazy and not having to write 
+// not sure if this works, but for sake of being lazy and not having to write
 // this multiple times
-static void memoryError (const void * input);							
+static void memoryError (const void * input);
 
 //------------- CONSTRUCTOR/ DESTRUCTOR
 // Initialise an empty game to fill in:
@@ -143,7 +143,7 @@ static void vampireLocationHistoryAppend(GameView gv, PlaceId location) {
 // NOT FUNCTIONABLE ATM- INFINITE LOOP...
 /*
 static PlaceId binarySearchPlaceId (int l, int r, char * city){
-	
+
 	Place row;
 	while ( l <= r){
 		int m = 1 + (r-1) / 2;
@@ -152,7 +152,7 @@ static PlaceId binarySearchPlaceId (int l, int r, char * city){
 		if (strcmp(row.abbrev, city) == 0) return row.id;
 		//If x is greater, ignore left half
 		if (strcmp(row.abbrev, city) < 0) {
-			l = m + 1; 
+			l = m + 1;
 		//If x is smaller, ignore right half
 		} else {
 			r = m - 1;
@@ -165,7 +165,7 @@ static PlaceId binarySearchPlaceId (int l, int r, char * city){
 
 
 static void initialiseGame (GameView gv) {
-	
+
 	gv->roundNumber = 0;
 	gv->score = GAME_START_SCORE;
 	//Always starts with G
@@ -207,22 +207,22 @@ static void initialiseGame (GameView gv) {
 	DRACULA -> currentLocationIndex = -1;
 	DRACULA -> locationHistory[0] = '\0';
 
-    // No trap locations at start of game, therefore no array yet.. 
+    // No trap locations at start of game, therefore no array yet..
 	gv->trapLocations = NULL;
 	gv->vampire = NOWHERE;
-	
+
 	// Nothing else to do for map- read Map.c --> the functions take care of
 	// adding all connections.
 	gv->map = MapNew();
 
 }
 
-// PARSE MOVE: 
+// PARSE MOVE:
 // -- Input:
 // -- Output:
 // Author: Cindy (Tara edited)
 static Player parseMove (GameView gv, char *string){
-	
+
 	char *c = string;
 	Player curr_player = false;
 
@@ -258,12 +258,12 @@ static Player parseMove (GameView gv, char *string){
 	return curr_player;
 }
 
-// HUNTER MOVE: 
+// HUNTER MOVE:
 // -- Input:
 // -- Output:
 // Author: Cindy (Tara edited)
 static void hunterMove(GameView gv, char *string, Player hunter) {
-	
+
 	// String must be of valid size
 	assert (strlen(string) > LOCATION_ID_SIZE);
 
@@ -272,18 +272,12 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
 	city[0] = string[1];
 	city[1] = string[2];
 	city[2] = '\0';
-    
+
     // Compare and find city by abbreviation:
 	PlaceId curr_place = NOWHERE;
-	// This find works (until you can get the binary working..?
-	for (int i = 0; i < NUM_REAL_PLACES; i++) {
- 	    Place row = PLACES[i];
- 	    if (strcmp(row.abbrev, city) == 0) {
- 	        curr_place = row.id;
- 	        break;
- 	    }
- 	}
- 	
+	//Using provided function from Place.h
+	curr_place =  placeAbbrevToId(city);
+	
  	if (curr_place == NOWHERE) printf("Error: Place not found...\n");
 
     // Append history and current location:
@@ -320,12 +314,12 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
     return;
 }
 
-// DRACULA MOVE: 
+// DRACULA MOVE:
 // -- Input:
 // -- Output:
 // Author:
 static void draculaMove(GameView gv, char *string) {
-	
+
 	// String must be of valid size
 	assert (strlen(string) > LOCATION_ID_SIZE);
 
@@ -334,21 +328,13 @@ static void draculaMove(GameView gv, char *string) {
 	city[0] = string[1];
 	city[1] = string[2];
 	city[2] = '\0';
-    
+
     // EDIT THIS FOR DRAC FOR CITY UNKNOWN ETC..
     // Compare and find city by abbreviation:
 	PlaceId curr_place = NOWHERE;
-	// This find works (until you can get the binary working..?
-	for (int i = 0; i < NUM_REAL_PLACES; i++) {
- 	    Place row = PLACES[i];
- 	    if (strcmp(row.abbrev, city) == 0) {
- 	        curr_place = row.id;
- 	        break;
- 	    }
- 	}
- 	// If Drac was not in a real city, then store as city unkown or wateva...
- 	if (curr_place == NOWHERE) curr_place = placeAbbrevToId(city);
-    
+	//Using provided function from Place.h
+	curr_place =  placeAbbrevToId(city);
+	
     // If Drac had this turn, then edit game score.
     gv->score -= SCORE_LOSS_DRACULA_TURN;
     
@@ -386,30 +372,30 @@ GameView GvNew(char *pastPlays, Message messages[])
 {
 	// Allocate memory for new GV
 	GameView new = malloc(sizeof(*new));
-	
+
 	// Check if memory was allocated correctly
 	memoryError(new);
 	initialiseGame (new);
-    
-    // Number of Rounds can be determined from size of string 
+
+    // Number of Rounds can be determined from size of string
     // ( each play is 7 chars + space)
     // Note last move has no space...
     // Note each round is 5 plays...
 	new->roundNumber = (strlen(pastPlays) + 1) / ((PLAY_S_SIZE + 1)*5);
-	
+
 	// 5 players that always go in order of G->S->H->M->D. returns 0 - 4
-	// Player is not dependent on round...	
+	// Player is not dependent on round...
 	// Just set it here to player zero- the zero case, then change in parsMove.
-	// Already done in initialiseGame.											
-    
+	// Already done in initialiseGame.
+
     // Need to create a copy of pastPlays rather than just pointing to it.
 	char string[strlen(pastPlays)];
 	strcpy(string, pastPlays);
-	
+
 	// Iterate through past plays...
 	char *token = strtok(string, " ");
 	// while not end of string
-	while (token != NULL) {											
+	while (token != NULL) {
 		// printf("current token: %d\n", token);
 		new->currentPlayer = parseMove(new, token);
 		token = strtok(NULL, " ");
@@ -496,7 +482,7 @@ PlaceId *GvGetMoveHistory(GameView gv, Player player,
 
 PlaceId *GvGetLastMoves(GameView gv, Player player, int numMoves,
                         int *numReturnedMoves, bool *canFree)
-{	
+{
 
 	// unless asking for more locations than have happened, return numlocs
 	if (gv->allPlayers[player]->currentLocationIndex >= numMoves) {
@@ -511,7 +497,7 @@ PlaceId *GvGetLastMoves(GameView gv, Player player, int numMoves,
 		}
 		return lastNMoves;
 	}
-	
+
 	// if asking for too many locations, only return all that exist
 	return GvGetLocationHistory(gv, player, numReturnedMoves, canFree);
 
@@ -576,12 +562,12 @@ PlaceId *GvGetLastLocations(GameView gv, Player player, int numLocs,
 // REACHABLE FUNCTIONS: Help to find all possible moves for the next play based
 // on round score, player, starting place, and other game deets.
 // Author: Tara
-// Status: Fully functioning for hunter- passed all given tests plus own tests 
+// Status: Fully functioning for hunter- passed all given tests plus own tests
 // and works with any railDist, player and round. Need to test Drac...
 PlaceId *GvGetReachable(GameView gv, Player player, Round round,
                         PlaceId from, int *numReturnedLocs)
 {
-	
+
 	// 1. We need to access the map :)
 	Map map = gv->map;
 
@@ -599,21 +585,21 @@ PlaceId *GvGetReachable(GameView gv, Player player, Round round,
 
 	// Get the connections from that point.
 	ConnList list = MapGetConnections(map, from);
-	
+
 	// 3. Iterate through...
 	int loc_num = 0;
 	int rail_num = 0;
 	visited[loc_num] = from;
 	loc_num = 1;
-	
+
 	while (loc_num < NUM_REAL_PLACES && rail_num < NUM_REAL_PLACES) {
-	    
+
 	    // Extra conditions for drac:
 	    if (player == PLAYER_DRACULA) {
 	        if (list->p == HOSPITAL_PLACE) continue;
 	        if (list->type == RAIL) continue;
 	    }
-	    
+
 	    // If it is a road type.
 	    if (list->type == ROAD) {
 	        visited[loc_num] = list->p;
@@ -627,11 +613,11 @@ PlaceId *GvGetReachable(GameView gv, Player player, Round round,
 	        visited[loc_num] = list->p;
 	        loc_num++;
 	    }
-	    
+
 	    if (list->next == NULL) break;
 	    list = list->next;
 	}
-	
+
 	// Consider more rails...
 	// 2 Rails:
 	int i = 0;
@@ -643,7 +629,7 @@ PlaceId *GvGetReachable(GameView gv, Player player, Round round,
 	        i++;
 	    }
 	    rail_num = rail_num + conn_new;
-	
+
 	    // 3 Rails:
 	    i = 0;
 	    if (railDist > 2) {
@@ -657,20 +643,20 @@ PlaceId *GvGetReachable(GameView gv, Player player, Round round,
 	        rail_num = rail_num + conn_new;
 	    }
 	}
-	
+
 	// 4. Combine arrays!!
 	// So we know the number of locs/ rails in each array;
 	i = 0;
 	int j = loc_num;
 	while (i < rail_num && j < NUM_REAL_PLACES) {
-	    
+
 	    visited[j] = visited_rail[i];
 	    j++;
 	    i++;
-	
+
 	}
 	int total_locs = j;
-	
+
 	// 5. Now copy into the dynamically allocated array.
 	PlaceId *final_loc_list = malloc(total_locs * sizeof(PlaceId));
 	i = 0;
@@ -678,7 +664,7 @@ PlaceId *GvGetReachable(GameView gv, Player player, Round round,
 	    final_loc_list[i] = visited[i];
 	    i++;
 	}
-	
+
     // Return values...
 	*numReturnedLocs = total_locs;
 	return final_loc_list;
@@ -707,21 +693,21 @@ PlaceId *GvGetReachableByType(GameView gv, Player player, Round round,
 
 	// Get the connections from that point.
 	ConnList list = MapGetConnections(map, from);
-	
+
 	// 3. Iterate through...
 	int loc_num = 0;
 	int rail_num = 0;
 	visited[loc_num] = from;
 	loc_num = 1;
-	
+
 	while (loc_num < NUM_REAL_PLACES && rail_num < NUM_REAL_PLACES) {
-	    
+
 	    // Extra conditions for drac:
 	    if (player == PLAYER_DRACULA) {
 	        if (list->p == HOSPITAL_PLACE) continue;
 	        if (list->type == RAIL) continue;
 	    }
-	    
+
 	    // If it is a road type.
 	    if (list->type == ROAD && road == true) {
 	        visited[loc_num] = list->p;
@@ -735,11 +721,11 @@ PlaceId *GvGetReachableByType(GameView gv, Player player, Round round,
 	        visited[loc_num] = list->p;
 	        loc_num++;
 	    }
-	    
+
 	    if (list->next == NULL) break;
 	    list = list->next;
 	}
-	
+
 	// Consider more rails...
 	// 2 Rails:
 	int i = 0;
@@ -751,7 +737,7 @@ PlaceId *GvGetReachableByType(GameView gv, Player player, Round round,
 	        i++;
 	    }
 	    rail_num = rail_num + conn_new;
-	
+
 	    // 3 Rails:
 	    i = 0;
 	    if (railDist > 2) {
@@ -765,20 +751,20 @@ PlaceId *GvGetReachableByType(GameView gv, Player player, Round round,
 	        rail_num = rail_num + conn_new;
 	    }
 	}
-	
+
 	// 4. Combine arrays!!
 	// So we know the number of locs/ rails in each array;
 	i = 0;
 	int j = loc_num;
 	while (i < rail_num && j < NUM_REAL_PLACES) {
-	    
+
 	    visited[j] = visited_rail[i];
 	    j++;
 	    i++;
-	
+
 	}
 	int total_locs = j;
-	
+
 	// 5. Now copy into the dynamically allocated array.
 	PlaceId *final_loc_list = malloc(total_locs * sizeof(PlaceId));
 	i = 0;
@@ -786,7 +772,7 @@ PlaceId *GvGetReachableByType(GameView gv, Player player, Round round,
 	    final_loc_list[i] = visited[i];
 	    i++;
 	}
-	
+
     // Return values...
 	*numReturnedLocs = total_locs;
 	return final_loc_list;
@@ -803,18 +789,18 @@ PlaceId *GvGetReachableByType(GameView gv, Player player, Round round,
 // added in this instance.
 // -- Author: Tara
 static int Find_Rails (Map map, PlaceId place, PlaceId from, PlaceId *array, int i) {
-    
+
     // Check things exist:
     if (place == '\0') return 0;
     if (array[0] == '\0') return 0;
-    
+
     // Find list of connections to current place.
     ConnList list = MapGetConnections(map, place);
     int places_added = 0;
-    
+
     // Iterate through to find rail types...
     while (i < NUM_REAL_PLACES) {
-        
+
         int skip = 0;
         // Check for repeats;
         if (list->p == from) {
@@ -828,19 +814,17 @@ static int Find_Rails (Map map, PlaceId place, PlaceId from, PlaceId *array, int
             }
         }
         if (repeat > 0) skip = 1;
-        
+
         // Now, add to array.
         if (list->type == RAIL && skip == 0) {
-            printf("CASE\n");
-            array[i] = list->p;  
+            array[i] = list->p;
             places_added++;
         }
-        
+
         // Increment.
         if (list->next == NULL) break;
-        list = list->next; 
+        list = list->next;
     }
-    
-    return places_added;  
-}
 
+    return places_added;
+}
