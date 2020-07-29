@@ -218,7 +218,7 @@ int main(void)
 
 	{///////////////////////////////////////////////////////////////////
 
-		printf("Testing a hunter 'dying'\n");
+		printf("Testing a hunter 'dying'----------------------\n");
 
 		char *trail =
 			"GGE.... SGE.... HGE.... MGE.... DC?.V.. "

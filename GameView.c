@@ -113,23 +113,27 @@ static void memoryError (const void * input) {
 //	>0 If the element pointed by p goes after the element pointed by q.
 // -- INPUT: two pointers, *p and *q
 // -- OUTPUT: int
-int comparator(const void *p, const void *q) {
-    // Get the values at given addresses
-    char * l = (char *)p;
-    char * r = (char *)q;
- 	return (strcmp(l,r));
+static int placeIdCmp(const void *ptr1, const void *ptr2) {
+	PlaceId p1 = *(PlaceId *)ptr1;
+	PlaceId p2 = *(PlaceId *)ptr2;
+	return p2 - p1;
 }
-
-// TRAP LOCATION APPEND: Appends input to the trap location array, updates
-// current location and index.
+//Author: testUtils.c; Edited: Cindy
+static void sortPlaces(PlaceId *places, int numPlaces) {
+	qsort(places, (size_t)numPlaces, sizeof(PlaceId), placeIdCmp);
+}
+// TRAP LOCATION APPEND: Appends input to the trap location array, updates index,
+//array is sorted largest to smallest PlaceId value for easy manipulation
 // -- INPUT: GameView, PlaceId to append
 // -- OUTPUT: void
 static void trapLocationAppend(GameView gv, PlaceId location) {
+	printf("trap added!\n");
 	int index = gv->trapLocationsIndex;
 	if (index < MAX_LOC_HISTORY_SIZE) {
 		gv->trapLocations[index + 1] = location;
 		gv->trapLocationsIndex++;
 	}
+	sortPlaces(gv->trapLocations, gv->trapLocationsIndex);
 	return;
 }
 // static PlaceId asciiToPlaceIdDoubleBack (char * c) {
@@ -163,10 +167,20 @@ static int PlaceIdToAsciiDoubleBack (PlaceId place) {
 // -- INPUT: GameView, PlaceId
 // -- OUTPUT: void
 static void trapLocationRemove(GameView gv, PlaceId location) {
-	// todo
-	//find index of trap location
-	//remove from location
-	//shuffle array
+	printf("trap removed!\n");
+	int i = 0;
+	//find index of trap location (sorted largest to smallest PlaceId value)
+	while (i <= gv->trapLocationsIndex) {
+		if(gv->trapLocations[i] == location) break;
+		i++;
+	}
+	//remove from location by setting to nowhere
+	gv->trapLocations[i] = NOWHERE;
+
+	//shuffle array so smallest numbers are at end (NOWHERE is smallest PlaceId value)
+	//index has shrunk so NOWHERE will fall off end of array
+	sortPlaces(gv->trapLocations, gv->trapLocationsIndex+1);
+	gv->trapLocationsIndex--;
 	return;
 }
 
@@ -274,6 +288,7 @@ static void initialiseGame (GameView gv) {
 
     // No trap locations at start of game, therefore no array yet..
 	// gv->trapLocations = NULL;
+	gv->trapLocationsIndex = -1;
 	gv->vampire = NOWHERE;
 
 	// Nothing else to do for map- read Map.c --> the functions take care of
@@ -638,8 +653,14 @@ PlaceId GvGetVampireLocation(GameView gv)
 PlaceId *GvGetTrapLocations(GameView gv, int *numTraps)
 {
 	// TODO: REPLACE THIS WITH YOUR OWN IMPLEMENTATION
-	*numTraps = 0;
-	return NULL;
+	// pass number of moves; index + 1 since index starts at 0
+	*numTraps = gv->trapLocationsIndex + 1;
+	PlaceId * traps = malloc(sizeof(PlaceId) * *numTraps);
+	memoryError(traps);
+	for (int i = 0; i < *numTraps; i++){
+		traps[i] = gv->trapLocations[i];
+	}
+	return traps;
 }
 
 ////////////////////////////////////////////////////////////////////////
