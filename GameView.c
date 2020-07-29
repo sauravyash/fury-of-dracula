@@ -635,6 +635,12 @@ PlaceId *GvGetTrapLocations(GameView gv, int *numTraps)
 ////////////////////////////////////////////////////////////////////////
 // Game History
 
+// GET MOVE HISTORY: Returns complete move history of a player directly from
+// locationHistory, indicates the number of moves and that the array cannot be
+// freed
+// -- INPUT: gv, player, pointer to an int storing the number of returned moves,
+// pointer to a bool canFree
+// -- OUTPUT: array of PlaceIds
 PlaceId *GvGetMoveHistory(GameView gv, Player player,
                           int *numReturnedMoves, bool *canFree)
 {
@@ -647,6 +653,11 @@ PlaceId *GvGetMoveHistory(GameView gv, Player player,
 
 }
 
+// GET MOVE HISTORY: Returns last n moves of a player in dynamically allocated
+// array, indicates the number of moves and that the return array can be freed
+// -- INPUT: gv, player, number of moves to return, pointer to an int storing
+// the number of returned moves, pointer to a bool canFree
+// -- OUTPUT: array of PlaceIds
 PlaceId *GvGetLastMoves(GameView gv, Player player, int numMoves,
                         int *numReturnedMoves, bool *canFree)
 {
@@ -670,6 +681,12 @@ PlaceId *GvGetLastMoves(GameView gv, Player player, int numMoves,
 
 }
 
+// GET MOVE HISTORY: Returns complete location history of a player directly from
+// locationHistory, indicates the number of moves and that the array cannot be
+// freed. Returns UNKNOWN places where relevant for dracula.
+// -- INPUT: gv, player, pointer to an int storing the number of returned moves,
+// pointer to a bool canFree
+// -- OUTPUT: array of PlaceIds
 PlaceId *GvGetLocationHistory(GameView gv, Player player,
                               int *numReturnedLocs, bool *canFree)
 {
@@ -702,6 +719,11 @@ PlaceId *GvGetLocationHistory(GameView gv, Player player,
 	return GvGetMoveHistory(gv, player, numReturnedLocs, canFree);
 }
 
+// GET MOVE HISTORY: Returns last n locations of a player in dynamically allocated
+// array, indicates the number of locs and that the return array can be freed
+// -- INPUT: gv, player, number of locs to return, pointer to an int storing
+// the number of returned locs, pointer to a bool canFree
+// -- OUTPUT: array of PlaceIds
 PlaceId *GvGetLastLocations(GameView gv, Player player, int numLocs,
                             int *numReturnedLocs, bool *canFree)
 {
