@@ -517,8 +517,23 @@ int main(void)
         }
         printf("Test Passed!\n");
     }
-    {
-        
-    }
+	/*
+    {/////////////////////////////////////////////////////////
+        printf("Testing hunter death\n");
+
+		char *trail =
+			"GGE.... SGE.... HGE.... MGE.... DST.... "
+			"GST.... SGE.... HGE.... MGE.... DC?T... "
+			"GGE.... SGE.... HGE.... MGE.... DC?.... "
+			"GST...."
+
+
+		Message messages[16] = {};
+		GameView gv = GvNew(trail, messages);
+
+
+    }*/
+
+
 	return EXIT_SUCCESS;
 }
