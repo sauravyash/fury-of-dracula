@@ -44,6 +44,7 @@ struct draculaView {
 
 static PlayerData initialisePlayer(DraculaView dv, Player player);
 static void initialiseGame (DraculaView dv);
+static Player parseMove (DraculaView dv, char *string);
 
 
 // MEMORY ERROR: Helper function to check correct memory allocation. Exits if
@@ -326,4 +327,50 @@ static void initialiseGame (DraculaView dv) {
 	// dv->map = MapNew();
 	return;
 
+}
+
+// PARSE MOVE: interprets a single move, calls hunter/draculaMove, updates curr_player
+// -- Input: DraculaVie, move string
+// -- Output: current Player
+// Author: Cindy (Tara edited)
+static Player parseMove (DraculaView dv, char *string) {
+
+	char *c = string;
+	Player curr_player;
+
+	// figure out whose move it was
+	// TODO implement move functions
+	switch(*c){
+			case 'G':
+			    printf("it is Lord G\n");
+			    //hunterMove(dv, string, PLAYER_LORD_GODALMING);
+			    curr_player = PLAYER_DR_SEWARD;
+			    break;
+
+			case 'S':
+			    printf("it is Dr S\n");
+			    //hunterMove(dv, string, PLAYER_DR_SEWARD);
+			    curr_player = PLAYER_VAN_HELSING;
+			    break;
+
+			case 'H':
+			    printf("it is VH\n");
+			    //hunterMove(dv, string, PLAYER_VAN_HELSING);
+			    curr_player = PLAYER_MINA_HARKER;
+			    break;
+
+			case 'M':
+			   printf("it is Mina\n");
+			    //hunterMove(dv, string, PLAYER_MINA_HARKER);
+			    curr_player = PLAYER_DRACULA;
+			    break;
+
+			case 'D':
+			    printf("it is Drac\n");
+			    //draculaMove(dv, string);
+			    curr_player = PLAYER_LORD_GODALMING;
+			    break;
+		}
+
+	return curr_player;
 }
