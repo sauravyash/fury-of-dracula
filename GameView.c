@@ -254,7 +254,10 @@ static void initialisePlayer(GameView gv, Player player) {
 }
 
 // INITIALISE GAME: Assigns memory and sets values to default/null values
+// -- INPUT: GameView
+// -- OUTPUT: void
 static void initialiseGame (GameView gv) {
+	
 	gv->roundNumber = 0;
 	gv->score = GAME_START_SCORE;
 	// Always starts with G
@@ -266,47 +269,51 @@ static void initialiseGame (GameView gv) {
 	}
 
     // No trap locations at start of game, therefore no array yet..
-	//gv->trapLocations = NULL;
+	// gv->trapLocations = NULL;
 	gv->vampire = NOWHERE;
 
 	// Nothing else to do for map- read Map.c --> the functions take care of
 	// adding all connections.
-	//gv->map = MapNew();
+	// gv->map = MapNew();
 	return;
 
 }
 
-// PARSE MOVE:
-// -- Input:
-// -- Output:
+// PARSE MOVE: interprets a single move, calls hunter/draculaMove, updates curr_player
+// -- Input: GameView, move string
+// -- Output: current Player
 // Author: Cindy (Tara edited)
 static Player parseMove (GameView gv, char *string){
-
+	
 	char *c = string;
 	Player curr_player;
 
-	//figure out who's move it was
+	// figure out whose move it was
 	switch(*c){
 			case 'G':
 			    printf("it is Lord G\n");
 			    hunterMove(gv, string, PLAYER_LORD_GODALMING);
 			    curr_player = PLAYER_DR_SEWARD;
 			    break;
+			
 			case 'S':
 			    printf("it is Dr S\n");
 			    hunterMove(gv, string, PLAYER_DR_SEWARD);
 			    curr_player = PLAYER_VAN_HELSING;
 			    break;
+			
 			case 'H':
 			    printf("it is VH\n");
 			    hunterMove(gv, string, PLAYER_VAN_HELSING);
 			    curr_player = PLAYER_MINA_HARKER;
 			    break;
+			
 			case 'M':
 			   printf("it is Mina\n");
 			    hunterMove(gv, string, PLAYER_MINA_HARKER);
 			    curr_player = PLAYER_DRACULA;
 			    break;
+			
 			case 'D':
 			    printf("it is Drac\n");
 			    draculaMove(gv, string);
@@ -351,32 +358,31 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
     }
 	*/
 	// Parsing through characters after location iD
-	// check the next characters
 	char *c;
+
 	for (int i = 3; i < strlen(string); i++) {
 		c = &string[i];
 		switch(*c){
+			// It's a trap!
 			case ITS_A_TRAP:
-				//its a trap!
 				printf("Hunter encountered trap!\n");
 				gv->allPlayers[hunter]->health -= LIFE_LOSS_TRAP_ENCOUNTER;
 				checkHunterHealth(gv, hunter);
 				//remove trap
 				trapLocationRemove(gv, curr_place);
 				break;
+
+			// Immature Vampire encounter
 			case CLOSE_ENCOUNTERS_OF_THE_VTH_KIND:
-				//immature Vampire encounter
 				printf("Hunter encountered immature vampire!\n");
 				gv->vampire = NOWHERE;
 				break;
+
+			// Dracula encounter	
 			case 'D':
-				//dracula encounter
 				printf("Hunter encountered dracula!\n");
 				//i think this part is needed? judging by test line 238 of testGameView, makes it seem like this is whats meant to happen
 				//dracula must be in this city!
-
-
-
 				printf("current health is %d\n", gv->allPlayers[hunter]->health);
 				gv->allPlayers[hunter]->health -= LIFE_LOSS_DRACULA_ENCOUNTER;
 				checkHunterHealth(gv, hunter);
@@ -384,12 +390,12 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
 				printf("hunter health is now %d\n", gv->allPlayers[hunter]->health);
 				draculaLocationHistoryAppend(gv, curr_place);
 				break;
+
+			// other characters include trailing '.'
 			case '.':
-				//other characters include trialing '.'
 				break;
 		}
 	}
-
     return;
 }
 
@@ -417,22 +423,31 @@ static void draculaMove(GameView gv, char *string) {
 
 
     // Append history and current location:
+	
 	//Unknown city move
 	if (strcmp(city, "C?") == 0) {
 		printf("unknown city move\n");
 		draculaLocationHistoryAppend(gv, CITY_UNKNOWN);
-	//Unknown sea move
-	} else if (strcmp(city,"S?") == 0) {
+	
+	}
+
+	// Unknown sea move
+	else if (strcmp(city,"S?") == 0) {
 		printf("unknown sea move\n");
 		//DRACULA->health -= (LIFE_LOSS_SEA);
 		draculaLocationHistoryAppend(gv, SEA_UNKNOWN);
-	//Hide move ->stays in the city for another round
-	} else if (strcmp(city,"HI") == 0) {
+	
+	}
+
+	// Hide move ->stays in the city for another round
+	else if (strcmp(city,"HI") == 0) {
 		printf("hide move\n");
 		DRACULA->lastHidden = gv->roundNumber;
 		draculaLocationHistoryAppend(gv, curr_place);
-	//Double back move
-} else if (strncmp(city,"D",1) == 0) {
+	
+	}
+	// Double back move
+	else if (strncmp(city,"D",1) == 0) {
 		//convert ascii number to int
 
 		//convert int to #define
@@ -448,13 +463,15 @@ static void draculaMove(GameView gv, char *string) {
 		draculaLocationHistoryAppend(gv, returnPlace);
 		//if(trail[PlaceIdToAsciiDoubleBack(curr_place)-1] == SEA_UNKNOWN) DRACULA->health -= (LIFE_LOSS_SEA);
 		DRACULA->lastDoubleback = gv->roundNumber;
+	}
 
-
-	//TPs to castle dracula
-	} else if (strcmp(city,"TP") == 0) {
+	// Teleports to castle dracula
+	else if (strcmp(city,"TP") == 0) {
 		draculaLocationHistoryAppend(gv, TELEPORT);
+	}
+	
 	//Location move that was revealed (ie all other cases)
-	} else {
+	else {
     	draculaLocationHistoryAppend(gv, curr_place);
 	}
 
