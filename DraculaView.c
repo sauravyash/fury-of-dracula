@@ -155,10 +155,49 @@ PlaceId *DvGetValidMoves(DraculaView dv, int *numReturnedMoves)
 	// + hide
 	// + doubleback
 }
-
+// adapted from Gameview
 PlaceId *DvWhereCanIGo(DraculaView dv, int *numReturnedLocs)
 {
-	//return GvGetReachableByType(dv, PLAYER_DRACULA, dv->roundNumber, DvGetPlayerLocation(dv, PLAYER_DRACULA), 1, 0, 1, numReturnedLocs);
+	// 1. We need to access the map :)
+	Map map = dv->map;
+
+	// create dynamically allocated array 
+	PlaceId *visited = malloc(sizeof(PlaceId));
+
+	// get connections from current location
+	ConnList list = MapGetConnections(map, dv->allPlayers[PLAYER_DRACULA]->currentLocation);
+
+	// 3. Iterate through...
+	int loc_num = 0;
+	visited[loc_num] = dv->allPlayers[PLAYER_DRACULA]->currentLocation;
+
+	while (loc_num < NUM_REAL_PLACES) {
+
+	    // Extra conditions for drac:
+		if (list->p == HOSPITAL_PLACE) continue;
+		if (list->type == RAIL) continue;
+
+	    // If it is a road type.
+	    if (list->type == ROAD) {
+	        visited[loc_num] = list->p;
+	        loc_num++;
+			realloc(visited, loc_num * sizeof(PlaceId));
+	    }
+
+		// If it is a boat type.
+		else if (list->type == BOAT) {
+	        visited[loc_num] = list->p;
+	        loc_num++;
+			realloc(visited, loc_num * sizeof(PlaceId));
+	    }
+
+	    if (list->next == NULL) break;
+	    list = list->next;
+	}
+
+    // Return values
+	*numReturnedLocs = loc_num;
+	return visited;
 }
 
 PlaceId *DvWhereCanIGoByType(DraculaView dv, bool road, bool boat,
