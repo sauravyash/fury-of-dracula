@@ -22,7 +22,7 @@
 
 #define PLAY_S_SIZE 7
 #define LOCATION_ID_SIZE 2
-#define MAX_LOC_HISTORY_SIZE (GAME_START_SCORE * 2 * 4)
+#define MAX_LOC_HISTORY_SIZE (GAME_START_SCORE * 2 * 4 )
 //DOUBLE CHECK THIS: max number of turns * most possible avg moves per turn (rounded up)  * bytes per move stored
 #define OUR_ARBITRARY_ARRAY_SIZE 10
 
@@ -105,6 +105,7 @@ static void memoryError (const void * input) {
 		fprintf(stderr, "Couldn't allocate Memory!\n");
 		exit(EXIT_FAILURE);
 	}
+	return;
 }
 
 // COMPARATOR: Compare the order of the elements pointed to by *p and *q. Returns:
@@ -113,23 +114,28 @@ static void memoryError (const void * input) {
 //	>0 If the element pointed by p goes after the element pointed by q.
 // -- INPUT: two pointers, *p and *q
 // -- OUTPUT: int
-int comparator(const void *p, const void *q) {
-    // Get the values at given addresses
-    char * l = (char *)p;
-    char * r = (char *)q;
- 	return (strcmp(l,r));
+static int placeIdCmp(const void *ptr1, const void *ptr2) {
+	PlaceId p1 = *(PlaceId *)ptr1;
+	PlaceId p2 = *(PlaceId *)ptr2;
+	return p2 - p1;
 }
-
-// TRAP LOCATION APPEND: Appends input to the trap location array, updates
-// current location and index.
+//Author: testUtils.c; Edited: Cindy
+static void sortPlaces(PlaceId *places, int numPlaces) {
+	qsort(places, (size_t)numPlaces, sizeof(PlaceId), placeIdCmp);
+	return;
+}
+// TRAP LOCATION APPEND: Appends input to the trap location array, updates index,
+//array is sorted largest to smallest PlaceId value for easy manipulation
 // -- INPUT: GameView, PlaceId to append
 // -- OUTPUT: void
 static void trapLocationAppend(GameView gv, PlaceId location) {
+	printf("trap added!\n");
 	int index = gv->trapLocationsIndex;
 	if (index < MAX_LOC_HISTORY_SIZE) {
 		gv->trapLocations[index + 1] = location;
 		gv->trapLocationsIndex++;
 	}
+	sortPlaces(gv->trapLocations, gv->trapLocationsIndex);
 	return;
 }
 // static PlaceId asciiToPlaceIdDoubleBack (char * c) {
@@ -163,10 +169,20 @@ static int PlaceIdToAsciiDoubleBack (PlaceId place) {
 // -- INPUT: GameView, PlaceId
 // -- OUTPUT: void
 static void trapLocationRemove(GameView gv, PlaceId location) {
-	// todo
-	//find index of trap location
-	//remove from location
-	//shuffle array
+	printf("trap removed!\n");
+	int i = 0;
+	//find index of trap location (sorted largest to smallest PlaceId value)
+	while (i <= gv->trapLocationsIndex) {
+		if(gv->trapLocations[i] == location) break;
+		i++;
+	}
+	//remove from location by setting to nowhere
+	gv->trapLocations[i] = NOWHERE;
+
+	//shuffle array so smallest numbers are at end (NOWHERE is smallest PlaceId value)
+	//index has shrunk so NOWHERE will fall off end of array
+	sortPlaces(gv->trapLocations, gv->trapLocationsIndex+1);
+	gv->trapLocationsIndex--;
 	return;
 }
 
@@ -255,6 +271,7 @@ static void initialisePlayer(GameView gv, Player player) {
 		PLAYER -> currentLocationIndex = -1;
 		PLAYER -> locationHistory[0] = '\0';
 	}
+	return;
 }
 
 // INITIALISE GAME: Assigns memory and sets values to default/null values
@@ -274,6 +291,7 @@ static void initialiseGame (GameView gv) {
 
     // No trap locations at start of game, therefore no array yet..
 	// gv->trapLocations = NULL;
+	gv->trapLocationsIndex = -1;
 	gv->vampire = NOWHERE;
 
 	// Nothing else to do for map- read Map.c --> the functions take care of
@@ -458,13 +476,15 @@ static void draculaMove(GameView gv, char *string) {
 		//if double back is to sea, remove health
 		//retrieve dracula's trail
 		int numReturnedLocs = 0;
-		//printf("i think something is wrong with trail[] here\n");
+
 		bool canFree = false;
 		PlaceId * trail = GvGetLastLocations(gv, PLAYER_DRACULA , TRAIL_SIZE,
 									&numReturnedLocs, &canFree);
 		PlaceId returnPlace = trail[PlaceIdToAsciiDoubleBack(curr_place)-1];
-		draculaLocationHistoryAppend(gv, returnPlace);
+		printf("returned place is %s\n",placeIdToName(returnPlace));
+		//draculaLocationHistoryAppend(gv, returnPlace);
 		//if(trail[PlaceIdToAsciiDoubleBack(curr_place)-1] == SEA_UNKNOWN) DRACULA->health -= (LIFE_LOSS_SEA);
+		draculaLocationHistoryAppend(gv, curr_place);
 		DRACULA->lastDoubleback = gv->roundNumber;
 	}
 
@@ -492,9 +512,8 @@ static void draculaMove(GameView gv, char *string) {
 		c = &string[i];
 
 		// if there are extra characters indicating trap or immature vampire
-		if ( i > 4) {
 			// trap left the trail due to age
-			if (strcmp(c,"M") == 0) {
+			if (*c == 'M') {
 				printf("Trap has left trail!\n");
 				int numReturnedLocs = 0;
 				bool canFree = false;
@@ -508,19 +527,24 @@ static void draculaMove(GameView gv, char *string) {
 			}
 
 			// immature vampire has matured
-			else if (strcmp(c,"V") == 0) {
-				//vampire matures
-				printf("Vampire matured! -%d game points\n", SCORE_LOSS_VAMPIRE_MATURES);
-				gv->vampire = NOWHERE;
-				gv->score -= SCORE_LOSS_VAMPIRE_MATURES;
+			if (*c == CLOSE_ENCOUNTERS_OF_THE_VTH_KIND) {
+				if( i == 5) {
+					//vampire matures
+					printf("Vampire matured! -%d game points\n", SCORE_LOSS_VAMPIRE_MATURES);
+					gv->vampire = NOWHERE;
+					gv->score -= SCORE_LOSS_VAMPIRE_MATURES;
+				}
+				else {
+					printf("vampire placed");
+					gv->vampire = curr_place;
+				}
 			}
-		}
-		else {
+
 			// Trap placed
 			if (*c == ITS_A_TRAP) trapLocationAppend(gv, curr_place);
 			// Immature vampire placed
-			if (*c == CLOSE_ENCOUNTERS_OF_THE_VTH_KIND) gv->vampire = curr_place;
-		}
+
+
 		i++;
 	}
 	// game score decreases each time drac finishes turn
@@ -540,7 +564,7 @@ static void draculaMove(GameView gv, char *string) {
 GameView GvNew(char *pastPlays, Message messages[])
 {
 	// Allocate memory for new GV
-	GameView new = malloc(sizeof(*new));
+	GameView new = malloc(sizeof(* new));
 
 	// Check if memory was allocated correctly
 	memoryError(new);
@@ -638,8 +662,14 @@ PlaceId GvGetVampireLocation(GameView gv)
 PlaceId *GvGetTrapLocations(GameView gv, int *numTraps)
 {
 	// TODO: REPLACE THIS WITH YOUR OWN IMPLEMENTATION
-	*numTraps = 0;
-	return NULL;
+	// pass number of moves; index + 1 since index starts at 0
+	*numTraps = gv->trapLocationsIndex + 1;
+	PlaceId * traps = malloc(sizeof(PlaceId) * *numTraps);
+	memoryError(traps);
+	for (int i = 0; i < *numTraps; i++){
+		traps[i] = gv->trapLocations[i];
+	}
+	return traps;
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -658,7 +688,7 @@ PlaceId *GvGetMoveHistory(GameView gv, Player player,
 	// can't free as is returning directly from data struct
 	*canFree = false;
 	// pass number of moves
-	*numReturnedMoves = gv->allPlayers[player]->currentLocationIndex;
+	*numReturnedMoves = gv->allPlayers[player]->currentLocationIndex+1;
 	return gv->allPlayers[player]->locationHistory;
 
 }
@@ -705,7 +735,7 @@ PlaceId *GvGetLocationHistory(GameView gv, Player player,
 
 	// pass number of moves
 	int index = gv->allPlayers[player]->currentLocationIndex;
-	*numReturnedLocs = index;
+	*numReturnedLocs = index + 1;
 	PlaceId *allLocs = malloc(sizeof(PlaceId) * index);
 
 	if (player == PLAYER_DRACULA) {
