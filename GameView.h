@@ -94,7 +94,7 @@ int GvGetHealth(GameView gv, Player player);
  *   Dracula.
  * - Otherwise, CITY_UNKNOWN if Dracula is in a city, and SEA_UNKNOWN if
  *   Dracula is at sea.
- * 
+ *
  * This  function should never return HIDE or DOUBLE_BACK - if Dracula's
  * latest move was a HIDE or DOUBLE_BACK, it should still be able to  be
  * resolved to a city or sea.
