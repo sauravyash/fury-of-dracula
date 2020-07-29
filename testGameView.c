@@ -493,6 +493,7 @@ int main(void)
 		GvFree(gv);
 		printf("Test passed!\n");
 	}
+    printf("|| CUSTOM TESTS ||\n")
     {
         printf("Checking Dracula moving to one of the previous 5 places\n");
         {
@@ -516,6 +517,36 @@ int main(void)
             // TODO
         }
         printf("Test Passed!\n");
+    }
+    {
+        printf("Check decremented game score each time Dracula finishes his turn.\n");
+ 
+		char *trail =
+			"GST.... SAO.... HZU.... MBB.... DC?.V..";
+
+		Message messages[5] = {};
+		GameView gv = GvNew(trail, messages);
+        assert(gv->score == 366 - 1);
+        printf("Test Passed!\n");
+    }
+    {
+        printf("Check the game score decreases by 6 each time" 
+                "a hunter loses all their life points and is "
+                "teleported to the Hospital of St Joseph and St Mary.\n");
+        
+        char *trail =
+			"GST.... SAO.... HZU.... MBB.... DC?.V.."
+            "GST.... SAO.... HZU.... MBB.... DC?.V.."
+            "GST.... SAO.... HZU.... MBB.... DC?.V.."
+            "GST.... SAO.... HZU.... MBB.... DC?.V..";
+
+		Message messages[5] = {};
+		GameView gv = GvNew(trail, messages);
+        
+        //score = 366 - 3 - 6
+        assert(gv->score == 357);
+
+        printf("Test Passed");
     }
 	/*
     {/////////////////////////////////////////////////////////

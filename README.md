@@ -33,7 +33,9 @@ This is a game client written in C for the COMP2521 assignment 'Fury of Dracula'
 - Checking Athens rail connections (none)
 
 ### Custom
-- [ ] Check the game score decreases by 1 each time Dracula finishes his turn.
+- [x] Check the game score decreases by 1 each time Dracula finishes his turn.
+- [ ] Check that the hunters loses 2 life points if they encounter a trap.
+- [ ] Check that the hunters loses 4 life points if they encounter Dracula.
 - [ ] Check the game score decreases by 6 each time a hunter loses all their life points and is teleported to the Hospital of St Joseph and St Mary.
 - [ ] Check the game score decreases by 13 each time a vampire matures.
 - [ ] Check that immature vampires can be killed within 6 moves of being spawned
@@ -43,19 +45,17 @@ This is a game client written in C for the COMP2521 assignment 'Fury of Dracula'
 - [ ] Check Dracula loses 2 blood points if he is at sea at the end of his turn.
 - [ ] Check Dracula regains 10 blood points if he is in Castle Dracula at the end of his turn, even if he has been automagically teleported there.
 - [ ] Test for end of game
--- [ ] if dracula runs out of life points
--- [ ] if Game points reaches 0
+  - [ ] if dracula runs out of life points
+  - [ ] if Game points reaches 0
 - [ ] Test Hunters cannot exceed 9 life points.
-- [ ] A hunter loses 2 life points if they encounter a trap.
-- [ ] A hunter loses 4 life points if they encounter Dracula.
 - [ ] A hunter gains 3 life points each time they rest
 - [ ] Check that the sequence of Character moves is Lord Godalming, Dr. Seward, Van Helsing, Mina Harker, Dracula
 - [ ] Test Road, Rail and Sea moves
 - [ ] Test Rail move follows the sum rules (sum = round number + hunter number):
--- [ ] sum mod 4 is 0: The hunter may not move by rail this turn.
--- [ ] sum mod 4 is 1: The maximum allowed distance via rail is 1.
--- [ ] sum mod 4 is 2: The maximum allowed distance via rail is 2.
--- [ ] sum mod 4 is 3: The maximum allowed distance via rail is 3.
+  - [ ] sum mod 4 is 0: The hunter may not move by rail this turn.
+  - [ ] sum mod 4 is 1: The maximum allowed distance via rail is 1.
+  - [ ] sum mod 4 is 2: The maximum allowed distance via rail is 2.
+  - [ ] sum mod 4 is 3: The maximum allowed distance via rail is 3.
 - [ ] Check Hunter teleportation when reaching health <= 0 and helth is regained on
   next turn
 - [ ] Check auto teleportation when Dracula has no legal moves (because of previous moves)
@@ -68,7 +68,7 @@ This is a game client written in C for the COMP2521 assignment 'Fury of Dracula'
 - [ ] Test a double back move then 4 moves then another double back move is illegal
 - [ ] test drcula losing 2 health @ sea
 - [ ] check for encounter when dracula move to a city
--- [ ] Test when round number is divisible by 13, an immature vampire is placed, else a trap
+  - [ ] Test when round number is divisible by 13, an immature vampire is placed, else a trap
 - [ ] check for max of 3 encounters at a city
 - [ ] Check that there are no encounters at sea
 - [ ] Test collaborative research move (when all hunters rest as their last move, they reveal dracula's last moves up to his last Location move)
