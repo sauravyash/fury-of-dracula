@@ -13,6 +13,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "DraculaView.h"
 #include "Game.h"
@@ -21,7 +22,6 @@
 // add your own #includes here
 #define MAX_LOC_HISTORY_SIZE (GAME_START_SCORE * 2 * 4)
 #define PLAY_S_SIZE 7
-
 
 typedef struct playerData *PlayerData;
 
@@ -42,6 +42,9 @@ struct draculaView {
 	Map map; 											// graph thats been typedefed already
 };
 
+static PlayerData initialisePlayer(DraculaView dv, Player player);
+static void initialiseGame (DraculaView dv);
+
 
 // MEMORY ERROR: Helper function to check correct memory allocation. Exits if
 // memory was not correctly allocated
@@ -61,7 +64,7 @@ static void memoryError (const void * input) {
 DraculaView DvNew(char *pastPlays, Message messages[])
 {
 	// TODO not functional
-	// Allocate memory for new GV
+	// Allocate memory for new dv
 	DraculaView new = malloc(sizeof(*new));
 
 	// Check if memory was allocated correctly
@@ -150,10 +153,13 @@ PlaceId *DvGetTrapLocations(DraculaView dv, int *numTraps)
 
 PlaceId *DvGetValidMoves(DraculaView dv, int *numReturnedMoves)
 {
-	PlaceId *reachable = GvGetReachableByType(dv, PLAYER_DRACULA, dv->roundNumber, DvGetPlayerLocation(dv, PLAYER_DRACULA), 1, 0, 1, numReturnedMoves);
+	//PlaceId *reachable = GvGetReachableByType(dv, PLAYER_DRACULA, dv->roundNumber, DvGetPlayerLocation(dv, PLAYER_DRACULA), 1, 0, 1, numReturnedMoves);
 	// todo needs to be checked against trail
 	// + hide
 	// + doubleback
+	*numReturnedMoves = 0;
+	return NULL;
+
 }
 // adapted from Gameview
 PlaceId *DvWhereCanIGo(DraculaView dv, int *numReturnedLocs)
@@ -181,14 +187,14 @@ PlaceId *DvWhereCanIGo(DraculaView dv, int *numReturnedLocs)
 	    if (list->type == ROAD) {
 	        visited[loc_num] = list->p;
 	        loc_num++;
-			realloc(visited, loc_num * sizeof(PlaceId));
+			visited = realloc(visited, loc_num * sizeof(PlaceId));
 	    }
 
 		// If it is a boat type.
 		else if (list->type == BOAT) {
 	        visited[loc_num] = list->p;
 	        loc_num++;
-			realloc(visited, loc_num * sizeof(PlaceId));
+			visited = realloc(visited, loc_num * sizeof(PlaceId));
 	    }
 
 	    if (list->next == NULL) break;
@@ -203,13 +209,55 @@ PlaceId *DvWhereCanIGo(DraculaView dv, int *numReturnedLocs)
 PlaceId *DvWhereCanIGoByType(DraculaView dv, bool road, bool boat,
                              int *numReturnedLocs)
 {
-	//return GvGetReachableByType(dv, PLAYER_DRACULA, dv->roundNumber, DvGetPlayerLocation(dv, PLAYER_DRACULA), road, 0, boat, numReturnedLocs);
+	// 1. We need to access the map :)
+	Map map = dv->map;
+
+	// create dynamically allocated array 
+	PlaceId *visited = malloc(sizeof(PlaceId));
+
+	// get connections from current location
+	ConnList list = MapGetConnections(map, dv->allPlayers[PLAYER_DRACULA]->currentLocation);
+
+	// 3. Iterate through...
+	int loc_num = 0;
+	visited[loc_num] = dv->allPlayers[PLAYER_DRACULA]->currentLocation;
+
+	while (loc_num < NUM_REAL_PLACES) {
+
+	    // Extra conditions for drac:
+		if (list->p == HOSPITAL_PLACE) continue;
+		if (list->type == RAIL) continue;
+
+	    // If it is a road type and bool road is true
+	    if (list->type == ROAD && road) {
+	        visited[loc_num] = list->p;
+	        loc_num++;
+			visited = realloc(visited, loc_num * sizeof(PlaceId));
+	    }
+
+		// If it is a boat type and bool boat is true
+		else if (list->type == BOAT && boat) {
+	        visited[loc_num] = list->p;
+	        loc_num++;
+			visited = realloc(visited, loc_num * sizeof(PlaceId));
+	    }
+
+	    if (list->next == NULL) break;
+	    list = list->next;
+	}
+
+    // Return values
+	*numReturnedLocs = loc_num;
+	return visited;
 }
+
 
 PlaceId *DvWhereCanTheyGo(DraculaView dv, Player player,
                           int *numReturnedLocs)
 {
 	//return GvGetReachable(dv, player, dv->roundNumber, DvGetPlayerLocation(dv, player), numReturnedLocs);
+	*numReturnedLocs = 0;
+	return NULL;
 }
 
 PlaceId *DvWhereCanTheyGoByType(DraculaView dv, Player player,
@@ -217,9 +265,65 @@ PlaceId *DvWhereCanTheyGoByType(DraculaView dv, Player player,
                                 int *numReturnedLocs)
 {
 	//return GvGetReachableByType(dv, player, dv->roundNumber, DvGetPlayerLocation(dv, PLAYER_DRACULA), road, rail, boat, numReturnedLocs);
+	*numReturnedLocs = 0;
+	return NULL;
 }
 
 ////////////////////////////////////////////////////////////////////////
 // Your own interface functions
 
 // TODO
+
+
+// INITIALISE PLAYER: Initialises a player to defaults, assigns memory
+// -- INPUT: DraculaView, Player
+// -- OUTPUT: void
+static PlayerData initialisePlayer(DraculaView dv, Player player) {
+
+	PlayerData new = malloc(sizeof(* new));
+	memoryError (new);
+
+	new -> health = GAME_START_HUNTER_LIFE_POINTS;
+	new -> currentLocation = NOWHERE;
+
+	if (player == PLAYER_DRACULA) {
+		new -> health = GAME_START_BLOOD_POINTS;
+	} else {
+		new -> health = GAME_START_HUNTER_LIFE_POINTS;
+	}
+
+	return new;
+}
+
+// INITIALISE GAME: Assigns memory and sets values to default/null values
+// -- INPUT: DraculaView
+// -- OUTPUT: void
+static void initialiseGame (DraculaView dv) {
+
+	dv->roundNumber = 0;
+	dv->score = GAME_START_SCORE;
+	// Always starts with G
+	dv->currentPlayer = PLAYER_LORD_GODALMING;
+
+	// Allocate memory for players & Initialise starting information
+	dv->allPlayers[PLAYER_LORD_GODALMING] = initialisePlayer(dv, PLAYER_LORD_GODALMING);
+	dv->allPlayers[PLAYER_DR_SEWARD] = initialisePlayer(dv, PLAYER_DR_SEWARD);
+	dv->allPlayers[PLAYER_VAN_HELSING] = initialisePlayer(dv, PLAYER_VAN_HELSING);
+	dv->allPlayers[PLAYER_MINA_HARKER] = initialisePlayer(dv, PLAYER_MINA_HARKER);
+	dv->allPlayers[PLAYER_DRACULA] = initialisePlayer(dv, PLAYER_DRACULA);
+
+	//for (int player = 0; player < NUM_PLAYERS; player++) {
+	//	initialisePlayer(dv, player);
+	//}
+
+    // No trap locations at start of game, therefore no array yet..
+	// dv->trapLocations = NULL;
+	dv->trapLocationsIndex = -1;
+	dv->vampire = NOWHERE;
+
+	// Nothing else to do for map- read Map.c --> the functions take care of
+	// adding all connections.
+	// dv->map = MapNew();
+	return;
+
+}
