@@ -475,14 +475,16 @@ static void draculaMove(GameView gv, char *string) {
     	draculaLocationHistoryAppend(gv, curr_place);
 	}
 
-	// Parsing through characters after location iD
-	// check the next characters
+	// Parsing through characters after location id
 	char *c;
 	int i = 3;
 
 	while ( i < strlen(string)) {
 		c = &string[i];
+		
+		// if there are extra characters indicating trap or immature vampire
 		if ( i > 4) {
+			// trap left the trail due to age
 			if (strcmp(c,"M") == 0) {
 				printf("Trap has left trail!\n");
 				int numReturnedLocs = 0;
@@ -494,19 +496,25 @@ static void draculaMove(GameView gv, char *string) {
 				//remove from trapLocations
 				//trap leaves trail (from the move that left trail?)
 				free(trail);
-			} else if (strcmp(c,"V") == 0) {
+			}
+			
+			// immature vampire has matured
+			else if (strcmp(c,"V") == 0) {
 				//vampire matures
 				printf("Vampire matured! -%d game points\n", SCORE_LOSS_VAMPIRE_MATURES);
 				gv->vampire = NOWHERE;
 				gv->score -= SCORE_LOSS_VAMPIRE_MATURES;
 			}
-		} else {
+		}
+		else {
+			// Trap placed
 			if (*c == ITS_A_TRAP) trapLocationAppend(gv, curr_place);
+			// Immature vampire placed
 			if (*c == CLOSE_ENCOUNTERS_OF_THE_VTH_KIND) gv->vampire = curr_place;
 		}
 		i++;
 	}
-	// game score decreases each tiem drac finishes turn
+	// game score decreases each time drac finishes turn
 	printf("game score decreased by drac turn\n");
     gv->score -= SCORE_LOSS_DRACULA_TURN;
     return;
@@ -515,6 +523,10 @@ static void draculaMove(GameView gv, char *string) {
 ////////////////////////////////////////////////////////////////////////
 // Constructor/Destructor
 
+
+// GV NEW: Allocate memory for new GameView
+// -- INPUT: pastPlays string, messages
+// -- OUTPUT: new GameView 
 GameView GvNew(char *pastPlays, Message messages[])
 {
 	// Allocate memory for new GV
@@ -554,14 +566,14 @@ GameView GvNew(char *pastPlays, Message messages[])
 	return new;
 }
 
+// GV FREE: Frees the current GameView
 void GvFree(GameView gv)
 {
-	// TODO: REPLACE THIS WITH YOUR OWN IMPLEMENTATION
-	free(gv->allPlayers[0]);
-	free(gv->allPlayers[1]);
-	free(gv->allPlayers[2]);
-	free(gv->allPlayers[3]);
-	free(gv->allPlayers[4]);
+	// free player structs
+	for (int i = 0; i < NUM_PLAYERS; i++)
+		free(gv->allPlayers[i]);
+
+	// free map
 	MapFree(gv->map);
 
 	free(gv);
