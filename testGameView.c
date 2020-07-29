@@ -218,7 +218,7 @@ int main(void)
 
 	{///////////////////////////////////////////////////////////////////
 
-		printf("Testing a hunter 'dying'----------------------\n");
+		printf("Testing a hunter 'dying'\n");
 
 		char *trail =
 			"GGE.... SGE.... HGE.... MGE.... DC?.V.. "
@@ -343,7 +343,7 @@ int main(void)
 
 	{///////////////////////////////////////////////////////////////////
 
-		printf("Testing move/location history-\n");
+		printf("Testing move/location history\n");
 
 		char *trail =
 			"GLS.... SGE.... HGE.... MGE.... DST.V.. "
@@ -510,6 +510,6 @@ int main(void)
 		GvFree(gv);
 		printf("Test passed!\n");
 	}
-
+	printf("ALL PROVIDED TESTS PASSED!!!\n");
 	return EXIT_SUCCESS;
 }

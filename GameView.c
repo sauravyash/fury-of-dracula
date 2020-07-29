@@ -210,34 +210,43 @@ static void draculaLocationHistoryAppend(GameView gv, PlaceId location) {
 	int index = DRACULA->currentLocationIndex;
 	printf("appending location %s\n",placeIdToName(location));
 	//if dracula is at sea, he loses health
+	PlaceId actualLocation = NOWHERE;
 	int numReturnedLocs = 0;
 	bool canFree = false;
 	PlaceId *trail = GvGetLastLocations(gv, PLAYER_DRACULA , TRAIL_SIZE,
 								&numReturnedLocs, &canFree);
+	if (trail == NULL) printf("nothing in trail!\n");
 	// ensure the array is large enough, then append
 	if (index < MAX_LOC_HISTORY_SIZE) {
+		printf("appended to move history\n");
 		DRACULA->moveHistory[index + 1] = location;
-		DRACULA->currentLocation = location;
+
 		//dracula's location is the same as previous
 		if(location == HIDE && trail != NULL){
-			PlaceId actualLocation = trail[numReturnedLocs-1];
+			actualLocation = trail[numReturnedLocs-1];
+			printf("dracula is hiding at %s\n",placeIdToName(actualLocation));
 			DRACULA->locationHistory[index + 1] = actualLocation;
+			DRACULA->currentLocation = actualLocation;
 		}
 		//go back to x previous locations
 		else if (trail != NULL && location >= DOUBLE_BACK_1 && location <=DOUBLE_BACK_5){
-			PlaceId actualLocation = trail[numReturnedLocs-PlaceIdToAsciiDoubleBack(location)];
+
+			actualLocation = trail[numReturnedLocs-PlaceIdToAsciiDoubleBack(location)];
+			printf("dracula is doubled back at %s\n",placeIdToName(actualLocation));
 			DRACULA->locationHistory[index + 1] = actualLocation;
+			DRACULA->currentLocation = actualLocation;
 		}
 		//Draculas location was not hidden/double back
 		else {
 			DRACULA->locationHistory[index + 1] = location;
+			DRACULA->currentLocation = location;
 		}
 
-		if(placeIdToType(location) == SEA) {
+		if(placeIdToType(location) == SEA || placeIdToType(actualLocation) == SEA) {
 			printf("dracula is getting seasick!\n");
 			DRACULA->health -= (LIFE_LOSS_SEA);
 		}
-		if(location == TELEPORT || location == CASTLE_DRACULA) 		{
+		if(location == TELEPORT || location == CASTLE_DRACULA || actualLocation == CASTLE_DRACULA) 		{
 			printf("Drac hp +");
 			DRACULA->health += LIFE_GAIN_CASTLE_DRACULA;
 		}
@@ -715,7 +724,7 @@ PlaceId *GvGetMoveHistory(GameView gv, Player player,
 	*canFree = false;
 	// pass number of moves
 	*numReturnedMoves = gv->allPlayers[player]->currentLocationIndex+1;
-	return gv->allPlayers[player]->locationHistory;
+	return gv->allPlayers[player]->moveHistory;
 
 }
 
@@ -738,7 +747,7 @@ PlaceId *GvGetLastMoves(GameView gv, Player player, int numMoves,
 		memoryError(lastNMoves);
 		// copy desired values from locationHistory to return array
 		for (int i = 0; i < numMoves; i++) {
-			lastNMoves[i] = gv->allPlayers[player]->locationHistory[gv->allPlayers[player]->currentLocationIndex - numMoves + i];
+			lastNMoves[i] = gv->allPlayers[player]->moveHistory[gv->allPlayers[player]->currentLocationIndex - numMoves + i];
 		}
 		return lastNMoves;
 	}
@@ -775,7 +784,7 @@ PlaceId *GvGetLocationHistory(GameView gv, Player player,
 		// depends on how visibility is parsed in dracmove
 
 		// add locs to all locs, checking if drac visible, and if not adding as unknown
-		for (int i = 0; i <= *numReturnedLocs; i++) {
+		for (int i = 0; i < *numReturnedLocs; i++) {
 			// if visible
 			allLocs[i] = gv->allPlayers[player]->locationHistory[i];
 			/* else if not visible
