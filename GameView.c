@@ -390,7 +390,6 @@ static void draculaMove(GameView gv, char *string) {
 	curr_place =  placeAbbrevToId(city);
 
 
-
     // Append history and current location:
 	//Unknown city move
 	if (strcmp(city, "C?") == 0) {
@@ -445,7 +444,7 @@ static void draculaMove(GameView gv, char *string) {
 				printf("Trap has left trail!\n");
 				int numReturnedLocs = 0;
 				bool canFree = false;
-				PlaceId * trail = GvGetLastLocations(gv, PLAYER_DR_SEWARD , TRAIL_SIZE,
+				PlaceId *trail = GvGetLastLocations(gv, PLAYER_DR_SEWARD , TRAIL_SIZE,
 				                            &numReturnedLocs, &canFree);
 				PlaceId brokenTrap = trail[0];
 				trapLocationRemove(gv, brokenTrap);
@@ -464,9 +463,10 @@ static void draculaMove(GameView gv, char *string) {
 		}
 		i++;
 	}
-	// game score decreases each tiem drac finishes turn
+	// game score decreases each time drac finishes turn
 	printf("game score decreased by drac turn\n");
     gv->score -= SCORE_LOSS_DRACULA_TURN;
+    free(city);
     return;
 
 }
@@ -515,13 +515,13 @@ GameView GvNew(char *pastPlays, Message messages[])
 void GvFree(GameView gv)
 {
 	// TODO: REPLACE THIS WITH YOUR OWN IMPLEMENTATION
-	free(gv->allPlayers[0]);
-	free(gv->allPlayers[1]);
-	free(gv->allPlayers[2]);
-	free(gv->allPlayers[3]);
-	free(gv->allPlayers[4]);
-	MapFree(gv->map);
-
+	if (PLAYER_DRACULA) free(gv->allPlayers[PLAYER_DRACULA]);
+	if (MINA_HARKER) free(gv->allPlayers[PLAYER_MINA_HARKER]);
+	if (VAN_HELSING) free(gv->allPlayers[PLAYER_VAN_HELSING]);
+	//if (DR_SEWARD) free(gv->allPlayers[PLAYER_DR_SEWARD]);
+	if (LORD_GODALMING) free(gv->allPlayers[PLAYER_LORD_GODALMING]);
+    
+    MapFree(gv->map);
 	free(gv);
 }
 
