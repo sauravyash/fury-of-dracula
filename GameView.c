@@ -203,6 +203,10 @@ static void draculaLocationHistoryAppend(GameView gv, PlaceId location) {
 		printf("dracula is getting seasick!\n");
 		DRACULA->health -= (LIFE_LOSS_SEA);
 	}
+	if(location == TELEPORT || location == CASTLE_DRACULA) 		{
+		printf("Drac hp +");
+		DRACULA->health += LIFE_GAIN_CASTLE_DRACULA;
+	}
 	// ensure the array is large enough, then append
 	if (index < MAX_LOC_HISTORY_SIZE) {
 		DRACULA->locationHistory[index + 1] = location;
@@ -257,7 +261,7 @@ static void initialisePlayer(GameView gv, Player player) {
 // -- INPUT: GameView
 // -- OUTPUT: void
 static void initialiseGame (GameView gv) {
-	
+
 	gv->roundNumber = 0;
 	gv->score = GAME_START_SCORE;
 	// Always starts with G
@@ -284,7 +288,7 @@ static void initialiseGame (GameView gv) {
 // -- Output: current Player
 // Author: Cindy (Tara edited)
 static Player parseMove (GameView gv, char *string){
-	
+
 	char *c = string;
 	Player curr_player;
 
@@ -295,25 +299,25 @@ static Player parseMove (GameView gv, char *string){
 			    hunterMove(gv, string, PLAYER_LORD_GODALMING);
 			    curr_player = PLAYER_DR_SEWARD;
 			    break;
-			
+
 			case 'S':
 			    printf("it is Dr S\n");
 			    hunterMove(gv, string, PLAYER_DR_SEWARD);
 			    curr_player = PLAYER_VAN_HELSING;
 			    break;
-			
+
 			case 'H':
 			    printf("it is VH\n");
 			    hunterMove(gv, string, PLAYER_VAN_HELSING);
 			    curr_player = PLAYER_MINA_HARKER;
 			    break;
-			
+
 			case 'M':
 			   printf("it is Mina\n");
 			    hunterMove(gv, string, PLAYER_MINA_HARKER);
 			    curr_player = PLAYER_DRACULA;
 			    break;
-			
+
 			case 'D':
 			    printf("it is Drac\n");
 			    draculaMove(gv, string);
@@ -378,7 +382,7 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
 				gv->vampire = NOWHERE;
 				break;
 
-			// Dracula encounter	
+			// Dracula encounter
 			case 'D':
 				printf("Hunter encountered dracula!\n");
 				//i think this part is needed? judging by test line 238 of testGameView, makes it seem like this is whats meant to happen
@@ -422,12 +426,12 @@ static void draculaMove(GameView gv, char *string) {
 
 
     // Append history and current location:
-	
+
 	//Unknown city move
 	if (strcmp(city, "C?") == 0) {
 		printf("unknown city move\n");
 		draculaLocationHistoryAppend(gv, CITY_UNKNOWN);
-	
+
 	}
 
 	// Unknown sea move
@@ -435,7 +439,7 @@ static void draculaMove(GameView gv, char *string) {
 		printf("unknown sea move\n");
 		//DRACULA->health -= (LIFE_LOSS_SEA);
 		draculaLocationHistoryAppend(gv, SEA_UNKNOWN);
-	
+
 	}
 
 	// Hide move ->stays in the city for another round
@@ -443,7 +447,7 @@ static void draculaMove(GameView gv, char *string) {
 		printf("hide move\n");
 		DRACULA->lastHidden = gv->roundNumber;
 		draculaLocationHistoryAppend(gv, curr_place);
-	
+
 	}
 	// Double back move
 	else if (strncmp(city,"D",1) == 0) {
@@ -465,10 +469,16 @@ static void draculaMove(GameView gv, char *string) {
 	}
 
 	// Teleports to castle dracula
-	else if (strcmp(city,"TP") == 0) {
+	else if (curr_place == TELEPORT) {
+		printf("Drac teleported\n");
 		draculaLocationHistoryAppend(gv, TELEPORT);
+
 	}
-	
+
+	else if (curr_place == CASTLE_DRACULA){
+		printf("Drac is at home\n");
+    	draculaLocationHistoryAppend(gv, curr_place);
+	}
 	//Location move that was revealed (ie all other cases)
 	else {
     	draculaLocationHistoryAppend(gv, curr_place);
@@ -480,7 +490,7 @@ static void draculaMove(GameView gv, char *string) {
 
 	while ( i < strlen(string)) {
 		c = &string[i];
-		
+
 		// if there are extra characters indicating trap or immature vampire
 		if ( i > 4) {
 			// trap left the trail due to age
@@ -488,7 +498,7 @@ static void draculaMove(GameView gv, char *string) {
 				printf("Trap has left trail!\n");
 				int numReturnedLocs = 0;
 				bool canFree = false;
-				PlaceId *trail = GvGetLastLocations(gv, PLAYER_DR_SEWARD , TRAIL_SIZE,
+				PlaceId *trail = GvGetLastLocations(gv, PLAYER_DRACULA , TRAIL_SIZE,
 				                            &numReturnedLocs, &canFree);
 				PlaceId brokenTrap = trail[0];
 				trapLocationRemove(gv, brokenTrap);
@@ -496,7 +506,7 @@ static void draculaMove(GameView gv, char *string) {
 				//trap leaves trail (from the move that left trail?)
 				free(trail);
 			}
-			
+
 			// immature vampire has matured
 			else if (strcmp(c,"V") == 0) {
 				//vampire matures
@@ -526,7 +536,7 @@ static void draculaMove(GameView gv, char *string) {
 
 // GV NEW: Allocate memory for new GameView
 // -- INPUT: pastPlays string, messages
-// -- OUTPUT: new GameView 
+// -- OUTPUT: new GameView
 GameView GvNew(char *pastPlays, Message messages[])
 {
 	// Allocate memory for new GV
@@ -571,8 +581,8 @@ void GvFree(GameView gv)
 {
 
 	// free player structs
-	for (int i = 0; i < NUM_PLAYERS; i++)
-		free(gv->allPlayers[i]);
+	//for (int i = 0; i < NUM_PLAYERS; i++)
+	//	free(gv->allPlayers[i]);
 
 	// free map
 	MapFree(gv->map);
