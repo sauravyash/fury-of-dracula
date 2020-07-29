@@ -12,25 +12,25 @@ This is a game client written in C for the COMP2521 assignment 'Fury of Dracula'
 # Tests
 ## Gameview Tests
 ### Default
-Basic initialisation
-After Lord Godalming's turn
-After Mina Harker's turn
-After Dracula's turn
-Encountering Dracula
-Test for Dracula doubling back at sea, and losing blood points (Hunter View)
-Test for Dracula doubling back at sea, and losing blood points (Dracula View)
-Checking that hunters' health points are capped
-Testing a hunter 'dying'
-Testing Dracula doubling back to Castle Dracula
-Testing vampire/trap locations
-Testing trap locations after one is destroyed
-Testing a vampire maturing
-Testing move/location history
-Testing connections
-Checking Galatz road connections (Lord Godalming, Round 1)
-Checking Ionian Sea boat connections (Lord Godalming, Round 1)
-Checking Paris rail connections (Lord Godalming, Round 2)
-Checking Athens rail connections (none)
+- Basic initialisation
+- After Lord Godalming's turn
+- After Mina Harker's turn
+- After Dracula's turn
+- Encountering Dracula
+- Test for Dracula doubling back at sea, and losing blood points (Hunter View)
+- Test for Dracula doubling back at sea, and losing blood points (Dracula View)
+- Checking that hunters' health points are capped
+- Testing a hunter 'dying'
+- Testing Dracula doubling back to Castle Dracula
+- Testing vampire/trap locations
+- Testing trap locations after one is destroyed
+- Testing a vampire maturing
+- Testing move/location history
+- Testing connections
+- Checking Galatz road connections (Lord Godalming, Round 1)
+- Checking Ionian Sea boat connections (Lord Godalming, Round 1)
+- Checking Paris rail connections (Lord Godalming, Round 2)
+- Checking Athens rail connections (none)
 
 ### Custom
 - [ ] Check the game score decreases by 1 each time Dracula finishes his turn.
