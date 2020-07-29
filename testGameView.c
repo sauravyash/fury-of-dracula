@@ -44,74 +44,6 @@ int main(void)
 		GvFree(gv);
 		printf("Test passed!\n");
 	}
-{
-	printf("Testing move/location history--------------------------\n");
-
-	char *trail =
-		"GLS.... SGE.... HGE.... MGE.... DST.V.. "
-		"GCA.... SGE.... HGE.... MGE.... DC?T... "
-		"GGR.... SGE.... HGE.... MGE.... DC?T... "
-		"GAL.... SGE.... HGE.... MGE.... DD3T... "
-		"GSR.... SGE.... HGE.... MGE.... DHIT... "
-		"GSN.... SGE.... HGE.... MGE.... DC?T... "
-		"GMA.... SSTTTV.";
-
-	Message messages[32] = {};
-	GameView gv = GvNew(trail, messages);
-
-	assert(GvGetHealth(gv, PLAYER_DR_SEWARD) ==
-			GAME_START_HUNTER_LIFE_POINTS - 2 * LIFE_LOSS_TRAP_ENCOUNTER);
-	assert(GvGetPlayerLocation(gv, PLAYER_DRACULA) == CITY_UNKNOWN);
-	assert(GvGetVampireLocation(gv) == NOWHERE);
-
-	// Lord Godalming's move/location history
-	{
-		int numMoves = 0; bool canFree = false;
-		PlaceId *moves = GvGetMoveHistory(gv, PLAYER_LORD_GODALMING,
-										  &numMoves, &canFree);
-		assert(numMoves == 7);
-		assert(moves[0] == LISBON);
-		assert(moves[1] == CADIZ);
-		assert(moves[2] == GRANADA);
-		assert(moves[3] == ALICANTE);
-		assert(moves[4] == SARAGOSSA);
-		assert(moves[5] == SANTANDER);
-		assert(moves[6] == MADRID);
-		if (canFree) free(moves);
-	}
-
-	// Dracula's move/location history
-	{
-		int numMoves = 0; bool canFree = false;
-		PlaceId *moves = GvGetMoveHistory(gv, PLAYER_DRACULA,
-										  &numMoves, &canFree);
-		assert(numMoves == 6);
-		assert(moves[0] == STRASBOURG);
-		assert(moves[1] == CITY_UNKNOWN);
-		assert(moves[2] == CITY_UNKNOWN);
-		assert(moves[3] == DOUBLE_BACK_3);
-		assert(moves[4] == HIDE);
-		assert(moves[5] == CITY_UNKNOWN);
-		if (canFree) free(moves);
-	}
-
-	{
-		int numLocs = 0; bool canFree = false;
-		PlaceId *locs = GvGetLocationHistory(gv, PLAYER_DRACULA,
-											 &numLocs, &canFree);
-		assert(numLocs == 6);
-		assert(locs[0] == STRASBOURG);
-		assert(locs[1] == CITY_UNKNOWN);
-		assert(locs[2] == CITY_UNKNOWN);
-		assert(locs[3] == STRASBOURG);
-		assert(locs[4] == STRASBOURG);
-		assert(locs[5] == CITY_UNKNOWN);
-		if (canFree) free(locs);
-	}
-
-	GvFree(gv);
-	printf("Test passed!\n");
-}
 
 	{///////////////////////////////////////////////////////////////////
 
@@ -311,7 +243,7 @@ int main(void)
 
 	{///////////////////////////////////////////////////////////////////
 
-		printf("Testing Dracula doubling back to Castle Dracula-----------------\n");
+		printf("Testing Dracula doubling back to Castle Dracula\n");
 
 		char *trail =
 			"GGE.... SGE.... HGE.... MGE.... DCD.V.. "
@@ -330,7 +262,7 @@ int main(void)
 
 	{///////////////////////////////////////////////////////////////////
 
-		printf("Testing vampire/trap locations----------------\n");
+		printf("Testing vampire/trap locations\n");
 
 		char *trail =
 			"GVI.... SGE.... HGE.... MGE.... DCD.V.. "
@@ -356,7 +288,7 @@ int main(void)
 
 	{///////////////////////////////////////////////////////////////////
 
-		printf("Testing trap locations after one is destroyed------------\n");
+		printf("Testing trap locations after one is destroyed\n");
 
 		char *trail =
 			"GVI.... SGE.... HGE.... MGE.... DBC.V.. "
@@ -385,7 +317,7 @@ int main(void)
 
 	{///////////////////////////////////////////////////////////////////
 
-		printf("Testing a vampire maturing--------------------------\n");
+		printf("Testing a vampire maturing\n");
 
 		char *trail =
 			"GGE.... SGE.... HGE.... MGE.... DC?.V.. "
@@ -411,7 +343,7 @@ int main(void)
 
 	{///////////////////////////////////////////////////////////////////
 
-		printf("Testing move/location history--------------------------\n");
+		printf("Testing move/location history-\n");
 
 		char *trail =
 			"GLS.... SGE.... HGE.... MGE.... DST.V.. "
