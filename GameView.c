@@ -69,7 +69,8 @@ struct gameView {
 };
 
 
-// Private function declarations:
+// PRIVATE FUNCTION DECLARATIONS
+// ****************************************
 
 //------------- MAKING A MOVE -------------
 // Helper function for reachables:
@@ -84,33 +85,35 @@ static void memoryError (const void * input);
 //------------- CONSTRUCTOR/ DESTRUCTOR -------------
 static void initialiseGame (GameView gv);							// Initialise an empty game to fill in
 static Player parseMove (GameView gv, char *string);				// Parse the move string
-static void hunterMove(GameView gv, char *string, Player hunter);	// 
-static void draculaMove(GameView gv, char * string);
-static int PlaceIdToAsciiDoubleBack (PlaceId place);
+static void hunterMove(GameView gv, char *string, Player hunter);	// Apply hunter move from parsed string
+static void draculaMove(GameView gv, char * string);				// Apply dracula move from parsed string
+static int PlaceIdToAsciiDoubleBack (PlaceId place);				// Convert a doubleback placeid to doubleback value
 //static PlaceId asciiToPlaceIdDoubleBack (char * c);
-static void trapLocationAppend(GameView gv, PlaceId location);
-static void trapLocationRemove(GameView gv, PlaceId location);
-static void checkHunterHealth(GameView gv,Player hunter);\
-//Checks current hunter's health and sends them to hospital if needed
+static void trapLocationAppend(GameView gv, PlaceId location);		// Add a trap location
+static void trapLocationRemove(GameView gv, PlaceId location);		// Remove a trap location
+static void checkHunterHealth(GameView gv,Player hunter);			// Check the health of a hunter, sends them to hospital if needed
+
+// ****************************************
+
 
 // MEMORY ERROR: Helper function to check correct memory allocation. Exits if
 // memory was not correctly allocated
 // -- INPUT: pointer to a malloced object
 // -- OUTPUT: void, but prints error message and exits code 1
-static void memoryError (const void * input){
+static void memoryError (const void * input) {
 	if (input == NULL) {
 		fprintf(stderr, "Couldn't allocate Memory!\n");
 		exit(EXIT_FAILURE);
 	}
 }
 
-int comparator(const void *p, const void *q)
-{
-	//Return value meaning:
-	//<0 The element pointed by p goes before the element pointed by q
-	//0  The element pointed by p is equivalent to the element pointed by q
-	//>0 The element pointed by p goes after the element pointed by q
-
+// COMPARATOR: Compare the order of the elements pointed to by *p and *q. Returns:
+//	<0 If the element pointed by p goes before the element pointed by q,
+//	0  If the element pointed by p is equivalent to the element pointed by q,
+//	>0 If the element pointed by p goes after the element pointed by q.
+// -- INPUT: two pointers, *p and *q
+// -- OUTPUT: int
+int comparator(const void *p, const void *q) {
     // Get the values at given addresses
     char * l = (char *)p;
     char * r = (char *)q;
@@ -155,10 +158,12 @@ static int PlaceIdToAsciiDoubleBack (PlaceId place) {
 	if(place == DOUBLE_BACK_5) return 5;
 	return NOWHERE;
 }
-//TRAP LOCATION REMOVE: Removes a specified location from trap location array
+
+// TRAP LOCATION REMOVE: Removes a specified location from trap location array
 // -- INPUT: GameView, PlaceId
 // -- OUTPUT: void
 static void trapLocationRemove(GameView gv, PlaceId location) {
+	// todo
 	//find index of trap location
 	//remove from location
 	//shuffle array
@@ -171,10 +176,16 @@ static void trapLocationRemove(GameView gv, PlaceId location) {
 // -- OUTPUT: void
 static void hunterLocationHistoryAppend(GameView gv, Player hunter, PlaceId location) {
 	int index = HUNTER->currentLocationIndex;
+	// ensure the array is large enough, then append
 	if (index < MAX_LOC_HISTORY_SIZE) {
 		HUNTER->locationHistory[index + 1] = location;
 		HUNTER->currentLocation = location;
 		HUNTER->currentLocationIndex++;
+	}
+	// otherwise print error and exit
+	else {
+		fprintf(stderr, "%s", "location history indexed out of bounds, aborting");
+		exit(EXIT_FAILURE);
 	}
 	return;
 }
@@ -186,72 +197,73 @@ static void hunterLocationHistoryAppend(GameView gv, Player hunter, PlaceId loca
 // -- OUTPUT: void
 static void draculaLocationHistoryAppend(GameView gv, PlaceId location) {
 	int index = DRACULA->currentLocationIndex;
+	printf("appending location %s\n",placeIdToName(location));
 	//if dracula is at sea, he loses health
-	printf("appending location %s\n",placeIdToName(location) );
 	if(placeIdToType(location) == SEA) {
 		printf("dracula is getting seasick!\n");
 		DRACULA->health -= (LIFE_LOSS_SEA);
 	}
+	// ensure the array is large enough, then append
 	if (index < MAX_LOC_HISTORY_SIZE) {
 		DRACULA->locationHistory[index + 1] = location;
 		DRACULA->currentLocation = location;
 		DRACULA->currentLocationIndex++;
 	}
+	// otherwise print error and exit
+	else {
+		fprintf(stderr, "%s", "location history indexed out of bounds, aborting");
+		exit(EXIT_FAILURE);
+	}
 	return;
 }
-// 
+
+// CHECK HUNTER HEALTH: Checks if a hunter has died, if so, moves them to hospital
+// -- INPUT: GameView, Player
+// -- OUTPUT: void
 static void checkHunterHealth(GameView gv,Player hunter){
 	if(gv->allPlayers[hunter]->health <= 0) {
 		printf("hunter died!\n");
 		gv->allPlayers[hunter]->health = 0;
 		gv->score -= SCORE_LOSS_HUNTER_HOSPITAL;
 		hunterLocationHistoryAppend(gv, hunter, HOSPITAL_PLACE);
+		// todo need to update hunter HP?
 	}
 	return;
 }
 
-static void initialiseGame (GameView gv) {
+// INITIALISE PLAYER: Initialises a player to defaults, assigns memory
+// -- INPUT: GameView, Player
+// -- OUTPUT: void
+static void initialisePlayer(GameView gv, Player player) {
+	if (player == PLAYER_DRACULA) {
+		DRACULA = malloc(sizeof(PlayerData));
+		memoryError (DRACULA);
+		DRACULA -> health = GAME_START_BLOOD_POINTS;
+		DRACULA -> currentLocation = NOWHERE;
+		DRACULA -> currentLocationIndex = -1;
+		DRACULA -> locationHistory[0] = '\0';
+	}
+	else {
+		PLAYER = malloc(sizeof(PlayerData));
+		memoryError (LORD_GODALMING);
+		PLAYER -> health = 	GAME_START_HUNTER_LIFE_POINTS;
+		PLAYER -> currentLocation = NOWHERE;
+		PLAYER -> currentLocationIndex = -1;
+		PLAYER -> locationHistory[0] = '\0';
+	}
+}
 
+// INITIALISE GAME: Assigns memory and sets values to default/null values
+static void initialiseGame (GameView gv) {
 	gv->roundNumber = 0;
 	gv->score = GAME_START_SCORE;
-	//Always starts with G
+	// Always starts with G
 	gv->currentPlayer = PLAYER_LORD_GODALMING;
 
 	// Allocate memory for players & Initialise starting information
-	LORD_GODALMING = malloc(sizeof(PlayerData));
-	memoryError (LORD_GODALMING);
-	LORD_GODALMING -> health = 	GAME_START_HUNTER_LIFE_POINTS;
-	LORD_GODALMING -> currentLocation = NOWHERE;
-	LORD_GODALMING -> currentLocationIndex = -1;
-	LORD_GODALMING -> locationHistory[0] = '\0';
-
-	DR_SEWARD = malloc(sizeof(PlayerData));
-	memoryError (DR_SEWARD);
-	DR_SEWARD -> health = 	GAME_START_HUNTER_LIFE_POINTS;
-	DR_SEWARD -> currentLocation = NOWHERE;
-	DR_SEWARD -> currentLocationIndex = -1;
-	DR_SEWARD -> locationHistory[0] = '\0';
-
-	VAN_HELSING = malloc(sizeof(PlayerData));
-	memoryError (VAN_HELSING);
-	VAN_HELSING -> health = 	GAME_START_HUNTER_LIFE_POINTS;
-	VAN_HELSING -> currentLocation = NOWHERE;
-	VAN_HELSING -> currentLocationIndex = -1;
-	VAN_HELSING -> locationHistory[0] = '\0';
-
-	MINA_HARKER = malloc(sizeof(PlayerData));
-	memoryError (MINA_HARKER);
-	MINA_HARKER -> health = 	GAME_START_HUNTER_LIFE_POINTS;
-	MINA_HARKER -> currentLocation = NOWHERE;
-	MINA_HARKER -> currentLocationIndex = -1;
-	MINA_HARKER -> locationHistory[0] = '\0';
-
-	DRACULA = malloc(sizeof(PlayerData));
-	memoryError (DRACULA);
-	DRACULA -> health = GAME_START_BLOOD_POINTS;
-	DRACULA -> currentLocation = NOWHERE;
-	DRACULA -> currentLocationIndex = -1;
-	DRACULA -> locationHistory[0] = '\0';
+	for (int player = 0; player < NUM_PLAYERS; player++) {
+		initialisePlayer(gv, player);
+	}
 
     // No trap locations at start of game, therefore no array yet..
 	//gv->trapLocations = NULL;
