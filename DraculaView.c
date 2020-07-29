@@ -134,15 +134,15 @@ PlaceId DvGetPlayerLocation(DraculaView dv, Player player)
 
 PlaceId DvGetVampireLocation(DraculaView dv)
 {
-	return dv->allPlayers[PLAYER_DRACULA]->currentLocation;
+	//the immature vampire location
+	return dv->vampire;
 }
 
 PlaceId *DvGetTrapLocations(DraculaView dv, int *numTraps)
 {
-	// TODO
 	*numTraps = dv->trapLocationsIndex + 1;
 	PlaceId *traps = malloc(sizeof(PlaceId) * *numTraps);
-	
+
 	for (int i = 0; i < *numTraps; i++) {
 		traps[i] = dv->trapLocations[i];
 	}
@@ -168,7 +168,7 @@ PlaceId *DvWhereCanIGo(DraculaView dv, int *numReturnedLocs)
 	// 1. We need to access the map :)
 	Map map = dv->map;
 
-	// create dynamically allocated array 
+	// create dynamically allocated array
 	PlaceId *visited = malloc(sizeof(PlaceId));
 
 	// get connections from current location
@@ -213,7 +213,7 @@ PlaceId *DvWhereCanIGoByType(DraculaView dv, bool road, bool boat,
 	// 1. We need to access the map :)
 	Map map = dv->map;
 
-	// create dynamically allocated array 
+	// create dynamically allocated array
 	PlaceId *visited = malloc(sizeof(PlaceId));
 
 	// get connections from current location
