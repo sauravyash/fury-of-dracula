@@ -341,106 +341,6 @@ int main(void)
 		printf("Test passed!\n");
 	}
 
-	{///////////////////////////////////////////////////////////////////
-
-		printf("-----------------------Testing a hunter resting/staying in same city with no life point lost\n");
-
-		char *trail =
-			"GGE.... SGE.... HGE.... MST.... DC?.V.. "
-			"GLD.... SST.... HBE.... MGE.... DC?T... "
-			"GGE.... SST.... HGE.... MSZ.... DC?T... ";
-
-
-		Message messages[35] = {};
-		GameView gv = GvNew(trail, messages);
-		assert(GvGetHealth(gv, PLAYER_DR_SEWARD) ==
-				GAME_START_HUNTER_LIFE_POINTS);
-		assert(GvGetHealth(gv, PLAYER_VAN_HELSING) <= GAME_START_HUNTER_LIFE_POINTS);
-		assert(GvGetHealth(gv, PLAYER_LORD_GODALMING) <= GAME_START_HUNTER_LIFE_POINTS);
-		assert(GvGetHealth(gv, PLAYER_DR_SEWARD) <= GAME_START_HUNTER_LIFE_POINTS);
-		assert(GvGetHealth(gv, PLAYER_MINA_HARKER) <= GAME_START_HUNTER_LIFE_POINTS);
-		assert(GvGetScore(gv) == GAME_START_SCORE
-								 - 3 * SCORE_LOSS_DRACULA_TURN);
-		assert(GvGetPlayerLocation(gv, PLAYER_DRACULA) == CITY_UNKNOWN);
-
-		GvFree(gv);
-		printf("Test passed!\n");
-	}
-
-	{///////////////////////////////////////////////////////////////////
-
-		printf("---------------------Testing a hunter resting/staying in same city after trap encounter\n");
-
-		char *trail =
-			"GGE.... SGE.... HGE.... MST.... DC?.V.. "
-			"GLD.... SST.... HBEV... MGE.... DC?T... "
-			"GGE.... SGE.... HGE.... MSZ.... DC?T... "
-			"GGE.... SST.... HGE.... MSZ.... DC?T... ";
-
-		Message messages[35] = {};
-		GameView gv = GvNew(trail, messages);
-		//loses 2 health, gaines 3
-		assert(GvGetHealth(gv, PLAYER_VAN_HELSING) <= GAME_START_HUNTER_LIFE_POINTS);
-		assert(GvGetHealth(gv, PLAYER_LORD_GODALMING) <= GAME_START_HUNTER_LIFE_POINTS);
-		assert(GvGetHealth(gv, PLAYER_DR_SEWARD) <= GAME_START_HUNTER_LIFE_POINTS);
-		assert(GvGetHealth(gv, PLAYER_MINA_HARKER) <= GAME_START_HUNTER_LIFE_POINTS);
-		assert(GvGetScore(gv) == GAME_START_SCORE
-								 - 4 * SCORE_LOSS_DRACULA_TURN);
-		assert(GvGetPlayerLocation(gv, PLAYER_DRACULA) == CITY_UNKNOWN);
-
-		GvFree(gv);
-		printf("Test passed!\n");
-	}
-
-	{///////////////////////////////////////////////////////////////////
-
-		printf("---------------------Testing a hunter resting/staying in same city after trap encounter\n");
-
-		char *trail =
-			"GGE.... SGE.... HGE.... MST.... DC?.V.. "
-			"GLD.... SST.... HBEV... MGE.... DC?T... "
-			"GGED... SGE.... HGE.... MSZ.... DC?T... "
-			"GGE.... SST.... HGE... MSZ.... DC?T... ";
-
-		Message messages[35] = {};
-		GameView gv = GvNew(trail, messages);
-		//loses 2 health, gaines 3
-		assert(GvGetHealth(gv, PLAYER_VAN_HELSING) <= GAME_START_HUNTER_LIFE_POINTS);
-		assert(GvGetHealth(gv, PLAYER_LORD_GODALMING) == GAME_START_HUNTER_LIFE_POINTS - LIFE_LOSS_DRACULA_ENCOUNTER + LIFE_GAIN_REST);
-		assert(GvGetHealth(gv, PLAYER_DR_SEWARD) <= GAME_START_HUNTER_LIFE_POINTS);
-		assert(GvGetHealth(gv, PLAYER_MINA_HARKER) <= GAME_START_HUNTER_LIFE_POINTS);
-		assert(GvGetScore(gv) == GAME_START_SCORE
-								 - 4 * SCORE_LOSS_DRACULA_TURN);
-		assert(GvGetPlayerLocation(gv, PLAYER_DRACULA) == CITY_UNKNOWN);
-
-		GvFree(gv);
-		printf("Test passed!\n");
-	}
-
-	{///////////////////////////////////////////////////////////////////
-
-		printf("---------------------Testing a hunter resting/staying in same city after dracula encounter\n");
-
-		char *trail =
-			"GGE.... SGE.... HGE.... MST.... DC?.V.. "
-			"GLD.... SST.... HBEV... MGE.... DC?T... "
-			"GGED... SGE.... HGE.... MSZ.... DC?T... "
-			"GGE.... SSTD...";
-
-		Message messages[35] = {};
-		GameView gv = GvNew(trail, messages);
-		//loses 2 health, gaines 3
-		assert(GvGetHealth(gv, PLAYER_VAN_HELSING) <= GAME_START_HUNTER_LIFE_POINTS);
-		assert(GvGetHealth(gv, PLAYER_LORD_GODALMING) == GAME_START_HUNTER_LIFE_POINTS - LIFE_LOSS_DRACULA_ENCOUNTER + LIFE_GAIN_REST);
-		assert(GvGetHealth(gv, PLAYER_DR_SEWARD) <= GAME_START_HUNTER_LIFE_POINTS - LIFE_LOSS_DRACULA_ENCOUNTER);
-		assert(GvGetHealth(gv, PLAYER_MINA_HARKER) <= GAME_START_HUNTER_LIFE_POINTS);
-		assert(GvGetScore(gv) == GAME_START_SCORE
-								 - 3 * SCORE_LOSS_DRACULA_TURN);
-		assert(GvGetPlayerLocation(gv, PLAYER_DRACULA) == CITY_UNKNOWN);
-
-		GvFree(gv);
-		printf("Test passed!\n");
-	}
 
 	{///////////////////////////////////////////////////////////////////
 
@@ -638,8 +538,112 @@ int main(void)
 		printf("Test passed!\n");
 	}
 
-    printf("|| CUSTOM TESTS ||\n") 
-    {
+    printf("|| CUSTOM TESTS ||\n");
+	{///////////////////////////////////////////////////////////////////
+
+		printf("Testing a hunter resting/staying in same city" 
+                " with no life point lost.\n");
+
+		char *trail =
+			"GGE.... SGE.... HGE.... MST.... DC?.V.. "
+			"GLD.... SST.... HBE.... MGE.... DC?T... "
+			"GGE.... SST.... HGE.... MSZ.... DC?T... ";
+
+
+		Message messages[35] = {};
+		GameView gv = GvNew(trail, messages);
+		assert(GvGetHealth(gv, PLAYER_DR_SEWARD) ==
+				GAME_START_HUNTER_LIFE_POINTS);
+		assert(GvGetHealth(gv, PLAYER_VAN_HELSING) <= GAME_START_HUNTER_LIFE_POINTS);
+		assert(GvGetHealth(gv, PLAYER_LORD_GODALMING) <= GAME_START_HUNTER_LIFE_POINTS);
+		assert(GvGetHealth(gv, PLAYER_DR_SEWARD) <= GAME_START_HUNTER_LIFE_POINTS);
+		assert(GvGetHealth(gv, PLAYER_MINA_HARKER) <= GAME_START_HUNTER_LIFE_POINTS);
+		assert(GvGetScore(gv) == GAME_START_SCORE
+								 - 3 * SCORE_LOSS_DRACULA_TURN);
+		assert(GvGetPlayerLocation(gv, PLAYER_DRACULA) == CITY_UNKNOWN);
+
+		GvFree(gv);
+		printf("Test passed!\n");
+	}
+
+	{///////////////////////////////////////////////////////////////////
+
+		printf("Testing a hunter resting/staying in same" 
+                " city after trap encounter\n");
+
+		char *trail =
+			"GGE.... SGE.... HGE.... MST.... DC?.V.. "
+			"GLD.... SST.... HBEV... MGE.... DC?T... "
+			"GGE.... SGE.... HGE.... MSZ.... DC?T... "
+			"GGE.... SST.... HGE.... MSZ.... DC?T... ";
+
+		Message messages[35] = {};
+		GameView gv = GvNew(trail, messages);
+		// loses 2 health, gains 3
+		assert(GvGetHealth(gv, PLAYER_VAN_HELSING) <= GAME_START_HUNTER_LIFE_POINTS);
+		assert(GvGetHealth(gv, PLAYER_LORD_GODALMING) <= GAME_START_HUNTER_LIFE_POINTS);
+		assert(GvGetHealth(gv, PLAYER_DR_SEWARD) <= GAME_START_HUNTER_LIFE_POINTS);
+		assert(GvGetHealth(gv, PLAYER_MINA_HARKER) <= GAME_START_HUNTER_LIFE_POINTS);
+		assert(GvGetScore(gv) == GAME_START_SCORE
+								 - 4 * SCORE_LOSS_DRACULA_TURN);
+		assert(GvGetPlayerLocation(gv, PLAYER_DRACULA) == CITY_UNKNOWN);
+
+		GvFree(gv);
+		printf("Test passed!\n");
+	}
+
+	{///////////////////////////////////////////////////////////////////
+
+		printf("Testing a hunter resting/staying in same city after trap encounter\n");
+
+		char *trail =
+			"GGE.... SGE.... HGE.... MST.... DC?.V.. "
+			"GLD.... SST.... HBEV... MGE.... DC?T... "
+			"GGED... SGE.... HGE.... MSZ.... DC?T... "
+			"GGE.... SST.... HGE... MSZ.... DC?T... ";
+
+		Message messages[35] = {};
+		GameView gv = GvNew(trail, messages);
+		// loses 2 health, gains 3
+		assert(GvGetHealth(gv, PLAYER_VAN_HELSING) <= GAME_START_HUNTER_LIFE_POINTS);
+		assert(GvGetHealth(gv, PLAYER_LORD_GODALMING) == 
+                GAME_START_HUNTER_LIFE_POINTS - LIFE_LOSS_DRACULA_ENCOUNTER + LIFE_GAIN_REST);
+		assert(GvGetHealth(gv, PLAYER_DR_SEWARD) <= GAME_START_HUNTER_LIFE_POINTS);
+		assert(GvGetHealth(gv, PLAYER_MINA_HARKER) <= GAME_START_HUNTER_LIFE_POINTS);
+		assert(GvGetScore(gv) == GAME_START_SCORE
+								 - 4 * SCORE_LOSS_DRACULA_TURN);
+		assert(GvGetPlayerLocation(gv, PLAYER_DRACULA) == CITY_UNKNOWN);
+
+		GvFree(gv);
+		printf("Test passed!\n");
+	}
+
+	{///////////////////////////////////////////////////////////////////
+
+		printf("Testing a hunter resting/staying in same "
+                "city after dracula encounter\n");
+
+		char *trail =
+			"GGE.... SGE.... HGE.... MST.... DC?.V.. "
+			"GLD.... SST.... HBEV... MGE.... DC?T... "
+			"GGED... SGE.... HGE.... MSZ.... DC?T... "
+			"GGE.... SSTD...";
+
+		Message messages[35] = {};
+		GameView gv = GvNew(trail, messages);
+		//loses 2 health, gaines 3
+		assert(GvGetHealth(gv, PLAYER_VAN_HELSING) <= GAME_START_HUNTER_LIFE_POINTS);
+		assert(GvGetHealth(gv, PLAYER_LORD_GODALMING) == GAME_START_HUNTER_LIFE_POINTS - LIFE_LOSS_DRACULA_ENCOUNTER + LIFE_GAIN_REST);
+		assert(GvGetHealth(gv, PLAYER_DR_SEWARD) <= GAME_START_HUNTER_LIFE_POINTS - LIFE_LOSS_DRACULA_ENCOUNTER);
+		assert(GvGetHealth(gv, PLAYER_MINA_HARKER) <= GAME_START_HUNTER_LIFE_POINTS);
+		assert(GvGetScore(gv) == GAME_START_SCORE
+								 - 3 * SCORE_LOSS_DRACULA_TURN);
+		assert(GvGetPlayerLocation(gv, PLAYER_DRACULA) == CITY_UNKNOWN);
+
+		GvFree(gv);
+		printf("Test passed!\n");
+	}
+    {///////////////////////////////////////////////////////////////////////
         printf("Check decremented game score each time Dracula finishes his turn.\n");
  
 		char *trail =
@@ -647,58 +651,61 @@ int main(void)
 
 		Message messages[5] = {};
 		GameView gv = GvNew(trail, messages);
-        assert(gv->score == 366 - 1);
+        assert(GvGetScore(gv) == GAME_START_SCORE - SCORE_LOSS_DRACULA_TURN);
+        GvFree(gv);
         printf("Test Passed!\n");
     }
-
-    {
+    { //////////////////////////////////////////////////////////////////////
         printf("Check Dracula is permitted to exceed 40 blood points.\n");
-        
         char *trail =
-			"GST.... SLV.... HLS.... MGO.... DBU.V.."
-            "GBU.... SLV.... HLS.... MGO.... DST.V.."
-            "GST.... SLV.... HLS.... MGO.... DZU.V.."
-            "GZU.... SLV.... HLS.... MGO.... DGE.V..";
+			"GST.... SLV.... HLS.... MGO.... DKL.V.."
+            "GBU.... SLV.... HLS.... MGO.... DCD.V..";
 
 		Message messages[5] = {};
 		GameView gv = GvNew(trail, messages);
-        
-        //score = 366 - 3 - 6
-        assert(gv->score == 357);
+        assert(GvGetHealth(gv, PLAYER_DRACULA) 
+                == GAME_START_BLOOD_POINTS + LIFE_GAIN_CASTLE_DRACULA);
+        printf("Test Passed\n");
+    } 
+    { //////////////////////////////////////////////////////////////////////
+        printf("A hunter gains 3 life points each time they rest\n");
+        char *trail =
+			"GLS.... SGE.... HGE.... MGE.... DST.V.. "
+			"GCAD... SGE.... HGE.... MGE.... DC?T... "
+			"GCA.... SGE.... HGE.... MGE.... DC?T... ";
 
-        printf("Test Passed");
-    }
-    {
-        printf("Check Dracula is permitted to exceed 40 blood points.\n");
-    }
-    {
-        printf("Check Dracula regains 10 blood points if he is in Castle Dracula"
-               " at the end of his turn including being auto teleported there.");
-    }
-    {
-        printf("Test Hunters cannot exceed 9 life points.\n");
-    }
-    {
-        printf("A hunter gains 3 life points each time they rest");
-    }
-	/*
-    {/////////////////////////////////////////////////////////
-        printf("Testing hunter death\n");
-
-		char *trail =
-			"GGE.... SGE.... HGE.... MGE.... DST.... "
-			"GST.... SGE.... HGE.... MGE.... DC?T... "
-			"GGE.... SGE.... HGE.... MGE.... DC?.... "
-			"GST...."
-
-
-		Message messages[16] = {};
+        Message messages[5] = {};
 		GameView gv = GvNew(trail, messages);
+            
+        assert(GvGetHealth(gv, PLAYER_LORD_GODALMING) 
+                    == GAME_START_HUNTER_LIFE_POINTS
+                        - LIFE_LOSS_DRACULA_ENCOUNTER + LIFE_GAIN_REST);
+        GvFree(gv);
+        printf("Test Passed\n");
+    }
+    { //////////////////////////////////////////////////////////////////////
+        printf("Check that immature vampires can be killed within "
+                "6 rounds of being spawned.\n");
+        char *trail =
+			"GZU.... SGE.... HGE.... MGE.... DST.V.. "
+			"GZU.... SGE.... HGE.... MGE.... DC?T... "
+			"GZU.... SGE.... HGE.... MGE.... DC?T... "
+			"GZU.... SGE.... HGE.... MGE.... DC?T... "
+			"GZU.... SGE.... HGE.... MGE.... DC?T... "
+			"GZUV... SGE.... HGE.... MGE.... DC?T... ";
 
-
-    }*/
-
-	printf("ALL PROVIDED TESTS PASSED!!!\n");
+        Message messages[5] = {};
+		GameView gv = GvNew(trail, messages);
+            
+        assert(GvGetScore(gv) 
+                    == GAME_START_SCORE 
+                        - 6 * SCORE_LOSS_DRACULA_TURN);
+        GvFree(gv);
+        printf("Test Passed\n");
+    }   
+	
+    
+    printf("ALL PROVIDED TESTS PASSED!!!\n");
 
 	return EXIT_SUCCESS;
 }

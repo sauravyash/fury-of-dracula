@@ -31,36 +31,30 @@ This is a game client written in C for the COMP2521 assignment 'Fury of Dracula'
 - Checking Paris rail connections (Lord Godalming, Round 2)
 - Checking Athens rail connections (none)
 
-## Gameview Tests
+## Game Tests
 - [x] Check the game score decreases by 1 each time Dracula finishes his turn.
 - [x] Check the game score decreases by 6 each time a hunter loses all their life points and is teleported to the Hospital of St Joseph and St Mary.
-- [ ] Check the game score decreases by 13 each time a vampire matures.
+- [x] Check the game score decreases by 13 each time a vampire matures.
+- [x] A hunter gains 3 life points each time they rest
+- [x] test drcula losing 2 health @ sea
 
-- [ ] A hunter gains 3 life points each time they rest
-- [ ] Check that the sequence of Character moves is Lord Godalming, Dr. Seward, Van Helsing, Mina Harker, Dracula
-- [ ] Check Hunter teleportation when reaching health <= 0 and helth is regained on next turn
-- [ ] Check that Dracula can never move to the Hospital of St Joseph and St Mary. -> MAKE AN ABORT
-- [ ] Test Dracula can't make a HIDE move if he has made a HIDE move in the last 5 rounds.
-
-- [ ] test drcula losing 2 health @ sea
-- [ ] Check that HIDE moves are revealed when they become the last move in Dracula's trail.
-
-## Hunter View Tests
-- [ ] Test Hunters cannot exceed 9 life points.
-- [ ] Check that immature vampires can be killed within 6 moves of being spawned
+## Hunter Tests
+- [x] Test Hunters cannot exceed 9 life points.
+- [x] Check that immature vampires can be killed within 6 rounds of being spawned
 - [ ] Test Road, Rail and Sea moves
 - [ ] Test Rail move follows the sum rules (sum = round number + hunter number):
   - [ ] sum mod 4 is 0: The hunter may not move by rail this turn.
   - [ ] sum mod 4 is 1: The maximum allowed distance via rail is 1.
   - [ ] sum mod 4 is 2: The maximum allowed distance via rail is 2.
   - [ ] sum mod 4 is 3: The maximum allowed distance via rail is 3.
-- [ ] Check that Dracula cannot make a LOCATION move to a location if he has already made a LOCATION move to that same location in the last 5 rounds.
 - [ ] Test Location move that isnt adjacent to the current pos.
 - [ ] Test collaborative research move (when all hunters rest as their last move, they reveal dracula's last moves up to his last Location move)
 - [ ] Check that the hunters loses 2 life points if they encounter a trap.
 - [ ] Check that the hunters loses 4 life points if they encounter Dracula.
+- [ ] Check Hunter teleportation when reaching health <= 0 and health is regained on next turn
+- [ ] Check that HIDE moves are revealed when they become the last move in Dracula's trail.
 
-## Dracula View Tests
+## Dracula Tests
 - [ ] Test Dracula cannot make a HIDE move while he is at sea.
 - [ ] Test Location move that isnt adjacent to the current pos.
 - [ ] check for encounter when dracula move to a city
@@ -75,11 +69,14 @@ This is a game client written in C for the COMP2521 assignment 'Fury of Dracula'
 - [ ] Check Dracula loses 10 blood points each time he encounters a hunter.
 - [ ] Check Dracula loses 2 blood points if he is at sea at the end of his turn.
 - [ ] Check Dracula regains 10 blood points if he is in Castle Dracula at the end of his turn, even if he has been automagically teleported there.
-
+- [ ] Check that Dracula cannot make a LOCATION move to a location if he has already made a LOCATION move to that same location in the last 5 rounds.
+- [ ] Check that Dracula can never move to the Hospital of St Joseph and St Mary. -> MAKE AN ABORT
+- [ ] Test Dracula can't make a HIDE move if he has made a HIDE move in the last 5 rounds.
 
 ## IDK where to test (plz fix) 
 - [ ] Test for end of game
   - [ ] if dracula runs out of life points    -> the HUNT
   - [ ] if Game points reaches 0              -> the HUNT
 
+- [ ] Check that the sequence of Character moves is Lord Godalming, Dr. Seward, Van Helsing, Mina Harker, Dracula
 
