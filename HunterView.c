@@ -160,7 +160,6 @@ HunterView HvNew(char *pastPlays, Message messages[])
 	// Iterate through past plays...
 	char *token = strtok(string, " ");
 	while (token != NULL) {
-		// printf("current token: %d\n", token);
 		new->currentPlayer = parseMove(new, token);
 		token = strtok(NULL, " ");
 	}
@@ -272,7 +271,6 @@ PlaceId *HvGetShortestPathTo(HunterView hv, Player hunter, PlaceId dest,
 	// Make Queue to travel breadth-first
 	Queue q = newQueue();
     QueueJoin(q, src);
-    printf("Queue is made\n");
 
     while (!found && !QueueIsEmpty(q)) {
         int prev_place = QueueLeave(q);
@@ -283,7 +281,6 @@ PlaceId *HvGetShortestPathTo(HunterView hv, Player hunter, PlaceId dest,
 		int prev = prev_place;
 		while (prev != src) {
 		    path_count++;
-		    printf("counting places visited %d\n", path_count);
 		    prev = visited[prev];
         }
         hv->temp_round = hv->roundNumber + path_count;
@@ -291,19 +288,14 @@ PlaceId *HvGetShortestPathTo(HunterView hv, Player hunter, PlaceId dest,
 		int numLocs;
 		PlaceId *list = HvWhereCanTheyGo(hv, hunter, &numLocs);
 		
-		printf("Found list and number of places...\n");
 		if (prev_place == des) {
 			found = 1;
-			printf("A match is made!!\n");
 		} else for (int i = 1; i < numLocs; i++) {
-		    printf("Enter Loop\n");
 			int new_place = list[i];
 			if (visited[new_place] == -1 && prev_place != new_place) {
-				printf("New place added to queue\n");
 				visited[new_place] = prev_place;
 				QueueJoin(q, new_place);
 				if (new_place == dest) {
-					printf("Match (2) is made!!\n");
 					pathFound = 1;	
 				}
 			}    
@@ -311,9 +303,10 @@ PlaceId *HvGetShortestPathTo(HunterView hv, Player hunter, PlaceId dest,
     }
 	dropQueue(q);
 	
-	printf("visited[dest] = %d\n", visited[des]);
-    
-    printf("CASE 7\n");
+	// Reset values:
+	hv->temp_place = NOWHERE;
+	hv->temp_round = -1;
+
 	if (pathFound == 0) {
 		return 0;
 	}
@@ -351,73 +344,72 @@ PlaceId *HvGetShortestPathTo(HunterView hv, Player hunter, PlaceId dest,
 ////////////////////////////////////////////////////////////////////////
 // Making a Move
 
-PlaceId *HvWhereCanIGo(HunterView hv, int *numReturnedLocs)
+PlaceId *HvWhereCanIGo (HunterView hv, int *numReturnedLocs)
 {
 	// Set values:
 	Player hunter = HvGetPlayer(hv);
-	Round round = HvGetRound(hv);
+	Round round = HvGetRound(hv) + 1;
 	PlaceId from = HvGetPlayerLocation(hv, hunter);
 	PlaceId *locs = NULL;
 	int numLocs = -1;
 	
 	// Use function:
-	locs = HvGetReachable
-	                (hv, hunter, round, from, &numLocs);
+	locs = HvGetReachable (hv, hunter, round, from, &numLocs);
 	
 	// Return values:
 	*numReturnedLocs = numLocs;
 	return locs;
 }
 
-PlaceId *HvWhereCanIGoByType(HunterView hv, bool road, bool rail,
+PlaceId *HvWhereCanIGoByType (HunterView hv, bool road, bool rail,
                              bool boat, int *numReturnedLocs)
 {
 	// Set values:
 	Player hunter = HvGetPlayer(hv);
-	Round round = HvGetRound(hv);
+	Round round = HvGetRound(hv) + 1;
 	PlaceId from = HvGetPlayerLocation(hv, hunter);
 	PlaceId *locs = NULL;
 	int numLocs = -1;
 	
 	// Use function:
-	locs = HvGetReachableByType
-	                (hv, hunter, round, from, road, rail, boat, &numLocs);
+	locs = HvGetReachableByType (hv, hunter, round, from, road, rail, boat, &numLocs);
 	
 	// Return values:
 	*numReturnedLocs = numLocs;
 	return locs;
 }
 
-PlaceId *HvWhereCanTheyGo(HunterView hv, Player player, int *numReturnedLocs)
+PlaceId *HvWhereCanTheyGo (HunterView hv, Player player, int *numReturnedLocs)
 {
 	// Set values:
-	Round round = HvGetRound(hv);
+	Round round = hv->allPlayers[player]->currentLocationIndex + 1;
+	if (round == -1) round = 0;
+	if (player == HvGetPlayer(hv)) round++;
 	PlaceId from = HvGetPlayerLocation(hv, player);
 	PlaceId *locs = NULL;
 	int numLocs = -1;
 	
 	// Use function:
-	locs = HvGetReachable
-	                (hv, player, round, from, &numLocs);
+	locs = HvGetReachable (hv, player, round, from, &numLocs);
 	
 	// Return values:
 	*numReturnedLocs = numLocs;
 	return locs;
 }
 
-PlaceId *HvWhereCanTheyGoByType(HunterView hv, Player player,
+PlaceId *HvWhereCanTheyGoByType (HunterView hv, Player player,
                                 bool road, bool rail, bool boat,
                                 int *numReturnedLocs)
 {
 	// Set values:
-	Round round = HvGetRound(hv);
+	Round round = hv->allPlayers[player]->currentLocationIndex + 1;
+	if (round == -1) round = 0;
 	PlaceId from = HvGetPlayerLocation(hv, player);
 	PlaceId *locs = NULL;
 	int numLocs = -1;
 	
 	// Use function:
-	locs = HvGetReachableByType
-	                (hv, player, round, from, road, rail, boat, &numLocs);
+	locs = HvGetReachableByType (hv, player, round, from, road, rail, boat, &numLocs);
 	
 	// Return values:
 	*numReturnedLocs = numLocs;
@@ -464,7 +456,6 @@ static void sortPlaces(PlaceId *places, int numPlaces) {
 // -- INPUT: HunterView, PlaceId to append
 // -- OUTPUT: void
 static void trapLocationAppend(HunterView hv, PlaceId location) {
-	printf("trap added!\n");
 	int index = hv->trapLocationsIndex;
 	if (index < MAX_LOC_HISTORY_SIZE) {
 		hv->trapLocations[index + 1] = location;
@@ -493,7 +484,6 @@ static int PlaceIdToAsciiDoubleBack (PlaceId place) {
 // -- INPUT: HunterView, PlaceId
 // -- OUTPUT: void
 static void trapLocationRemove(HunterView hv, PlaceId location) {
-	printf("trap removed!\n");
 	int i = 0;
 	//find index of trap location (sorted largest to smallest PlaceId value)
 	while (i <= hv->trapLocationsIndex) {
@@ -601,7 +591,6 @@ static void draculaLocationHistoryAppend(HunterView hv, PlaceId location) {
 // -- OUTPUT: void
 static void checkHunterHealth(HunterView hv,Player hunter){
 	if(hv->allPlayers[hunter]->health <= 0) {
-		printf("hunter died!\n");
 		hv->allPlayers[hunter]->health = 0;
 		hv->score -= SCORE_LOSS_HUNTER_HOSPITAL;
 		hunterLocationHistoryAppend(hv, hunter, HOSPITAL_PLACE);
@@ -673,31 +662,26 @@ static Player parseMove (HunterView hv, char *string){
 	// figure out whose move it was
 	switch(*c){
 			case 'G':
-			    printf("it is Lord G\n");
 			    hunterMove(hv, string, PLAYER_LORD_GODALMING);
 			    curr_player = PLAYER_DR_SEWARD;
 			    break;
 
 			case 'S':
-			    printf("it is Dr S\n");
 			    hunterMove(hv, string, PLAYER_DR_SEWARD);
 			    curr_player = PLAYER_VAN_HELSING;
 			    break;
 
 			case 'H':
-			    printf("it is VH\n");
 			    hunterMove(hv, string, PLAYER_VAN_HELSING);
 			    curr_player = PLAYER_MINA_HARKER;
 			    break;
 
 			case 'M':
-			   printf("it is Mina\n");
 			    hunterMove(hv, string, PLAYER_MINA_HARKER);
 			    curr_player = PLAYER_DRACULA;
 			    break;
 
 			case 'D':
-			    printf("it is Drac\n");
 			    draculaMove(hv, string);
 			    curr_player = PLAYER_LORD_GODALMING;
 			    break;
@@ -934,13 +918,8 @@ static PlaceId *HvGetLastMoves(HunterView hv, Player player, int numMoves,
 static PlaceId *HvGetLocationHistory(HunterView hv, Player player,
                               int *numReturnedLocs, bool *canFree)
 {
-	// can free as allocating new array
-
-
-	// pass number of moves
 
 	int index = hv->allPlayers[player]->currentLocationIndex;
-	printf("index is %d\n", index);
 	*numReturnedLocs = index + 1;
 	//if there are no moves in history, return NULL
 	if(index < 0) return NULL;
@@ -1007,7 +986,6 @@ static PlaceId *HvGetReachable(HunterView hv, Player player, Round round,
 	
 	// Make a temp round variable for use with finding shortest path...
 	if (hv->temp_round > -1) round = hv->temp_round;
-	printf("round number = %d\n", round);
 	if (hv->temp_place != NOWHERE) from = hv->temp_place;
 
 	// Calculate the number of rails a hunter can travel.
@@ -1032,11 +1010,19 @@ static PlaceId *HvGetReachable(HunterView hv, Player player, Round round,
 	loc_num = 1;
 
 	while (loc_num < NUM_REAL_PLACES && rail_num < NUM_REAL_PLACES) {
-
+	
 	    // Extra conditions for drac:
 	    if (player == PLAYER_DRACULA) {
-	        if (list->p == HOSPITAL_PLACE) continue;
-	        if (list->type == RAIL) continue;
+	        if (list->p == HOSPITAL_PLACE) {
+	            if (list->next == NULL) break;
+	            list = list->next;
+	            continue;
+            }
+	        if (list->type == RAIL) {
+	            if (list->next == NULL) break;
+	            list = list->next;
+	            continue;
+            }
 	    }
 
 	    // If it is a road type.
@@ -1044,7 +1030,7 @@ static PlaceId *HvGetReachable(HunterView hv, Player player, Round round,
 	        visited[loc_num] = list->p;
 	        loc_num++;
 	        // If it is a rail type check for hunter.
-	    } else if (list->type == RAIL && railDist >= 1) {
+	    } else if (list->type == RAIL && railDist > 0) {
 	        visited_rail[rail_num] = list->p;
 	        rail_num++;
 	        // If it is a boat type.
@@ -1068,7 +1054,7 @@ static PlaceId *HvGetReachable(HunterView hv, Player player, Round round,
 	        i++;
 	    }
 	    rail_num = rail_num + conn_new;
-
+	    
 	    // 3 Rails:
 	    i = 0;
 	    if (railDist > 2) {
@@ -1080,6 +1066,7 @@ static PlaceId *HvGetReachable(HunterView hv, Player player, Round round,
 	            i++;
 	        }
 	        rail_num = rail_num + conn_new;
+	        
 	    }
 	}
 
@@ -1088,6 +1075,7 @@ static PlaceId *HvGetReachable(HunterView hv, Player player, Round round,
 	i = 0;
 	int j = loc_num;
 	while (i < rail_num && j < NUM_REAL_PLACES) {
+
 	    visited[j] = visited_rail[i];
 	    j++;
 	    i++;
@@ -1120,7 +1108,7 @@ static PlaceId *HvGetReachableByType(HunterView hv, Player player, Round round,
 	// Make a temp round variable for use with finding shortest path...
 	if (hv->temp_round > -1) round = hv->temp_round;
 	if (hv->temp_place != NOWHERE) from = hv->temp_place;
-
+    
 	// Calculate the number of rails a hunter can travel.
 	int railDist = 0;
 	if (player != PLAYER_DRACULA) railDist = (round + player) % 4;
@@ -1143,23 +1131,31 @@ static PlaceId *HvGetReachableByType(HunterView hv, Player player, Round round,
 	loc_num = 1;
 
 	while (loc_num < NUM_REAL_PLACES && rail_num < NUM_REAL_PLACES) {
-
+        
 	    // Extra conditions for drac:
 	    if (player == PLAYER_DRACULA) {
-	        if (list->p == HOSPITAL_PLACE) continue;
-	        if (list->type == RAIL) continue;
+	        if (list->p == HOSPITAL_PLACE) {
+	            if (list->next == NULL) break;
+	            list = list->next;
+	            continue;
+            }
+	        if (list->type == RAIL) {
+	            if (list->next == NULL) break;
+	            list = list->next;
+	            continue;
+            }
 	    }
 
 	    // If it is a road type.
 	    if (list->type == ROAD && road == true) {
-	        
 	        visited[loc_num] = list->p;
 	        loc_num++;
+	        
 	        // If it is a rail type check for hunter.
-	    } else if (list->type == RAIL && railDist >= 1 && rail == true) {
+	    } else if (list->type == RAIL && railDist > 0 && rail == true) {
 	        visited_rail[rail_num] = list->p;
 	        rail_num++;
-	        // If it is a boat type.
+            // If it is a boat type. 
 	    } else if (list->type == BOAT && boat == true) {
 	        visited[loc_num] = list->p;
 	        loc_num++;
@@ -1180,7 +1176,7 @@ static PlaceId *HvGetReachableByType(HunterView hv, Player player, Round round,
 	        i++;
 	    }
 	    rail_num = rail_num + conn_new;
-
+	    
 	    // 3 Rails:
 	    i = 0;
 	    if (railDist > 2) {
@@ -1192,14 +1188,17 @@ static PlaceId *HvGetReachableByType(HunterView hv, Player player, Round round,
 	            i++;
 	        }
 	        rail_num = rail_num + conn_new;
+	        
 	    }
 	}
+
 
 	// Combine arrays!!
 	// So we know the number of locs/ rails in each array;
 	i = 0;
 	int j = loc_num;
 	while (i < rail_num && j < NUM_REAL_PLACES) {
+
 	    visited[j] = visited_rail[i];
 	    j++;
 	    i++;
@@ -1237,7 +1236,7 @@ static int Find_Rails (Map map, PlaceId place, PlaceId from, PlaceId *array, int
     int places_added = 0;
 
     // Iterate through to find rail types...
-    while (i < NUM_REAL_PLACES) {
+    while (i < NUM_REAL_PLACES && list != NULL) {
 
         int skip = 0;
         // Check for repeats;
@@ -1256,6 +1255,7 @@ static int Find_Rails (Map map, PlaceId place, PlaceId from, PlaceId *array, int
         // Now, add to array.
         if (list->type == RAIL && skip == 0) {
             array[i] = list->p;
+            i++;
             places_added++;
         }
 
@@ -1263,6 +1263,5 @@ static int Find_Rails (Map map, PlaceId place, PlaceId from, PlaceId *array, int
         if (list->next == NULL) break;
         list = list->next;
     }
-
     return places_added;
 }

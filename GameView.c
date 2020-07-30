@@ -366,7 +366,7 @@ PlaceId *GvGetReachable(GameView gv, Player player, Round round,
 	        i++;
 	    }
 	    rail_num = rail_num + conn_new;
-
+	    
 	    // 3 Rails:
 	    i = 0;
 	    if (railDist > 2) {
@@ -378,6 +378,7 @@ PlaceId *GvGetReachable(GameView gv, Player player, Round round,
 	            i++;
 	        }
 	        rail_num = rail_num + conn_new;
+	        
 	    }
 	}
 
@@ -462,7 +463,7 @@ PlaceId *GvGetReachableByType(GameView gv, Player player, Round round,
 	    if (list->next == NULL) break;
 	    list = list->next;
 	}
-
+    
 	// Consider more rails...
 	// 2 Rails:
 	int i = 0;
@@ -474,7 +475,7 @@ PlaceId *GvGetReachableByType(GameView gv, Player player, Round round,
 	        i++;
 	    }
 	    rail_num = rail_num + conn_new;
-
+	    
 	    // 3 Rails:
 	    i = 0;
 	    if (railDist > 2) {
@@ -486,6 +487,7 @@ PlaceId *GvGetReachableByType(GameView gv, Player player, Round round,
 	            i++;
 	        }
 	        rail_num = rail_num + conn_new;
+	        
 	    }
 	}
 
@@ -957,7 +959,7 @@ static int Find_Rails (Map map, PlaceId place, PlaceId from, PlaceId *array, int
     int places_added = 0;
 
     // Iterate through to find rail types...
-    while (i < NUM_REAL_PLACES) {
+    while (i < NUM_REAL_PLACES && list != NULL) {
 
         int skip = 0;
         // Check for repeats;
@@ -976,6 +978,7 @@ static int Find_Rails (Map map, PlaceId place, PlaceId from, PlaceId *array, int
         // Now, add to array.
         if (list->type == RAIL && skip == 0) {
             array[i] = list->p;
+            i++;
             places_added++;
         }
 

@@ -607,6 +607,32 @@ int main(void)
 			assert(locs[3] == ROME);
 			free(locs);
         }
+        
+        {
+            printf("\tChecking Bordeaux rail connections "
+			       "(Lord Godalming, Round 3)\n");
+			int numLocs = -1;
+			PlaceId *locs = GvGetReachableByType(gv, PLAYER_LORD_GODALMING,
+			                                     3, BORDEAUX, false, true,
+			                                     false, &numLocs);
+
+			assert(numLocs == 12);
+			sortPlaces(locs, numLocs);
+			assert(locs[0] == ALICANTE);
+			assert(locs[1] == BARCELONA);
+			assert(locs[2] == BORDEAUX);
+			assert(locs[3] == BRUSSELS);
+			assert(locs[4] == COLOGNE);
+			assert(locs[5] == LE_HAVRE);
+			assert(locs[6] == LISBON);
+			assert(locs[7] == MADRID);
+			assert(locs[8] == MARSEILLES);
+			assert(locs[9] == PARIS);
+			assert(locs[10] == SANTANDER);
+			assert(locs[11] == SARAGOSSA);
+			
+			free(locs);
+        }
 
 		GvFree(gv);
 		printf("Test passed!\n");
