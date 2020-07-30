@@ -214,15 +214,91 @@ PlaceId *DvGetTrapLocations(DraculaView dv, int *numTraps)
 ////////////////////////////////////////////////////////////////////////
 // Making a Move
 
+
+bool isInTrail(DraculaView dv, PlaceId location) {
+	// checks location against trail
+	int max = (DRACULA->currentLocationIndex < 6 ? DRACULA->currentLocationIndex : 6);
+	for (int i = 0; i < max; i++) {
+		if (location == DRACULA->locationHistory[i]) return false;
+	}
+	// checks location against hide
+
+	// checks location against doubleback
+	return true;
+}
+
+bool canHide(DraculaView dv, PlaceId location) {
+	if ((dv->roundNumber - DRACULA->lastHidden) > 5) return true;
+	return false;
+}
+
+bool canDoubleBack(DraculaView dv, PlaceId location) {
+	if ((dv->roundNumber - DRACULA->lastDoubleback) > 5) return true;
+	return false;
+}
+
+// todo
 PlaceId *DvGetValidMoves(DraculaView dv, int *numReturnedMoves)
 {
-	//PlaceId *reachable = GvGetReachableByType(dv, PLAYER_DRACULA, dv->roundNumber, DvGetPlayerLocation(dv, PLAYER_DRACULA), 1, 0, 1, numReturnedMoves);
-	// todo needs to be checked against trail
-	// + hide
-	// + doubleback
-	*numReturnedMoves = 0;
-	return NULL;
+	// 1. We need to access the map :)
+	Map map = dv->map;
 
+	// create dynamically allocated array
+	PlaceId *visited = malloc(sizeof(PlaceId));
+
+	// get connections from current location
+	ConnList list = MapGetConnections(map, dv->allPlayers[PLAYER_DRACULA]->currentLocation);
+
+	// 3. Iterate through...
+	int loc_num = 0;
+	visited[loc_num] = dv->allPlayers[PLAYER_DRACULA]->currentLocation;
+
+	while (loc_num < NUM_REAL_PLACES) {
+		if (!isInTrail(dv, list->p)) {
+			// Extra conditions for drac:
+			if (list->p == HOSPITAL_PLACE) continue;
+			if (list->type == RAIL) continue;
+
+			// If it is a road type.
+			if (list->type == ROAD) {
+				visited[loc_num] = list->p;
+				loc_num++;
+				visited = realloc(visited, loc_num * sizeof(PlaceId));
+			}
+
+			// If it is a boat type.
+			else if (list->type == BOAT) {
+				visited[loc_num] = list->p;
+				loc_num++;
+				visited = realloc(visited, loc_num * sizeof(PlaceId));
+			}
+		}
+		// check if he can doubleback
+		else if (canDoubleBack(dv, list->p)) {
+			// checks location against trail
+			int max = (DRACULA->currentLocationIndex < 6 ? DRACULA->currentLocationIndex : 6);
+			for (int i = 0; i < max; i++) {
+				if (list->p == DRACULA->locationHistory[DRACULA->currentLocationIndex - i]) {
+					// add appropriate doubleback move to list
+					visited[loc_num] = 103 + i;
+					loc_num++;
+					visited = realloc(visited, loc_num * sizeof(PlaceId));
+				}
+			}
+		}	
+
+	    if (list->next == NULL) break;
+	    list = list->next;
+	}
+	if (canHide(dv, list->p)) {
+		visited[loc_num] = HIDE;
+		loc_num++;
+		visited = realloc(visited, loc_num * sizeof(PlaceId));
+	}
+
+    // Return values
+	*numReturnedMoves = loc_num;
+	return visited;
 }
 // adapted from Gameview
 PlaceId *DvWhereCanIGo(DraculaView dv, int *numReturnedLocs)
@@ -789,7 +865,7 @@ static PlayerData initialisePlayer(DraculaView dv, Player player) {
 	new -> currentLocationIndex = -1;
 	new -> locationHistory[0] = '\0';
 	new -> moveHistory[0] = '\0';
-	new -> lastHidden = -1;
+	new -> lastHidden = -100;
 	new -> lastDoubleback = -1;
 	if (player == PLAYER_DRACULA) {
 		new -> health = GAME_START_BLOOD_POINTS;
