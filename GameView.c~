@@ -54,10 +54,6 @@ struct playerData {
 
 	int lastHidden;									  	// round in which drac last hid
 	int lastDoubleback;									// round in which drac last doubled back
-<<<<<<< HEAD
-	
-=======
->>>>>>> 28323acfc1b14ce321f7e19c4361650e091c6bed
 };
 
 struct gameView {
@@ -98,52 +94,6 @@ static void hunterLocationHistoryAppend(GameView gv, Player hunter, PlaceId loca
 static void draculaLocationHistoryAppend(GameView gv, PlaceId location);
 
 // ****************************************
-
-////////////////////////////////////////////////////////////////////////
-// Constructor/Destructor
-
-
-// GV NEW: Allocate memory for new GameView
-// -- INPUT: pastPlays string, messages
-// -- OUTPUT: new GameView
-GameView GvNew(char *pastPlays, Message messages[]) {
-	// Allocate memory for new GV
-	GameView new = malloc(sizeof(* new));
-
-	// Check if memory was allocated correctly
-	memoryError(new);
-	new->map = MapNew();
-	initialiseGame (new);
-
-    // Number of Rounds can be determined from size of string
-    // (each play is 7 chars + space)
-    // Note last move has no space...
-    // Note each round is 5 plays...
-	new->roundNumber = (strlen(pastPlays) + 1) / ((PLAY_S_SIZE + 1)*5);
-
-    // Need to create a copy of pastPlays rather than just pointing to it.
-	char string[strlen(pastPlays)];
-	strcpy(string, pastPlays);
-
-	// Iterate through past plays...
-	char *token = strtok(string, " ");
-	while (token != NULL) {
-		new->currentPlayer = parseMove(new, token);
-		token = strtok(NULL, " ");
-	}
-
-	return new;
-}
-
-// GV FREE: Frees the current GameView
-void GvFree(GameView gv) {
-	// free player structs
-	for (int i = 0; i < NUM_PLAYERS; i++)
-		free(gv->allPlayers[i]);
-	// free map
-	MapFree(gv->map);
-	free(gv);
-}
 
 ////////////////////////////////////////////////////////////////////////
 // Game State Information
@@ -199,14 +149,6 @@ PlaceId *GvGetTrapLocations(GameView gv, int *numTraps){
 
 ////////////////////////////////////////////////////////////////////////
 // Game History
-
-<<<<<<< HEAD
-	// Nothing else to do for map- read Map.c --> the functions take care of
-	// adding all connections.
-	// gv->map = MapNew();
-	return;
-
-}
 
 // PARSE MOVE: interprets a single move, calls hunter/draculaMove, updates curr_player
 // -- Input: GameView, move string
@@ -573,28 +515,15 @@ PlaceId *GvGetTrapLocations(GameView gv, int *numTraps)
 ////////////////////////////////////////////////////////////////////////
 // Game History
 
-=======
->>>>>>> 28323acfc1b14ce321f7e19c4361650e091c6bed
 // GET MOVE HISTORY: Returns complete move history of a player directly from
 // locationHistory, indicates the number of moves and that the array cannot be
 // freed
 // -- INPUT: gv, player, pointer to an int storing the number of returned moves,
 // pointer to a bool canFree
 // -- OUTPUT: array of PlaceIds
-PlaceId *GvGetMoveHistory(GameView gv, Player player,
-<<<<<<< HEAD
-                          int *numReturnedMoves, bool *canFree)
+PlaceId *GvGetMoveHistory(GameView gv, Player player, int *numReturnedMoves, 
+                            bool *canFree) 
 {
-
-	// can't free as is returning directly from data struct
-	*canFree = false;
-	// pass number of moves
-	*numReturnedMoves = gv->allPlayers[player]->currentLocationIndex+1;
-	return gv->allPlayers[player]->moveHistory;
-=======
-                          int *numReturnedMoves, bool *canFree) {
->>>>>>> 28323acfc1b14ce321f7e19c4361650e091c6bed
-
 	// can't free as is returning directly from data struct
 	*canFree = false;
 	// pass number of moves

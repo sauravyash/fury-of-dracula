@@ -81,8 +81,9 @@ struct hunterView {
 	PlaceId vampire;
 	// Graph thats been typedefed already									
 	Map map;
-	// Temp round variable to determine shortest path...
+	// Temp round & place variable to determine shortest path...
 	int temp_round;
+	PlaceId temp_place;
 };
 
 // PRIVATE FUNCTION DECLARATIONS
@@ -266,36 +267,47 @@ PlaceId *HvGetShortestPathTo(HunterView hv, Player hunter, PlaceId dest,
 	int found = 0;
 	int pathFound = 0;
 	hv->temp_round = hv->roundNumber;
+	hv->temp_place = HUNTER->currentLocation;
 
 	// Make Queue to travel breadth-first
 	Queue q = newQueue();
     QueueJoin(q, src);
-    printf("CASE 0\n");
+    printf("Queue is made\n");
 
     while (!found && !QueueIsEmpty(q)) {
         int prev_place = QueueLeave(q);
 		// When we create a new_place, we must create from connections of prev.
+		hv->temp_place = prev_place;
+		// Checking the round:
+		int path_count = 0;
+		int prev = prev_place;
+		while (prev != src) {
+		    path_count++;
+		    printf("counting places visited %d\n", path_count);
+		    prev = visited[prev];
+        }
+        hv->temp_round = hv->roundNumber + path_count;
+		
 		int numLocs;
-		printf("CASE 1\n");
 		PlaceId *list = HvWhereCanTheyGo(hv, hunter, &numLocs);
-		printf("CASE 2\n");
+		
+		printf("Found list and number of places...\n");
 		if (prev_place == des) {
 			found = 1;
-			printf("CASE 3\n");
+			printf("A match is made!!\n");
 		} else for (int i = 1; i < numLocs; i++) {
-		    printf("CASE 4\n");
+		    printf("Enter Loop\n");
 			int new_place = list[i];
 			if (visited[new_place] == -1 && prev_place != new_place) {
-				printf("CASE 5\n");
+				printf("New place added to queue\n");
 				visited[new_place] = prev_place;
 				QueueJoin(q, new_place);
 				if (new_place == dest) {
-					printf("CASE 6\n");
+					printf("Match (2) is made!!\n");
 					pathFound = 1;	
 				}
 			}    
 		}
-		hv->temp_round++;
     }
 	dropQueue(q);
 	
@@ -317,17 +329,23 @@ PlaceId *HvGetShortestPathTo(HunterView hv, Player hunter, PlaceId dest,
 		prev = visited[prev];
 	}
 
-	//reversePath[k] = src;
+	reversePath[k] = src;
     
-    PlaceId *path = malloc ((k) * sizeof(PlaceId));
+    PlaceId *path = malloc ((k + 1) * sizeof(PlaceId));
     PlaceId place;
 	for (int i = 0, j = k; i <= k; i++, j--) {
-		place = reversePath[j - 1];
-		path[i - 1] = place;
+		place = reversePath[j];
+		path[i] = place;
+	}
+	
+	// Mind blank about shortening array from front, so...
+	PlaceId *path_without_src = malloc ((k) * sizeof(PlaceId));
+	for (int i = 0; i < k; i++) {
+	    path_without_src[i] = path[i + 1]; 
 	}
 	
 	*pathLength = k;
-	return path;
+	return path_without_src;
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -638,6 +656,7 @@ static void initialiseGame (HunterView hv) {
 	hv->trapLocationsIndex = -1;
 	hv->vampire = NOWHERE;
 	hv->temp_round = -1;
+	hv->temp_round = NOWHERE;
 
 	return;
 
@@ -988,6 +1007,8 @@ static PlaceId *HvGetReachable(HunterView hv, Player player, Round round,
 	
 	// Make a temp round variable for use with finding shortest path...
 	if (hv->temp_round > -1) round = hv->temp_round;
+	printf("round number = %d\n", round);
+	if (hv->temp_place != NOWHERE) from = hv->temp_place;
 
 	// Calculate the number of rails a hunter can travel.
 	int railDist = 0;
@@ -1066,16 +1087,7 @@ static PlaceId *HvGetReachable(HunterView hv, Player player, Round round,
 	// So we know the number of locs/ rails in each array;
 	i = 0;
 	int j = loc_num;
-	int repeat = 0;
 	while (i < rail_num && j < NUM_REAL_PLACES) {
-        // Test if repeated...
-        for (int k = 0; k < loc_num; k++) {
-            if (visited[k] == visited_rail[i]) {
-                repeat++;
-            }
-        }
-        if (repeat > 0) continue;
-        // Then add...
 	    visited[j] = visited_rail[i];
 	    j++;
 	    i++;
@@ -1107,6 +1119,7 @@ static PlaceId *HvGetReachableByType(HunterView hv, Player player, Round round,
 	
 	// Make a temp round variable for use with finding shortest path...
 	if (hv->temp_round > -1) round = hv->temp_round;
+	if (hv->temp_place != NOWHERE) from = hv->temp_place;
 
 	// Calculate the number of rails a hunter can travel.
 	int railDist = 0;
@@ -1186,16 +1199,7 @@ static PlaceId *HvGetReachableByType(HunterView hv, Player player, Round round,
 	// So we know the number of locs/ rails in each array;
 	i = 0;
 	int j = loc_num;
-	int repeat = 0;
 	while (i < rail_num && j < NUM_REAL_PLACES) {
-        // Test if repeated...
-        for (int k = 0; k < loc_num; k++) {
-            if (visited[k] == visited_rail[i]) {
-                repeat++;
-            }
-        }
-        if (repeat > 0) continue;
-        // Then add...
 	    visited[j] = visited_rail[i];
 	    j++;
 	    i++;
