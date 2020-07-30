@@ -156,7 +156,11 @@ DraculaView DvNew(char *pastPlays, Message messages[])
 
 void DvFree(DraculaView dv)
 {
-	// TODO
+	// free player structs
+	for (int i = 0; i < NUM_PLAYERS; i++)
+		free(dv->allPlayers[i]);
+
+	// free map
 	MapFree(dv->map);
 	free(dv);
 }
