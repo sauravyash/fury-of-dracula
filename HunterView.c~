@@ -1186,16 +1186,8 @@ static PlaceId *HvGetReachableByType(HunterView hv, Player player, Round round,
 	// So we know the number of locs/ rails in each array;
 	i = 0;
 	int j = loc_num;
-	int repeat = 0;
 	while (i < rail_num && j < NUM_REAL_PLACES) {
-        // Test if repeated...
-        for (int k = 0; k < loc_num; k++) {
-            if (visited[k] == visited_rail[i]) {
-                repeat++;
-            }
-        }
-        if (repeat > 0) continue;
-        // Then add...
+
 	    visited[j] = visited_rail[i];
 	    j++;
 	    i++;
