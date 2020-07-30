@@ -493,31 +493,7 @@ int main(void)
 		GvFree(gv);
 		printf("Test passed!\n");
 	}
-    printf("|| CUSTOM TESTS ||\n")
-    {
-        printf("Checking Dracula moving to one of the previous 5 places\n");
-        {
-            printf("\tChecking place 1 of 5.\n");
-            // TODO
-        }
-        {
-            printf("\tChecking place 2 of 5.\n");
-            // TODO 
-        }
-        {
-            printf("\tChecking place 3 of 5.\n");
-            // TODO
-        }
-        {
-            printf("\tChecking place 4 of 5.\n");
-            // TODO
-        }
-        {
-            printf("\tChecking place 5 of 5.\n");
-            // TODO
-        }
-        printf("Test Passed!\n");
-    }
+    printf("|| CUSTOM TESTS ||\n") 
     {
         printf("Check decremented game score each time Dracula finishes his turn.\n");
  
@@ -548,7 +524,18 @@ int main(void)
         printf("Test Passed");
     }
     {
-
+        printf("Check Dracula is permitted to exceed 40 blood points.\n");
+    }
+    {
+        printf("Check Dracula regains 10 blood points if he is in Castle Dracula"
+               " at the end of his turn including being auto teleported there.");
+    }
+    {
+        printf("Test Hunters cannot exceed 9 life points.\n");
+    }
+    {
+        printf("A hunter gains 3 life points each time they rest");
+    }
 	/*
     {/////////////////////////////////////////////////////////
         printf("Testing hunter death\n");
