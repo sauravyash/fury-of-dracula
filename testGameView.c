@@ -547,6 +547,8 @@ int main(void)
 
         printf("Test Passed");
     }
+    {
+
 	/*
     {/////////////////////////////////////////////////////////
         printf("Testing hunter death\n");
