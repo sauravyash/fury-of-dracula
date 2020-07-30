@@ -32,18 +32,10 @@ This is a game client written in C for the COMP2521 assignment 'Fury of Dracula'
 - Checking Athens rail connections (none)
 
 ## Gameview Tests
-- [ ] Check the game score decreases by 1 each time Dracula finishes his turn.
-- [ ] Check that the hunters loses 2 life points if they encounter a trap.
-- [ ] Check that the hunters loses 4 life points if they encounter Dracula.
+- [x] Check the game score decreases by 1 each time Dracula finishes his turn.
 - [x] Check the game score decreases by 6 each time a hunter loses all their life points and is teleported to the Hospital of St Joseph and St Mary.
 - [ ] Check the game score decreases by 13 each time a vampire matures.
-- [ ] Check Dracula starts with 40 blood points 
-- [ ] Check Dracula is permitted to exceed 40 blood points.
-- [ ] Check Dracula loses 10 blood points each time he encounters a hunter.
-- [ ] Check Dracula loses 2 blood points if he is at sea at the end of his turn.
-- [ ] Check Dracula regains 10 blood points if he is in Castle Dracula at the end of his turn, even if he has been automagically teleported there.
 
-- [ ] Test Hunters cannot exceed 9 life points.
 - [ ] A hunter gains 3 life points each time they rest
 - [ ] Check that the sequence of Character moves is Lord Godalming, Dr. Seward, Van Helsing, Mina Harker, Dracula
 - [ ] Check Hunter teleportation when reaching health <= 0 and helth is regained on next turn
@@ -54,6 +46,7 @@ This is a game client written in C for the COMP2521 assignment 'Fury of Dracula'
 - [ ] Check that HIDE moves are revealed when they become the last move in Dracula's trail.
 
 ## Hunter View Tests
+- [ ] Test Hunters cannot exceed 9 life points.
 - [ ] Check that immature vampires can be killed within 6 moves of being spawned
 - [ ] Test Road, Rail and Sea moves
 - [ ] Test Rail move follows the sum rules (sum = round number + hunter number):
@@ -64,6 +57,8 @@ This is a game client written in C for the COMP2521 assignment 'Fury of Dracula'
 - [ ] Check that Dracula cannot make a LOCATION move to a location if he has already made a LOCATION move to that same location in the last 5 rounds.
 - [ ] Test Location move that isnt adjacent to the current pos.
 - [ ] Test collaborative research move (when all hunters rest as their last move, they reveal dracula's last moves up to his last Location move)
+- [ ] Check that the hunters loses 2 life points if they encounter a trap.
+- [ ] Check that the hunters loses 4 life points if they encounter Dracula.
 
 ## Dracula View Tests
 - [ ] Test Dracula cannot make a HIDE move while he is at sea.
@@ -75,6 +70,12 @@ This is a game client written in C for the COMP2521 assignment 'Fury of Dracula'
 - [ ] Check that there are no encounters at sea
 - [ ] Test Double Back moves 1 to 5
 - [ ] Test that a second double back move within the first five moves after a double back is illegal
+- [ ] Check Dracula starts with 40 blood points 
+- [ ] Check Dracula is permitted to exceed 40 blood points.
+- [ ] Check Dracula loses 10 blood points each time he encounters a hunter.
+- [ ] Check Dracula loses 2 blood points if he is at sea at the end of his turn.
+- [ ] Check Dracula regains 10 blood points if he is in Castle Dracula at the end of his turn, even if he has been automagically teleported there.
+
 
 ## IDK where to test (plz fix) 
 - [ ] Test for end of game
