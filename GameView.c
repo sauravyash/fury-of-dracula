@@ -612,8 +612,13 @@ static void hunterLocationHistoryAppend(GameView gv, Player hunter, PlaceId loca
 	if (index < MAX_LOC_HISTORY_SIZE) {
 		HUNTER->locationHistory[index + 1] = location;
 		HUNTER->moveHistory[index + 1] = location;
+		//Hunters gain health when resting at city
+		PlaceId previousLocation = HUNTER->currentLocation;
+		if (previousLocation == location) HUNTER->health += LIFE_GAIN_REST;
 		HUNTER->currentLocation = location;
 		HUNTER->currentLocationIndex++;
+		//Ensure hunter health is capped
+		if(HUNTER->health > GAME_START_HUNTER_LIFE_POINTS) HUNTER->health = GAME_START_HUNTER_LIFE_POINTS;
 	}
 	// otherwise print error and exit
 	else {

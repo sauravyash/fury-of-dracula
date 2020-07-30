@@ -343,6 +343,107 @@ int main(void)
 
 	{///////////////////////////////////////////////////////////////////
 
+		printf("-----------------------Testing a hunter resting/staying in same city with no life point lost\n");
+
+		char *trail =
+			"GGE.... SGE.... HGE.... MST.... DC?.V.. "
+			"GLD.... SST.... HBE.... MGE.... DC?T... "
+			"GGE.... SST.... HGE.... MSZ.... DC?T... ";
+
+
+		Message messages[35] = {};
+		GameView gv = GvNew(trail, messages);
+		assert(GvGetHealth(gv, PLAYER_DR_SEWARD) ==
+				GAME_START_HUNTER_LIFE_POINTS);
+		assert(GvGetHealth(gv, PLAYER_VAN_HELSING) <= GAME_START_HUNTER_LIFE_POINTS);
+		assert(GvGetHealth(gv, PLAYER_LORD_GODALMING) <= GAME_START_HUNTER_LIFE_POINTS);
+		assert(GvGetHealth(gv, PLAYER_DR_SEWARD) <= GAME_START_HUNTER_LIFE_POINTS);
+		assert(GvGetHealth(gv, PLAYER_MINA_HARKER) <= GAME_START_HUNTER_LIFE_POINTS);
+		assert(GvGetScore(gv) == GAME_START_SCORE
+								 - 3 * SCORE_LOSS_DRACULA_TURN);
+		assert(GvGetPlayerLocation(gv, PLAYER_DRACULA) == CITY_UNKNOWN);
+
+		GvFree(gv);
+		printf("Test passed!\n");
+	}
+
+	{///////////////////////////////////////////////////////////////////
+
+		printf("---------------------Testing a hunter resting/staying in same city after trap encounter\n");
+
+		char *trail =
+			"GGE.... SGE.... HGE.... MST.... DC?.V.. "
+			"GLD.... SST.... HBEV... MGE.... DC?T... "
+			"GGE.... SGE.... HGE.... MSZ.... DC?T... "
+			"GGE.... SST.... HGE.... MSZ.... DC?T... ";
+
+		Message messages[35] = {};
+		GameView gv = GvNew(trail, messages);
+		//loses 2 health, gaines 3
+		assert(GvGetHealth(gv, PLAYER_VAN_HELSING) <= GAME_START_HUNTER_LIFE_POINTS);
+		assert(GvGetHealth(gv, PLAYER_LORD_GODALMING) <= GAME_START_HUNTER_LIFE_POINTS);
+		assert(GvGetHealth(gv, PLAYER_DR_SEWARD) <= GAME_START_HUNTER_LIFE_POINTS);
+		assert(GvGetHealth(gv, PLAYER_MINA_HARKER) <= GAME_START_HUNTER_LIFE_POINTS);
+		assert(GvGetScore(gv) == GAME_START_SCORE
+								 - 4 * SCORE_LOSS_DRACULA_TURN);
+		assert(GvGetPlayerLocation(gv, PLAYER_DRACULA) == CITY_UNKNOWN);
+
+		GvFree(gv);
+		printf("Test passed!\n");
+	}
+
+	{///////////////////////////////////////////////////////////////////
+
+		printf("---------------------Testing a hunter resting/staying in same city after trap encounter\n");
+
+		char *trail =
+			"GGE.... SGE.... HGE.... MST.... DC?.V.. "
+			"GLD.... SST.... HBEV... MGE.... DC?T... "
+			"GGED... SGE.... HGE.... MSZ.... DC?T... "
+			"GGE.... SST.... HGE... MSZ.... DC?T... ";
+
+		Message messages[35] = {};
+		GameView gv = GvNew(trail, messages);
+		//loses 2 health, gaines 3
+		assert(GvGetHealth(gv, PLAYER_VAN_HELSING) <= GAME_START_HUNTER_LIFE_POINTS);
+		assert(GvGetHealth(gv, PLAYER_LORD_GODALMING) == GAME_START_HUNTER_LIFE_POINTS - LIFE_LOSS_DRACULA_ENCOUNTER + LIFE_GAIN_REST);
+		assert(GvGetHealth(gv, PLAYER_DR_SEWARD) <= GAME_START_HUNTER_LIFE_POINTS);
+		assert(GvGetHealth(gv, PLAYER_MINA_HARKER) <= GAME_START_HUNTER_LIFE_POINTS);
+		assert(GvGetScore(gv) == GAME_START_SCORE
+								 - 4 * SCORE_LOSS_DRACULA_TURN);
+		assert(GvGetPlayerLocation(gv, PLAYER_DRACULA) == CITY_UNKNOWN);
+
+		GvFree(gv);
+		printf("Test passed!\n");
+	}
+
+	{///////////////////////////////////////////////////////////////////
+
+		printf("---------------------Testing a hunter resting/staying in same city after dracula encounter\n");
+
+		char *trail =
+			"GGE.... SGE.... HGE.... MST.... DC?.V.. "
+			"GLD.... SST.... HBEV... MGE.... DC?T... "
+			"GGED... SGE.... HGE.... MSZ.... DC?T... "
+			"GGE.... SSTD...";
+
+		Message messages[35] = {};
+		GameView gv = GvNew(trail, messages);
+		//loses 2 health, gaines 3
+		assert(GvGetHealth(gv, PLAYER_VAN_HELSING) <= GAME_START_HUNTER_LIFE_POINTS);
+		assert(GvGetHealth(gv, PLAYER_LORD_GODALMING) == GAME_START_HUNTER_LIFE_POINTS - LIFE_LOSS_DRACULA_ENCOUNTER + LIFE_GAIN_REST);
+		assert(GvGetHealth(gv, PLAYER_DR_SEWARD) <= GAME_START_HUNTER_LIFE_POINTS - LIFE_LOSS_DRACULA_ENCOUNTER);
+		assert(GvGetHealth(gv, PLAYER_MINA_HARKER) <= GAME_START_HUNTER_LIFE_POINTS);
+		assert(GvGetScore(gv) == GAME_START_SCORE
+								 - 3 * SCORE_LOSS_DRACULA_TURN);
+		assert(GvGetPlayerLocation(gv, PLAYER_DRACULA) == CITY_UNKNOWN);
+
+		GvFree(gv);
+		printf("Test passed!\n");
+	}
+
+	{///////////////////////////////////////////////////////////////////
+
 		printf("Testing move/location history\n");
 
 		char *trail =
