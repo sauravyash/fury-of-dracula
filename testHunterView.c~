@@ -296,7 +296,7 @@ int main(void)
 
 		Message messages[5] = {};
 		HunterView hv = HvNew(trail, messages);
-
+/*
 		{
 			printf("\tLisbon -> Barcelona (Lord Godalming, Round 1)\n");
 			int pathLength = -1;
@@ -307,7 +307,7 @@ int main(void)
 			assert(path[1] == BARCELONA);
 			free(path);
 		}
-
+*/
 		{
 			printf("\tLisbon -> Cologne (Lord Godalming, Round 1)\n");
 			int pathLength = -1;

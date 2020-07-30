@@ -625,8 +625,8 @@ int main(void)
 			assert(locs[4] == COLOGNE);
 			assert(locs[5] == LE_HAVRE);
 			assert(locs[6] == LISBON);
-			assert(locs[7] == MADRID);
-			assert(locs[8] == MARSEILLES);
+			assert(locs[8] == MADRID);
+			assert(locs[7] == MARSEILLES);
 			assert(locs[9] == PARIS);
 			assert(locs[10] == SANTANDER);
 			assert(locs[11] == SARAGOSSA);
@@ -637,68 +637,6 @@ int main(void)
 		GvFree(gv);
 		printf("Test passed!\n");
 	}
-
-    printf("|| CUSTOM TESTS ||\n") 
-    {
-        printf("Check decremented game score each time Dracula finishes his turn.\n");
- 
-		char *trail =
-			"GST.... SAO.... HZU.... MBB.... DC?.V..";
-
-		Message messages[5] = {};
-		GameView gv = GvNew(trail, messages);
-        assert(gv->score == 366 - 1);
-        printf("Test Passed!\n");
-    }
-
-    {
-        printf("Check Dracula is permitted to exceed 40 blood points.\n");
-        
-        char *trail =
-			"GST.... SLV.... HLS.... MGO.... DBU.V.."
-            "GBU.... SLV.... HLS.... MGO.... DST.V.."
-            "GST.... SLV.... HLS.... MGO.... DZU.V.."
-            "GZU.... SLV.... HLS.... MGO.... DGE.V..";
-
-		Message messages[5] = {};
-		GameView gv = GvNew(trail, messages);
-        
-        //score = 366 - 3 - 6
-        assert(gv->score == 357);
-
-        printf("Test Passed");
-    }
-    {
-        printf("Check Dracula is permitted to exceed 40 blood points.\n");
-    }
-    {
-        printf("Check Dracula regains 10 blood points if he is in Castle Dracula"
-               " at the end of his turn including being auto teleported there.");
-    }
-    {
-        printf("Test Hunters cannot exceed 9 life points.\n");
-    }
-    {
-        printf("A hunter gains 3 life points each time they rest");
-    }
-	/*
-    {/////////////////////////////////////////////////////////
-        printf("Testing hunter death\n");
-
-		char *trail =
-			"GGE.... SGE.... HGE.... MGE.... DST.... "
-			"GST.... SGE.... HGE.... MGE.... DC?T... "
-			"GGE.... SGE.... HGE.... MGE.... DC?.... "
-			"GST...."
-
-
-		Message messages[16] = {};
-		GameView gv = GvNew(trail, messages);
-
-
-    }*/
-
 	printf("ALL PROVIDED TESTS PASSED!!!\n");
-
 	return EXIT_SUCCESS;
 }

@@ -22,7 +22,7 @@ DLList newDLList (void);
 void freeDLList (DLList);
 
 /** Add new node to DLList. */
-DLListNode *newDLListNode (DLList, char *it);
+DLListNode *newDLListNode (char *it);
 
 /** Return the item at current position. */
 char *DLListCurrent (DLList);

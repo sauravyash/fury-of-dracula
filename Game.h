@@ -64,7 +64,6 @@ enum {
 
 /** The length of a trail. */
 enum { TRAIL_SIZE = 6 };
-
 enum { TURN_LIMIT_MSECS = 1500 };
 enum { MESSAGE_SIZE = 100 };
 
