@@ -692,7 +692,7 @@ int main(void)
 			"GZU.... SGE.... HGE.... MGE.... DC?T... "
 			"GZU.... SGE.... HGE.... MGE.... DC?T... "
 			"GZU.... SGE.... HGE.... MGE.... DC?T... "
-			"GZUV... SGE.... HGE.... MGE.... DC?T... ";
+			"GSTV... SGE.... HGE.... MGE.... DC?T... ";
 
         Message messages[5] = {};
 		GameView gv = GvNew(trail, messages);
@@ -703,7 +703,27 @@ int main(void)
         GvFree(gv);
         printf("Test Passed\n");
     }   
-	
+	{ //////////////////////////////////////////////////////////////////////
+        printf("Test Road, Rail and Sea moves. \n");
+        char *trail =
+			"GZU.... SFR.... HGE.... MGE.... DST.V.. "
+            // Road Move
+			"GGE.... SSTV... HGE.... MGE.... DC?T... "
+			"GPA.... SZU.... HGE.... MGE.... DC?T... "
+			"GLE.... SGE.... HGE.... MGE.... DC?T... "
+            // Sea Move
+			"GLO.... SGE.... HGE.... MGE.... DC?T... "
+			"GZU.... SGE.... HGE.... MGE.... DC?T... ";
+
+        Message messages[5] = {};
+		GameView gv = GvNew(trail, messages);
+            
+        assert(GvGetScore(gv) 
+                    == GAME_START_SCORE 
+                        - 6 * SCORE_LOSS_DRACULA_TURN);
+        GvFree(gv);
+        printf("Test Passed\n");
+    }
     
     printf("ALL PROVIDED TESTS PASSED!!!\n");
 
