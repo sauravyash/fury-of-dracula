@@ -529,16 +529,15 @@ int main(void)
         assert(gv->score == 366 - 1);
         printf("Test Passed!\n");
     }
+
     {
-        printf("Check the game score decreases by 6 each time" 
-                "a hunter loses all their life points and is "
-                "teleported to the Hospital of St Joseph and St Mary.\n");
+        printf("Check Dracula is permitted to exceed 40 blood points.\n");
         
         char *trail =
-			"GST.... SAO.... HZU.... MBB.... DC?.V.."
-            "GST.... SAO.... HZU.... MBB.... DC?.V.."
-            "GST.... SAO.... HZU.... MBB.... DC?.V.."
-            "GST.... SAO.... HZU.... MBB.... DC?.V..";
+			"GST.... SLV.... HLS.... MGO.... DBU.V.."
+            "GBU.... SLV.... HLS.... MGO.... DST.V.."
+            "GST.... SLV.... HLS.... MGO.... DZU.V.."
+            "GZU.... SLV.... HLS.... MGO.... DGE.V..";
 
 		Message messages[5] = {};
 		GameView gv = GvNew(trail, messages);
