@@ -103,6 +103,7 @@ static PlaceId *DvGetReachableByType(DraculaView dv, Player player, Round round,
                               PlaceId from, bool road, bool rail,
                               bool boat, int *numReturnedLocs);
 static int Find_Rails (Map map, PlaceId place, PlaceId from, PlaceId *array, int i);
+static void hunterLocationHistoryAppend(DraculaView dv, Player hunter, PlaceId location);
 
 
 // MEMORY ERROR: Helper function to check correct memory allocation. Exits if
@@ -460,14 +461,14 @@ static void hunterMove(DraculaView dv, char *string, Player hunter) {
  	if (curr_place == NOWHERE) printf("Error: Place not found...\n");
 
     // Append history and current location:
-    HUNTER -> currentLocation = curr_place;
+    hunterLocationHistoryAppend(dv, hunter, curr_place);
 	/*	Removed this: this is taken care of by pastPlays string "GGEVD"; This bit should probably be in the hunt implementation
     // If Dracula is currently in same city, run...
 
-    PlaceId Drac_pos = GvGetVampireLocation(gv);
+    PlaceId Drac_pos = dvGetVampireLocation(dv);
     if (Drac_pos == curr_place) {
         DRACULA->health -= LIFE_LOSS_HUNTER_ENCOUNTER;
-        gv->allPlayers[hunter]->health -= LIFE_LOSS_DRACULA_ENCOUNTER;
+        dv->allPlayers[hunter]->health -= LIFE_LOSS_DRACULA_ENCOUNTER;
     }
 	*/
 	// Parsing through characters after location iD
@@ -494,14 +495,14 @@ static void hunterMove(DraculaView dv, char *string, Player hunter) {
 			// Dracula encounter
 			case 'D':
 				printf("Hunter encountered dracula!\n");
-				//i think this part is needed? judging by test line 238 of testDraculaView, makes it seem like this is whats meant to happen
+				//i think this part is needed? judging by test line 238 of testGameView, makes it seem like this is whats meant to happen
 				//dracula must be in this city!
 				printf("current health is %d\n", dv->allPlayers[hunter]->health);
 				dv->allPlayers[hunter]->health -= LIFE_LOSS_DRACULA_ENCOUNTER;
 				checkHunterHealth(dv, hunter);
 				DRACULA->health -= LIFE_LOSS_HUNTER_ENCOUNTER;
 				printf("hunter health is now %d\n", dv->allPlayers[hunter]->health);
-				draculaLocationHistoryAppend(dv, curr_place);
+				//draculaLocationHistoryAppend(dv, curr_place);
 				break;
 
 			// other characters include trailing '.'
@@ -555,8 +556,11 @@ static void draculaMove(DraculaView dv, char *string) {
 	else if (strcmp(city,"HI") == 0) {
 		printf("hide move\n");
 		DRACULA->lastHidden = dv->roundNumber;
-		draculaLocationHistoryAppend(dv, curr_place);
-
+		PlaceId lastLoc = DRACULA->locationHistory[DRACULA->currentLocationIndex];
+		draculaLocationHistoryAppend(dv, lastLoc);
+		for (int i = 0; i <= DRACULA->currentLocationIndex; i++) {
+			printf("current loc: %s\n", placeIdToName(DRACULA->locationHistory[i]));
+		}
 	}
 	// Double back move
 	else if (strncmp(city,"D",1) == 0) {
@@ -632,7 +636,10 @@ static void draculaMove(DraculaView dv, char *string) {
 			}
 
 			// Trap placed
-			if (*c == ITS_A_TRAP) trapLocationAppend(dv, curr_place);
+			if (*c == ITS_A_TRAP) {
+				PlaceId lastLoc = DRACULA->locationHistory[DRACULA->currentLocationIndex];
+				trapLocationAppend(dv, lastLoc);
+			}
 			// Immature vampire placed
 
 
