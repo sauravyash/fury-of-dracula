@@ -23,7 +23,6 @@
 #define PLAY_S_SIZE 7
 #define LOCATION_ID_SIZE 2
 #define MAX_LOC_HISTORY_SIZE (GAME_START_SCORE * 2 * 4 )
-//DOUBLE CHECK THIS: max number of turns * most possible avg moves per turn (rounded up)  * bytes per move stored
 #define OUR_ARBITRARY_ARRAY_SIZE 10
 
 // some puns just for fun
@@ -52,10 +51,10 @@ struct playerData {
 	PlaceId currentLocation;						  	// current location
 	int currentLocationIndex;						  	// index of current location in locationHistory
 	// -------------------------- BLOOD BOIS ONLY BEYOND THIS POINT --------------------------
-	// do we even need these?
+
 	int lastHidden;									  	// round in which drac last hid
 	int lastDoubleback;									// round in which drac last doubled back
-	// bool isVisible									// something to indicate whether hunters know drac curr location
+	
 };
 
 struct gameView {
@@ -608,14 +607,7 @@ GameView GvNew(char *pastPlays, Message messages[])
 
     // Number of Rounds can be determined from size of string
     // ( each play is 7 chars + space)
-    // Note last move has no space...
-    // Note each round is 5 plays...
 	new->roundNumber = (strlen(pastPlays) + 1) / ((PLAY_S_SIZE + 1)*5);
-
-	// 5 players that always go in order of G->S->H->M->D. returns 0 - 4
-	// Player is not dependent on round...
-	// Just set it here to player zero- the zero case, then change in parsMove.
-	// Already done in initialiseGame.
 
     // Need to create a copy of pastPlays rather than just pointing to it.
 	char string[strlen(pastPlays)];
@@ -629,8 +621,6 @@ GameView GvNew(char *pastPlays, Message messages[])
 		new->currentPlayer = parseMove(new, token);
 		token = strtok(NULL, " ");
 	}
-
-	//fill out map???
 
 	return new;
 }
