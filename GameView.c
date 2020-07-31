@@ -162,20 +162,7 @@ int GvGetHealth(GameView gv, Player player) {
 }
 
 PlaceId GvGetPlayerLocation(GameView gv, Player player) {
-	//i dont think we need this section due to how draculaLocationHistoryAppend works?
-	// todo visibility of dracula depends on draculamove implementation
-	/*if (player == PLAYER_DRACULA) {
-		// todo if has been revealed
-		return gv->allPlayers[player]->currentLocation;
-		// else return SEA/CITY
-		if (placeIdToType(gv->allPlayers[player]->currentLocation) == SEA)
-			return SEA_UNKNOWN;
-		else
-			return CITY_UNKNOWN;
-	}
-	else
-	*/
-		return gv->allPlayers[player]->currentLocation;
+	return gv->allPlayers[player]->currentLocation;
 }
 
 PlaceId GvGetVampireLocation(GameView gv) {
@@ -186,7 +173,7 @@ PlaceId GvGetVampireLocation(GameView gv) {
 PlaceId *GvGetTrapLocations(GameView gv, int *numTraps){
 	// pass number of moves; index + 1 since index starts at 0
 	*numTraps = gv->trapLocationsIndex + 1;
-	PlaceId * traps = malloc(sizeof(PlaceId) * *numTraps);
+	PlaceId *traps = malloc(sizeof(PlaceId) * *numTraps);
 	memoryError(traps);
 	for (int i = 0; i < *numTraps; i++){
 		traps[i] = gv->trapLocations[i];
@@ -263,6 +250,7 @@ PlaceId *GvGetLocationHistory(GameView gv, Player player,
 		}
 		return allLocs;
 	}
+	free(allLocs);
 	//location history == move history for hunters
 	return GvGetMoveHistory(gv, player, numReturnedLocs, canFree);
 }
