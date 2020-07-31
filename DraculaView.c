@@ -19,11 +19,10 @@
 #include "Game.h"
 #include "GameView.h"
 #include "Map.h"
-// add your own #includes here
+
 #define PLAY_S_SIZE 7
 #define LOCATION_ID_SIZE 2
 #define MAX_LOC_HISTORY_SIZE (GAME_START_SCORE * 2 * 4 )
-//DOUBLE CHECK THIS: max number of turns * most possible avg moves per turn (rounded up)  * bytes per move stored
 #define OUR_ARBITRARY_ARRAY_SIZE 10
 
 // some puns just for fun
@@ -49,10 +48,8 @@ struct playerData {
 	PlaceId currentLocation;						  	// current location
 	int currentLocationIndex;						  	// index of current location in locationHistory
 	// -------------------------- BLOOD BOIS ONLY BEYOND THIS POINT --------------------------
-	// do we even need these?
 	int lastHidden;									  	// round in which drac last hid
 	int lastDoubleback;									// round in which drac last doubled back
-	// bool isVisible									// something to indicate whether hunters know drac curr location
 };
 
 struct draculaView {
@@ -72,12 +69,11 @@ struct draculaView {
 // ****************************************
 
 //------------- GENERAL FUNCTIONS -------------
-int comparator(const void *p, const void *q);							// Qsort comparator
+static int placeIdCmp(const void *ptr1, const void *ptr2);							// Qsort comparator
 static void memoryError (const void * input);							// Generalised memory error test
-static void sortPlaces(PlaceId *places, int numPlaces);
+static void sortPlaces(PlaceId *places, int numPlaces);					// Sorts array of PlaceIds from largest to smallest
 static int PlaceIdToAsciiDoubleBack (PlaceId place);					// Convert a doubleback placeid to doubleback value
-static int placeIdCmp(const void *ptr1, const void *ptr2);
-
+static bool maxEncounters(DraculaView dv, PlaceId location);			//
 //------------- CONSTRUCTOR/ DESTRUCTOR -------------
 static void initialiseGame (DraculaView dv);							// Initialise an empty game to fill in
 static PlayerData initialisePlayer(DraculaView dv, Player player);		// Allocate the data for a player and set to default values
@@ -400,7 +396,7 @@ PlaceId *DvWhereCanTheyGo(DraculaView dv, Player player,
 }
 
 // WHERE CAN THEY GO: list all possible locations that a player can reach,
-// with the option to sort by type 
+// with the option to sort by type
 PlaceId *DvWhereCanTheyGoByType(DraculaView dv, Player player,
                                 bool road, bool rail, bool boat,
                                 int *numReturnedLocs) {
@@ -450,7 +446,6 @@ static void initialiseGame (DraculaView dv) {
 // PARSE MOVE: interprets a single move, calls hunter/draculaMove, updates curr_player
 // -- Input: DraculaVie, move string
 // -- Output: current Player
-// Author: Cindy (Tara edited)
 static Player parseMove (DraculaView dv, char *string) {
 
 	char *c = string;
@@ -491,7 +486,6 @@ static Player parseMove (DraculaView dv, char *string) {
 // HUNTER MOVE: Reads through hunter's string to determine actions taken
 // -- Input: DraculaView, pastPlays string, hunter in play
 // -- Output: void
-// Author: Cindy (Tara edited)
 static void hunterMove(DraculaView dv, char *string, Player hunter) {
 
 	// String must be of valid size
@@ -549,7 +543,6 @@ static void hunterMove(DraculaView dv, char *string, Player hunter) {
 // DRACULA MOVE:
 // -- Input: DraculaView, movestring
 // -- Output: void
-// Author: Cindy
 static void draculaMove(DraculaView dv, char *string) {
 
 	// String must be of valid size
@@ -613,19 +606,23 @@ static void draculaMove(DraculaView dv, char *string) {
 			if (*c == CLOSE_ENCOUNTERS_OF_THE_VTH_KIND) {
 				// immature vampire has matured
 				if( i == 5) {
-					dv->vampire = NOWHERE;
-					dv->score -= SCORE_LOSS_VAMPIRE_MATURES;
+					//check that vampire exists
+					if (dv->vampire != NOWHERE) {
+						dv->vampire = NOWHERE;
+						dv->score -= SCORE_LOSS_VAMPIRE_MATURES;
+					}
 				}
 				//immature vampire placed
 				else {
-					dv->vampire = curr_place;
+					if(maxEncounters(dv,curr_place) == false) dv->vampire = curr_place;
 				}
 			}
 
 			// Trap placed
 			if (*c == ITS_A_TRAP) {
-				PlaceId lastLoc = DRACULA->locationHistory[DRACULA->currentLocationIndex];
-				trapLocationAppend(dv, lastLoc);
+				//PlaceId lastLoc = DRACULA->locationHistory[DRACULA->currentLocationIndex];
+				//trapLocationAppend(dv, lastLoc);
+				if(maxEncounters(dv, curr_place) == false)	trapLocationAppend(dv, curr_place);
 			}
 		i++;
 	}
@@ -740,7 +737,7 @@ static void draculaLocationHistoryAppend(DraculaView dv, PlaceId location) {
 // CHECK HUNTER HEALTH: Checks if a hunter has died, if so, moves them to hospital
 // -- INPUT: DraculaView, Player
 // -- OUTPUT: void
-static void checkHunterHealth(DraculaView dv,Player hunter){
+static void checkHunterHealth(DraculaView dv,Player hunter) {
 	if(dv->allPlayers[hunter]->health <= 0) {
 		dv->allPlayers[hunter]->health = 0;
 		dv->score -= SCORE_LOSS_HUNTER_HOSPITAL;
@@ -779,8 +776,7 @@ static PlayerData initialisePlayer(DraculaView dv, Player player) {
 // the number of returned locs, pointer to a bool canFree
 // -- OUTPUT: array of PlaceIds
 PlaceId *DvGetLastLocations(DraculaView dv, Player player, int numLocs,
-                            int *numReturnedLocs, bool *canFree)
-{
+                            int *numReturnedLocs, bool *canFree) {
 	// unless asking for more locations than have happened, return numlocs
 	if (dv->allPlayers[player]->currentLocationIndex >= numLocs) {
 		// can free as returning a separate array
@@ -806,8 +802,7 @@ PlaceId *DvGetLastLocations(DraculaView dv, Player player, int numLocs,
 // pointer to a bool canFree
 // -- OUTPUT: array of PlaceIds
 PlaceId *dvGetLocationHistory(DraculaView dv, Player player,
-                              int *numReturnedLocs, bool *canFree)
-{
+                              int *numReturnedLocs, bool *canFree) {
 	// can free as allocating new array
 
 
@@ -849,8 +844,7 @@ PlaceId *dvGetLocationHistory(DraculaView dv, Player player,
 // pointer to a bool canFree
 // -- OUTPUT: array of PlaceIds
 PlaceId *dvGetMoveHistory(DraculaView dv, Player player,
-                          int *numReturnedMoves, bool *canFree)
-{
+                          int *numReturnedMoves, bool *canFree) {
 
 	// can't free as is returning directly from data struct
 	*canFree = false;
@@ -882,12 +876,6 @@ static void trapLocationAppend(DraculaView dv, PlaceId location) {
 	return;
 }
 
-//Author: testUtils.c; Edited: Cindy
-static void sortPlaces(PlaceId *places, int numPlaces) {
-	qsort(places, (size_t)numPlaces, sizeof(PlaceId), placeIdCmp);
-	return;
-}
-
 // COMPARATOR: Compare the order of the elements pointed to by *p and *q. Returns:
 //	<0 If the element pointed by p goes before the element pointed by q,
 //	0  If the element pointed by p is equivalent to the element pointed by q,
@@ -900,12 +888,16 @@ static int placeIdCmp(const void *ptr1, const void *ptr2) {
 	return p2 - p1;
 }
 
+//Author: testUtils.c; Edited: Cindy
+static void sortPlaces(PlaceId *places, int numPlaces) {
+	qsort(places, (size_t)numPlaces, sizeof(PlaceId), placeIdCmp);
+	return;
+}
 
 
 static PlaceId *DvGetReachableByType(DraculaView dv, Player player, Round round,
                               PlaceId from, bool road, bool rail,
-                              bool boat, int *numReturnedLocs)
-{
+                              bool boat, int *numReturnedLocs) {
 
 	// We need to access the map :)
 	Map map = dv->map;
@@ -1060,4 +1052,16 @@ static int Find_Rails (Map map, PlaceId place, PlaceId from, PlaceId *array, int
     }
 
     return places_added;
+}
+
+// MAX ENCOUNTERS: Reads through drac's string to determine actions taken
+// -- Input: GameView, Location of encounters to be checked
+// -- Output: If maximum encounters for a city has been reached
+static bool maxEncounters(DraculaView dv, PlaceId location) {
+	int counter = 0;
+	if (dv->vampire == location) counter++;
+	for (int i = 0; i <= dv->trapLocationsIndex; i++){
+		if(dv->trapLocations[i] == location) counter++;
+	}
+	return (counter >= 3);
 }

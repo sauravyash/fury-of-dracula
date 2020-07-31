@@ -21,7 +21,6 @@
 #include "Places.h"
 #include "Queue.h"
 
-// add #defines here
 #define PLAY_S_SIZE 7
 #define LOCATION_ID_SIZE 2
 #define MAX_LOC_HISTORY_SIZE (GAME_START_SCORE * 2 * 4 )
@@ -46,7 +45,7 @@ typedef struct playerData *PlayerData;
 
 // ADT that stores all data for each player:
 struct playerData {
-	
+
 	int health;											// Current player health
 	PlaceId locationHistory[MAX_LOC_HISTORY_SIZE];		// Array of locations visited by player
 	PlaceId moveHistory[MAX_LOC_HISTORY_SIZE];			// Array of moves made by player (different to loc history for drac)
@@ -85,9 +84,11 @@ static PlaceId *HvGetReachableByType(HunterView hv, Player player, Round round,
 
 //------------- GENERAL FUNCTIONS -------------
 // Qsort comparator:
-int comparator(const void *p, const void *q);
+static int placeIdCmp(const void *ptr1, const void *ptr2);
 // Memory error test:
 static void memoryError (const void * input);
+// Sorts an array of PlaceIds
+static void sortPlaces(PlaceId *places, int numPlaces);
 
 //------------- CONSTRUCTOR/ DESTRUCTOR -------------
 // Initialise an empty game to fill in:
@@ -107,6 +108,8 @@ static void trapLocationAppend(HunterView hv, PlaceId location);
 static void trapLocationRemove(HunterView hv, PlaceId location);
 // Check the health of a hunter, sends them to hospital if needed:
 static void checkHunterHealth(HunterView hv,Player hunter);
+// Checks if maximum encounters for a location have already been placed
+static bool maxEncounters(HunterView hv, PlaceId location);
 
 //------------- GAME HISTORY -------------
 static PlaceId *HvGetMoveHistory(HunterView hv, Player player,
@@ -253,7 +256,7 @@ PlaceId *HvGetShortestPathTo(HunterView hv, Player hunter, PlaceId dest,
 	// Make Queue to travel breadth-first
 	Queue q = newQueue();
     QueueJoin(q, src);
-	
+
 	// BFS
     while (!found && !QueueIsEmpty(q)) {
         int prev_place = QueueLeave(q);
@@ -798,18 +801,22 @@ static void draculaMove(HunterView hv, char *string) {
 			if (*c == CLOSE_ENCOUNTERS_OF_THE_VTH_KIND) {
 				// Immature vampire has matured
 				if( i == 5) {
-					hv->vampire = NOWHERE;
-					hv->score -= SCORE_LOSS_VAMPIRE_MATURES;
+					//check that vampire exists
+					if (hv->vampire != NOWHERE) {
+						hv->vampire = NOWHERE;
+						hv->score -= SCORE_LOSS_VAMPIRE_MATURES;
+					}
 				}
 				//immature vampire placed
 				else {
-					hv->vampire = curr_place;
+					if(maxEncounters(hv,curr_place) == false) hv->vampire = curr_place;
 				}
 			}
 
 			// Trap placed
-			if (*c == ITS_A_TRAP) trapLocationAppend(hv, curr_place);
-			// Immature vampire placed
+			if (*c == ITS_A_TRAP) {
+				if(maxEncounters(hv, curr_place) == false)	trapLocationAppend(hv, curr_place);
+			}
 		i++;
 	}
 
@@ -1233,4 +1240,16 @@ static int Find_Rails (Map map, PlaceId place, PlaceId from, PlaceId *array, int
         list = list->next;
     }
     return places_added;
+}
+
+// MAX ENCOUNTERS: Reads through drac's string to determine actions taken
+// -- Input: GameView, Location of encounters to be checked
+// -- Output: If maximum encounters for a city has been reached
+static bool maxEncounters(HunterView hv, PlaceId location){
+	int counter = 0;
+	if (hv->vampire == location) counter++;
+	for (int i = 0; i <= hv->trapLocationsIndex; i++){
+		if(hv->trapLocations[i] == location) counter++;
+	}
+	return (counter >= 3);
 }

@@ -284,10 +284,8 @@ PlaceId *GvGetLastLocations(GameView gv, Player player, int numLocs,
 
 // REACHABLE FUNCTIONS: Help to find all possible moves for the next play based
 // on round score, player, starting place, and other game deets.
-// Author: Tara
 // Status: Iterative Fully functioning for hunter- passed all given tests plus own tests
 // and works with any railDist, player and round. Need to test Drac...
-// TODO: Recursive version?
 PlaceId *GvGetReachable(GameView gv, Player player, Round round,
                         PlaceId from, int *numReturnedLocs)
 {
@@ -757,7 +755,6 @@ static void initialiseGame (GameView gv) {
 // PARSE MOVE: interprets a single move, calls hunter/draculaMove, updates curr_player
 // -- Input: GameView, move string
 // -- Output: current Player
-// Author: Cindy (Tara edited)
 static Player parseMove (GameView gv, char *string){
 
 	char *c = string;
@@ -798,7 +795,6 @@ static Player parseMove (GameView gv, char *string){
 // HUNTER MOVE: Reads through hunter's string to determine actions taken
 // -- Input: GameView, pastPlays string, hunter in play
 // -- Output: void
-// Author: Cindy (Tara edited)
 static void hunterMove(GameView gv, char *string, Player hunter) {
 
 	// String must be of valid size
@@ -856,7 +852,6 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
 // DRACULA MOVE: Reads through drac's string to determine actions taken
 // -- Input: GameView, pastPlays string
 // -- Output: void
-// Author: Cindy
 static void draculaMove(GameView gv, char *string) {
 
 	// String must be of valid size
@@ -941,6 +936,9 @@ static void draculaMove(GameView gv, char *string) {
     return;
 }
 
+// MAX ENCOUNTERS: Reads through drac's string to determine actions taken
+// -- Input: GameView, Location of encounters to be checked
+// -- Output: If maximum encounters for a city has been reached
 static bool maxEncounters(GameView gv, PlaceId location){
 	int counter = 0;
 	if (gv->vampire == location) counter++;
@@ -958,7 +956,6 @@ static bool maxEncounters(GameView gv, PlaceId location){
 // are editing a used array).
 // -- OUTPUT: An updated array of visited rail locations and number of locations
 // added in this instance.
-// -- Author: Tara
 static int Find_Rails (Map map, PlaceId place, PlaceId from, PlaceId *array, int i) {
 
     // Check things exist:
