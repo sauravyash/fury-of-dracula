@@ -68,36 +68,35 @@ struct draculaView {
 	PlaceId temp_place;
 };
 
-static PlayerData initialisePlayer(DraculaView dv, Player player);
-static void initialiseGame (DraculaView dv);
-static Player parseMove (DraculaView dv, char *string);
+// PRIVATE FUNCTION DECLARATIONS
+// ****************************************
 
 //------------- GENERAL FUNCTIONS -------------
-// Qsort comparator:
-int comparator(const void *p, const void *q);
-// Memory error test:
-static void memoryError (const void * input);
+int comparator(const void *p, const void *q);							// Qsort comparator
+static void memoryError (const void * input);							// Generalised memory error test
+static void sortPlaces(PlaceId *places, int numPlaces);
+static int PlaceIdToAsciiDoubleBack (PlaceId place);					// Convert a doubleback placeid to doubleback value
+static int placeIdCmp(const void *ptr1, const void *ptr2);
 
 //------------- CONSTRUCTOR/ DESTRUCTOR -------------
 static void initialiseGame (DraculaView dv);							// Initialise an empty game to fill in
-static Player parseMove (DraculaView dv, char *string);				// Parse the move string
+static PlayerData initialisePlayer(DraculaView dv, Player player);		// Allocate the data for a player and set to default values
+
+//------------- PARSING MOVES -------------
+static Player parseMove (DraculaView dv, char *string);					// Parse the move string
 static void hunterMove(DraculaView dv, char *string, Player hunter);	// Apply hunter move from parsed string
-static void draculaMove(DraculaView dv, char * string);				// Apply dracula move from parsed string
+static void draculaMove(DraculaView dv, char * string);					// Apply dracula move from parsed string
 static void trapLocationRemove(DraculaView dv, PlaceId location);		// Remove a trap location
 static void trapLocationAppend(DraculaView dv, PlaceId location);		// Add a trap location
+
 static void checkHunterHealth(DraculaView dv,Player hunter);			// Check the health of a hunter, sends them to hospital if needed
 
-
+//------------- MOVES & HISTORIES -------------
 PlaceId *DvGetLastLocations(DraculaView dv, Player player, int numLocs,
-                            int *numReturnedLocs, bool *canFree);
-static PlayerData initialisePlayer(DraculaView dv, Player player);
+                            int *numReturnedLocs, bool *canFree);		// Find players last n locations, return as array
 PlaceId *dvGetMoveHistory(DraculaView dv, Player player,
-                          int *numReturnedMoves, bool *canFree);
-static int PlaceIdToAsciiDoubleBack (PlaceId place);				// Convert a doubleback placeid to doubleback value
-
-static void sortPlaces(PlaceId *places, int numPlaces);
+                          int *numReturnedMoves, bool *canFree);		// Find the complete move history of a player, return as array
 static void draculaLocationHistoryAppend(DraculaView dv, PlaceId curr_place);
-static int placeIdCmp(const void *ptr1, const void *ptr2);
 PlaceId *dvGetLocationHistory(DraculaView dv, Player player,
                               int *numReturnedLocs, bool *canFree);
 static PlaceId *DvGetReachableByType(DraculaView dv, Player player, Round round,
@@ -105,6 +104,8 @@ static PlaceId *DvGetReachableByType(DraculaView dv, Player player, Round round,
                               bool boat, int *numReturnedLocs);
 static int Find_Rails (Map map, PlaceId place, PlaceId from, PlaceId *array, int i);
 static void hunterLocationHistoryAppend(DraculaView dv, Player hunter, PlaceId location);
+
+// ****************************************
 
 
 // MEMORY ERROR: Helper function to check correct memory allocation. Exits if
@@ -122,8 +123,8 @@ static void memoryError (const void * input) {
 ////////////////////////////////////////////////////////////////////////
 // Constructor/Destructor
 
-DraculaView DvNew(char *pastPlays, Message messages[])
-{
+// DV NEW: Initialises a new DraculaView
+DraculaView DvNew(char *pastPlays, Message messages[]) {
 	// Allocate memory for new dv
 	DraculaView new = malloc(sizeof(*new));
 
@@ -157,6 +158,7 @@ DraculaView DvNew(char *pastPlays, Message messages[])
 	return new;
 }
 
+// DV FREE: Frees the current DraculaView
 void DvFree(DraculaView dv)
 {
 	// free player structs
@@ -211,9 +213,11 @@ PlaceId *DvGetTrapLocations(DraculaView dv, int *numTraps)
 ////////////////////////////////////////////////////////////////////////
 // Making a Move
 
-
+// IS IN TRAIL: determines whether a given location is contained in dracula's trail
+// -- INPUT: DraculaView, location
+// -- OUTPUT: Bool
 bool isInTrail(DraculaView dv, PlaceId location) {
-	// checks location against trail
+	// only compare against as many moves as exist
 	int max = (DRACULA->currentLocationIndex < 6 ? DRACULA->currentLocationIndex : 6);
 	for (int i = 0; i < max; i++) {
 		if (location == DRACULA->locationHistory[i]) return true;
@@ -221,22 +225,31 @@ bool isInTrail(DraculaView dv, PlaceId location) {
 	return false;
 }
 
+// CAN HIDE: determines whether dracula can hide
+// -- INPUT: DraculaView
+// -- OUTPUT: Bool
 bool canHide(DraculaView dv) {
-	if ((dv->roundNumber - DRACULA->lastHidden) > 5
-		|| DRACULA->lastHidden < 0) return true;
+	// check that he hasn't hidden in the last 5 turns, and that he isn't at sea
+	if (((dv->roundNumber - DRACULA->lastHidden) > 5
+		|| DRACULA->lastHidden < 0)
+		&& placeIdToType(DRACULA->currentLocation) != SEA) return true;
 	return false;
 }
 
+// CAN HIDE: determines whether dracula can doubleback
+// -- INPUT: DraculaView
+// -- OUTPUT: Bool
 bool canDoubleBack(DraculaView dv) {
+	// checks that he hasn't doubled back in the last 5 turns
 	if ((dv->roundNumber - DRACULA->lastDoubleback) > 5
 	|| DRACULA->lastHidden < 0) return true;
 	return false;
 }
 
-// todo
-PlaceId *DvGetValidMoves(DraculaView dv, int *numReturnedMoves)
-{
-	// 1. We need to access the map :)
+// GET VALID MOVES: Returns all valid moves that dracula can currently make
+// returns dynamically allocated array of moves
+PlaceId *DvGetValidMoves(DraculaView dv, int *numReturnedMoves) {
+	// load map
 	Map map = dv->map;
 
 	// create dynamically allocated array
@@ -246,11 +259,11 @@ PlaceId *DvGetValidMoves(DraculaView dv, int *numReturnedMoves)
 	// get connections from current location
 	ConnList list = MapGetConnections(map, dv->allPlayers[PLAYER_DRACULA]->currentLocation);
 
-	// 3. Iterate through...
+	// iterate through connections
 	int moveIndex = 0;
-	//possibleMoves[moveIndex] = dv->allPlayers[PLAYER_DRACULA]->currentLocation;
 
 	while (moveIndex < NUM_REAL_PLACES) {
+		// exclude locations in his trail
 		if (!isInTrail(dv, list->p)) {
 			// Extra conditions for drac:
 			if (list->p == HOSPITAL_PLACE) {
@@ -278,7 +291,7 @@ PlaceId *DvGetValidMoves(DraculaView dv, int *numReturnedMoves)
 				memoryError(possibleMoves);
 			}
 		}
-		// check if he can doubleback to places further back than his last turn
+		// check whether he can doubleback to places further back than his last turn
 		else if (canDoubleBack(dv)) {
 			// checks location against trail
 			int max = (DRACULA->currentLocationIndex < 6 ? DRACULA->currentLocationIndex : 6);
@@ -317,22 +330,26 @@ PlaceId *DvGetValidMoves(DraculaView dv, int *numReturnedMoves)
 	return possibleMoves;
 }
 
-
-PlaceId *DvWhereCanIGo(DraculaView dv, int *numReturnedLocs)
-{
+// WHERE CAN I GO: Lists all locations dracula can reach on his turn
+// returns array of locations
+PlaceId *DvWhereCanIGo(DraculaView dv, int *numReturnedLocs) {
 	PlaceId *locs = DvWhereCanIGoByType(dv, 1, 1, numReturnedLocs);
 	// Return values
 	return locs;
 }
 
+// WHERE CAN I GO: Lists all locations dracula can reach on his turn,
+// with the option to specify type
+// returns array of locations
 PlaceId *DvWhereCanIGoByType(DraculaView dv, bool road, bool boat,
-                             int *numReturnedLocs)
-{
+                             int *numReturnedLocs) {
 	int numReturnedMoves = 0;
 	PlaceId *moves = DvGetValidMoves(dv, &numReturnedMoves);
 	PlaceId *locs = malloc(sizeof(PlaceId));
 	memoryError(locs);
 	int locsIndex = 0;
+
+	// sort through all moves, rejecting duplicate locs from hide/doubleback
 	for (int i = 0; i < numReturnedMoves; i++) {
 		// if move is not a doubleback or hide add to possible locations
 		if (moves[i] != HIDE && (moves[i] < 103 || moves[i] > 107)) {
@@ -358,9 +375,9 @@ PlaceId *DvWhereCanIGoByType(DraculaView dv, bool road, bool boat,
 	return locs;
 }
 
+// WHERE CAN THEY GO: list all possible locations that a player can reach
 PlaceId *DvWhereCanTheyGo(DraculaView dv, Player player,
-                          int *numReturnedLocs)
-{
+                          int *numReturnedLocs) {
 	// dracula case
 	if (player == PLAYER_DRACULA) {
 		return DvWhereCanIGo(dv, numReturnedLocs);
@@ -380,10 +397,11 @@ PlaceId *DvWhereCanTheyGo(DraculaView dv, Player player,
 	return locs;
 }
 
+// WHERE CAN THEY GO: list all possible locations that a player can reach,
+// with the option to sort by type 
 PlaceId *DvWhereCanTheyGoByType(DraculaView dv, Player player,
                                 bool road, bool rail, bool boat,
-                                int *numReturnedLocs)
-{
+                                int *numReturnedLocs) {
 	// Set values:
 	Round round = DvGetRound(dv);
 	PlaceId from = DvGetPlayerLocation(dv, player);
@@ -465,7 +483,7 @@ static Player parseMove (DraculaView dv, char *string) {
 
 
 // HUNTER MOVE: Reads through hunter's string to determine actions taken
-// -- Input: GameView, pastPlays string, hunter in play
+// -- Input: DraculaView, pastPlays string, hunter in play
 // -- Output: void
 // Author: Cindy (Tara edited)
 static void hunterMove(DraculaView dv, char *string, Player hunter) {
@@ -523,8 +541,8 @@ static void hunterMove(DraculaView dv, char *string, Player hunter) {
 }
 
 // DRACULA MOVE:
-// -- Input:
-// -- Output:
+// -- Input: DraculaView, movestring
+// -- Output: void
 // Author: Cindy
 static void draculaMove(DraculaView dv, char *string) {
 
@@ -611,7 +629,7 @@ static void draculaMove(DraculaView dv, char *string) {
     return;
 }
 // TRAP LOCATION REMOVE: Removes a specified location from trap location array
-// -- INPUT: GameView, PlaceId
+// -- INPUT: DraculaView, PlaceId
 // -- OUTPUT: void
 static void trapLocationRemove(DraculaView dv, PlaceId location) {
 	int i = 0;
@@ -633,7 +651,7 @@ static void trapLocationRemove(DraculaView dv, PlaceId location) {
 
 // HUNTER LOCATION HISTORY APPEND: Appends input placeid to a player's
 // locationhistory, updates current location and index.
-// -- INPUT: GameView, Player, PlaceId to append
+// -- INPUT: DraculaView, Player, PlaceId to append
 // -- OUTPUT: void
 static void hunterLocationHistoryAppend(DraculaView dv, Player hunter, PlaceId location) {
 	int index = HUNTER->currentLocationIndex;
@@ -662,7 +680,7 @@ static void hunterLocationHistoryAppend(DraculaView dv, Player hunter, PlaceId l
 // DRACULA LOCATION HISTORY APPEND: Appends input placeid to a drac's
 // locationhistory, updates current location and index. If the location is
 // at sea, reduce drac's health.
-// -- INPUT: GameView, PlaceId to append
+// -- INPUT: DraculaView, PlaceId to append
 // -- OUTPUT: void
 static void draculaLocationHistoryAppend(DraculaView dv, PlaceId location) {
 
@@ -714,20 +732,20 @@ static void draculaLocationHistoryAppend(DraculaView dv, PlaceId location) {
 
 
 // CHECK HUNTER HEALTH: Checks if a hunter has died, if so, moves them to hospital
-// -- INPUT: GameView, Player
+// -- INPUT: DraculaView, Player
 // -- OUTPUT: void
 static void checkHunterHealth(DraculaView dv,Player hunter){
 	if(dv->allPlayers[hunter]->health <= 0) {
 		dv->allPlayers[hunter]->health = 0;
 		dv->score -= SCORE_LOSS_HUNTER_HOSPITAL;
-		hunterLocationHistoryAppend(dv, hunter, HOSPITAL_PLACE);
-		// todo need to update hunter HP?
+		HUNTER->currentLocation = HOSPITAL_PLACE;
+		//hunterLocationHistoryAppend(gv, hunter, HOSPITAL_PLACE);
 	}
 	return;
 }
 
 // INITIALISE PLAYER: Initialises a player to defaults, assigns memory
-// -- INPUT: GameView, Player
+// -- INPUT: DraculaView, Player
 // -- OUTPUT: void
 static PlayerData initialisePlayer(DraculaView dv, Player player) {
 
@@ -846,7 +864,7 @@ static int PlaceIdToAsciiDoubleBack (PlaceId place) {
 
 // TRAP LOCATION APPEND: Appends input to the trap location array, updates index,
 //array is sorted largest to smallest PlaceId value for easy manipulation
-// -- INPUT: GameView, PlaceId to append
+// -- INPUT: DraculaView, PlaceId to append
 // -- OUTPUT: void
 static void trapLocationAppend(DraculaView dv, PlaceId location) {
 	int index = dv->trapLocationsIndex;

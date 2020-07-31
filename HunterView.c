@@ -594,8 +594,8 @@ static void checkHunterHealth(HunterView hv,Player hunter){
 	if(hv->allPlayers[hunter]->health <= 0) {
 		hv->allPlayers[hunter]->health = 0;
 		hv->score -= SCORE_LOSS_HUNTER_HOSPITAL;
-		hunterLocationHistoryAppend(hv, hunter, HOSPITAL_PLACE);
-		// todo need to update hunter HP?
+		HUNTER->currentLocation = HOSPITAL_PLACE;
+		//hunterLocationHistoryAppend(gv, hunter, HOSPITAL_PLACE);
 	}
 	return;
 }

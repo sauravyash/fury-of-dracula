@@ -81,6 +81,7 @@ static void memoryError (const void * input);						//Checks if memory was alloca
 static void sortPlaces(PlaceId *places, int numPlaces);				// Sorts an array of PlaceIds
 static int PlaceIdToAsciiDoubleBack (PlaceId place);				// Convert a doubleback placeid to doubleback value
 static void checkHunterHealth(GameView gv,Player hunter);			// Check the health of a hunter, sends them to hospital if needed
+static bool maxEncounters(GameView gv, PlaceId location);			//Check if maximum encounters at a particular place has been reached
 //------------- Parsing Player Moves -------------
 static Player parseMove (GameView gv, char *string);				// Parse the move string
 static void hunterMove(GameView gv, char *string, Player hunter);	// Apply hunter move from parsed string
@@ -702,8 +703,9 @@ static void checkHunterHealth(GameView gv,Player hunter){
 	if(gv->allPlayers[hunter]->health <= 0) {
 		gv->allPlayers[hunter]->health = 0;
 		gv->score -= SCORE_LOSS_HUNTER_HOSPITAL;
-		hunterLocationHistoryAppend(gv, hunter, HOSPITAL_PLACE);
-		// todo need to update hunter hp? -> check at start of hunter round if they are in hospital, then restore health?
+		HUNTER->currentLocation = HOSPITAL_PLACE;
+		//hunterLocationHistoryAppend(gv, hunter, HOSPITAL_PLACE);
+
 	}
 	return;
 }
@@ -914,18 +916,23 @@ static void draculaMove(GameView gv, char *string) {
 
 			if (*c == CLOSE_ENCOUNTERS_OF_THE_VTH_KIND) {
 				// Immature vampire has matured
-				if( i == 5) {
-					gv->vampire = NOWHERE;
-					gv->score -= SCORE_LOSS_VAMPIRE_MATURES;
+				if( i == 5 ) {
+					//check that vampire exists
+					if (gv->vampire != NOWHERE) {
+						gv->vampire = NOWHERE;
+						gv->score -= SCORE_LOSS_VAMPIRE_MATURES;
+					}
 				}
 				//immature vampire placed
 				else {
-					gv->vampire = curr_place;
+					if(maxEncounters(gv,curr_place) == false) gv->vampire = curr_place;
 				}
 			}
 
 			// Trap placed
-			if (*c == ITS_A_TRAP) trapLocationAppend(gv, curr_place);
+			if (*c == ITS_A_TRAP) {
+				if(maxEncounters(gv, curr_place) == false)	trapLocationAppend(gv, curr_place);
+			}
 		i++;
 	}
 	// Game score decreases each time drac finishes turn
@@ -933,6 +940,17 @@ static void draculaMove(GameView gv, char *string) {
     free(city);
     return;
 }
+
+static bool maxEncounters(GameView gv, PlaceId location){
+	int counter = 0;
+	if (gv->vampire == location) counter++;
+	for (int i = 0; i <= gv->trapLocationsIndex; i++){
+		if(gv->trapLocations[i] == location) counter++;
+	}
+	return (counter >= 3);
+}
+
+
 
 // FIND EXTRA RAIL LOCS: Helper function for reachables to find rail CONNECTIONS.
 // -- INPUT: Map, starting place, original place to check as duplicate, array of
