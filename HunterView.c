@@ -19,7 +19,6 @@
 #include "HunterView.h"
 #include "Map.h"
 #include "Places.h"
-
 #include "Queue.h"
 
 // add #defines here
@@ -140,8 +139,9 @@ static PlaceId *HvGetLastLocations(HunterView hv, Player player, int numLocs,
 ////////////////////////////////////////////////////////////////////////
 // Constructor/Destructor
 
-HunterView HvNew(char *pastPlays, Message messages[])
-{
+// HV NEW: allocates memory for a new HunterView, initialises default values
+// returns new HunterView
+HunterView HvNew(char *pastPlays, Message messages[]) {
 	// Create new HunterView:
 	HunterView new = malloc(sizeof(*new));
 
@@ -168,8 +168,8 @@ HunterView HvNew(char *pastPlays, Message messages[])
 	return new;
 }
 
-void HvFree(HunterView hv)
-{
+// HV FREE: frees memory associated with the input HunterView
+void HvFree(HunterView hv) {
 	// Free player structs
 	for (int i = 0; i < NUM_PLAYERS; i++)
 		free(hv->allPlayers[i]);
@@ -183,44 +183,38 @@ void HvFree(HunterView hv)
 ////////////////////////////////////////////////////////////////////////
 // Game State Information
 
-Round HvGetRound(HunterView hv)
-{
+Round HvGetRound(HunterView hv) {
 	return hv->roundNumber;
 }
 
-Player HvGetPlayer(HunterView hv)
-{
+Player HvGetPlayer(HunterView hv) {
 	return hv->currentPlayer;
 }
 
-int HvGetScore(HunterView hv)
-{
+int HvGetScore(HunterView hv) {
 	return hv->score;
 }
 
-int HvGetHealth(HunterView hv, Player player)
-{
+int HvGetHealth(HunterView hv, Player player) {
 	return hv->allPlayers[player]->health;
 }
 
-PlaceId HvGetPlayerLocation(HunterView hv, Player player)
-{
+PlaceId HvGetPlayerLocation(HunterView hv, Player player) {
 	if (player == PLAYER_DRACULA) return hv->allPlayers[player]->currentLocation;
 	else return hv->allPlayers[player]->currentLocation;
 }
 
-PlaceId HvGetVampireLocation(HunterView hv)
-{
+PlaceId HvGetVampireLocation(HunterView hv) {
 	return hv->vampire;
 }
 
 ////////////////////////////////////////////////////////////////////////
 // Utility Functions
 
-PlaceId HvGetLastKnownDraculaLocation(HunterView hv, Round *round)
-{
-	// Basically the last real location or nowhere...
-	// Head backwards - != NOWHERE && == REALPLACE.
+// LAST KNOWN DRACULA LOCATION: returns the last known real dracula location,
+// or NOWHERE if he has not yet been sighted
+PlaceId HvGetLastKnownDraculaLocation(HunterView hv, Round *round) {
+	// Head backwards through location history, != NOWHERE && == REALPLACE.
 	int round_num = -1;
 	for (int i = DRACULA->currentLocationIndex; i > -1; i--)
 	{
@@ -237,16 +231,17 @@ PlaceId HvGetLastKnownDraculaLocation(HunterView hv, Round *round)
 	else return DRACULA->locationHistory[round_num];
 }
 
+// GET SHORTEST PATH TO: returns the shortest path to a location
 PlaceId *HvGetShortestPathTo(HunterView hv, Player hunter, PlaceId dest,
-                             int *pathLength)
-{
+                             int *pathLength) {
+	// initialise
 	Map map = hv->map;
 	int src = HUNTER->currentLocation;
 	int des = dest;
 
-
+	// check map loaded correctly
 	assert (map != NULL);
-	// If destination == starting position.
+	// If destination == starting position simply return start
 	if (src == des) {
 		PlaceId *path = malloc(2 * sizeof(PlaceId));
 		memoryError(path);
@@ -273,7 +268,8 @@ PlaceId *HvGetShortestPathTo(HunterView hv, Player hunter, PlaceId dest,
 	// Make Queue to travel breadth-first
 	Queue q = newQueue();
     QueueJoin(q, src);
-
+	
+	// BFS
     while (!found && !QueueIsEmpty(q)) {
         int prev_place = QueueLeave(q);
 		// When we create a new_place, we must create from connections of prev.
@@ -349,8 +345,7 @@ PlaceId *HvGetShortestPathTo(HunterView hv, Player hunter, PlaceId dest,
 ////////////////////////////////////////////////////////////////////////
 // Making a Move
 
-PlaceId *HvWhereCanIGo (HunterView hv, int *numReturnedLocs)
-{
+PlaceId *HvWhereCanIGo (HunterView hv, int *numReturnedLocs) {
 	// Set values:
 	Player hunter = HvGetPlayer(hv);
 	Round round = HvGetRound(hv) + 1;
@@ -367,8 +362,7 @@ PlaceId *HvWhereCanIGo (HunterView hv, int *numReturnedLocs)
 }
 
 PlaceId *HvWhereCanIGoByType (HunterView hv, bool road, bool rail,
-                             bool boat, int *numReturnedLocs)
-{
+                             bool boat, int *numReturnedLocs) {
 	// Set values:
 	Player hunter = HvGetPlayer(hv);
 	Round round = HvGetRound(hv) + 1;
