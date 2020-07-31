@@ -151,13 +151,9 @@ DraculaView DvNew(char *pastPlays, Message messages[])
 	char *token = strtok(string, " ");
 	// while not end of string
 	while (token != NULL) {
-		// printf("current token: %d\n", token);
 		new->currentPlayer = parseMove(new, token);
 		token = strtok(NULL, " ");
 	}
-
-	//fill out map???
-
 	return new;
 }
 
@@ -483,7 +479,8 @@ static void hunterMove(DraculaView dv, char *string, Player hunter) {
 	city[0] = string[1];
 	city[1] = string[2];
 	city[2] = '\0';
-
+	//If hunter was in hospital, restore health points
+	if(HUNTER->currentLocation == HOSPITAL_PLACE) HUNTER->health = GAME_START_HUNTER_LIFE_POINTS;
     // Compare and find city by abbreviation:
 	PlaceId curr_place = placeAbbrevToId(city);
 
@@ -760,7 +757,6 @@ static PlayerData initialisePlayer(DraculaView dv, Player player) {
 PlaceId *DvGetLastLocations(DraculaView dv, Player player, int numLocs,
                             int *numReturnedLocs, bool *canFree)
 {
-	printf("getting last locations\n");
 	// unless asking for more locations than have happened, return numlocs
 	if (dv->allPlayers[player]->currentLocationIndex >= numLocs) {
 		// can free as returning a separate array
@@ -794,7 +790,6 @@ PlaceId *dvGetLocationHistory(DraculaView dv, Player player,
 	// pass number of moves
 
 	int index = dv->allPlayers[player]->currentLocationIndex;
-	printf("index is %d\n", index);
 	*numReturnedLocs = index + 1;
 	//if there are no moves in history, return NULL
 	if(index < 0) return NULL;

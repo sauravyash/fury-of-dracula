@@ -703,7 +703,8 @@ static void hunterMove(HunterView hv, char *string, Player hunter) {
 	city[0] = string[1];
 	city[1] = string[2];
 	city[2] = '\0';
-
+	//If hunter was in hospital, restore health points
+	if(HUNTER->currentLocation == HOSPITAL_PLACE) HUNTER->health = GAME_START_HUNTER_LIFE_POINTS;
     // Compare and find city by abbreviation:
 	PlaceId curr_place = placeAbbrevToId(city);
 
