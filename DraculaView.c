@@ -73,31 +73,31 @@ static void initialiseGame (DraculaView dv);
 static Player parseMove (DraculaView dv, char *string);
 
 //------------- GENERAL FUNCTIONS -------------
-// Qsort comparator:
-int comparator(const void *p, const void *q);
-// Memory error test:
-static void memoryError (const void * input);
+int comparator(const void *p, const void *q);							// Qsort comparator
+static void memoryError (const void * input);							// Generalised memory error test
+static void sortPlaces(PlaceId *places, int numPlaces);
+static int PlaceIdToAsciiDoubleBack (PlaceId place);					// Convert a doubleback placeid to doubleback value
+static int placeIdCmp(const void *ptr1, const void *ptr2);
 
 //------------- CONSTRUCTOR/ DESTRUCTOR -------------
 static void initialiseGame (DraculaView dv);							// Initialise an empty game to fill in
-static Player parseMove (DraculaView dv, char *string);				// Parse the move string
+static PlayerData initialisePlayer(DraculaView dv, Player player);		// Allocate the data for a player and set to default values
+
+//------------- PARSING MOVES -------------
+static Player parseMove (DraculaView dv, char *string);					// Parse the move string
 static void hunterMove(DraculaView dv, char *string, Player hunter);	// Apply hunter move from parsed string
-static void draculaMove(DraculaView dv, char * string);				// Apply dracula move from parsed string
+static void draculaMove(DraculaView dv, char * string);					// Apply dracula move from parsed string
 static void trapLocationRemove(DraculaView dv, PlaceId location);		// Remove a trap location
 static void trapLocationAppend(DraculaView dv, PlaceId location);		// Add a trap location
+
 static void checkHunterHealth(DraculaView dv,Player hunter);			// Check the health of a hunter, sends them to hospital if needed
 
-
+//------------- MOVES & HISTORIES -------------
 PlaceId *DvGetLastLocations(DraculaView dv, Player player, int numLocs,
-                            int *numReturnedLocs, bool *canFree);
-static PlayerData initialisePlayer(DraculaView dv, Player player);
+                            int *numReturnedLocs, bool *canFree);		// Find players last n locations, return as array
 PlaceId *dvGetMoveHistory(DraculaView dv, Player player,
-                          int *numReturnedMoves, bool *canFree);
-static int PlaceIdToAsciiDoubleBack (PlaceId place);				// Convert a doubleback placeid to doubleback value
-
-static void sortPlaces(PlaceId *places, int numPlaces);
+                          int *numReturnedMoves, bool *canFree);		// Find the complete move history of a player, return as array
 static void draculaLocationHistoryAppend(DraculaView dv, PlaceId curr_place);
-static int placeIdCmp(const void *ptr1, const void *ptr2);
 PlaceId *dvGetLocationHistory(DraculaView dv, Player player,
                               int *numReturnedLocs, bool *canFree);
 static PlaceId *DvGetReachableByType(DraculaView dv, Player player, Round round,
@@ -122,8 +122,8 @@ static void memoryError (const void * input) {
 ////////////////////////////////////////////////////////////////////////
 // Constructor/Destructor
 
-DraculaView DvNew(char *pastPlays, Message messages[])
-{
+// DV NEW: Initialises a new DraculaView
+DraculaView DvNew(char *pastPlays, Message messages[]) {
 	// Allocate memory for new dv
 	DraculaView new = malloc(sizeof(*new));
 
@@ -157,6 +157,7 @@ DraculaView DvNew(char *pastPlays, Message messages[])
 	return new;
 }
 
+// DV FREE: Frees the current DraculaView
 void DvFree(DraculaView dv)
 {
 	// free player structs
@@ -211,9 +212,11 @@ PlaceId *DvGetTrapLocations(DraculaView dv, int *numTraps)
 ////////////////////////////////////////////////////////////////////////
 // Making a Move
 
-
+// IS IN TRAIL: determines whether a given location is contained in dracula's trail
+// -- INPUT: DraculaView, location
+// -- OUTPUT: Bool
 bool isInTrail(DraculaView dv, PlaceId location) {
-	// checks location against trail
+	// only compare against as many moves as exist
 	int max = (DRACULA->currentLocationIndex < 6 ? DRACULA->currentLocationIndex : 6);
 	for (int i = 0; i < max; i++) {
 		if (location == DRACULA->locationHistory[i]) return true;
