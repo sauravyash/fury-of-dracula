@@ -224,9 +224,14 @@ bool isInTrail(DraculaView dv, PlaceId location) {
 	return false;
 }
 
+// CAN HIDE: determines whether dracula can hide
+// -- INPUT: DraculaView
+// -- OUTPUT: Bool
 bool canHide(DraculaView dv) {
-	if ((dv->roundNumber - DRACULA->lastHidden) > 5
-		|| DRACULA->lastHidden < 0) return true;
+	// check that he hasn't hidden in the last 5 turns, and that he isn't at sea
+	if (((dv->roundNumber - DRACULA->lastHidden) > 5
+		|| DRACULA->lastHidden < 0)
+		&& placeIdToType(DRACULA->currentLocation) != SEA) return true;
 	return false;
 }
 
