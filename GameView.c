@@ -32,13 +32,13 @@
 #define MALFUNCTIONING_MACHIAVELLIAN_MACHINATIONS 'M'
 
 // defines to make things more readable
-#define  LORD_GODALMING gv->allPlayers[PLAYER_LORD_GODALMING]
-#define  DR_SEWARD 		gv->allPlayers[PLAYER_DR_SEWARD]
-#define  VAN_HELSING  	gv->allPlayers[PLAYER_VAN_HELSING]
-#define  MINA_HARKER 	gv->allPlayers[PLAYER_MINA_HARKER]
-#define  DRACULA 		gv->allPlayers[PLAYER_DRACULA]
-#define  PLAYER 		gv->allPlayers[player]
-#define  HUNTER			gv->allPlayers[hunter]
+#define  LORD_GODALMING  gv->allPlayers[PLAYER_LORD_GODALMING]
+#define  DR_SEWARD       gv->allPlayers[PLAYER_DR_SEWARD]
+#define  VAN_HELSING     gv->allPlayers[PLAYER_VAN_HELSING]
+#define  MINA_HARKER     gv->allPlayers[PLAYER_MINA_HARKER]
+#define  DRACULA         gv->allPlayers[PLAYER_DRACULA]
+#define  PLAYER          gv->allPlayers[player]
+#define  HUNTER          gv->allPlayers[hunter]
 
 // typedef data structs
 typedef struct playerData *PlayerData;
@@ -47,25 +47,25 @@ typedef struct vampireData *IVampire;
 
 // ADT for player statuses
 struct playerData {
-    int health;											// current player health
-    PlaceId locationHistory[MAX_LOC_HISTORY_SIZE];		// array of locations visited by player
-    PlaceId moveHistory[MAX_LOC_HISTORY_SIZE];			//array of moves made by player (different to location history for drac)
-    PlaceId currentLocation;						  	// current location
-    int currentLocationIndex;						  	// index of current location in locationHistory
+    int health;                                             // current player health
+    PlaceId locationHistory[MAX_LOC_HISTORY_SIZE];          // array of locations visited by player
+    PlaceId moveHistory[MAX_LOC_HISTORY_SIZE];              //array of moves made by player (different to location history for drac)
+    PlaceId currentLocation;                                // current location
+    int currentLocationIndex;                               // index of current location in locationHistory
     // -------------------------- BLOOD BOIS ONLY BEYOND THIS POINT --------------------------
-    int lastHidden;									  	// round in which drac last hid
-    int lastDoubleback;									// round in which drac last doubled back
+    int lastHidden;                                         // round in which drac last hid
+    int lastDoubleback;                                     // round in which drac last doubled back
 };
 
 struct gameView {
-    Round roundNumber;									// current round
-    int score;											// current game score
-    Player currentPlayer;								// looks like G always starts first? judging by the testfiles given G->S->H->M->D
-    PlayerData allPlayers[NUM_PLAYERS];					// array of playerData structs
-    PlaceId trapLocations[MAX_LOC_HISTORY_SIZE];		// array of trap locations -- multiple traps in same place added seperately
-    int trapLocationsIndex;								// index of the most recently added trap location
-    PlaceId vampire;									// only one vampire alive at any time
-    Map map; 											// graph thats been typedefed already
+    Round roundNumber;                                      // current round
+    int score;                                              // current game score
+    Player currentPlayer;                                   // looks like G always starts first? judging by the testfiles given G->S->H->M->D
+    PlayerData allPlayers[NUM_PLAYERS];                     // array of playerData structs
+    PlaceId trapLocations[MAX_LOC_HISTORY_SIZE];            // array of trap locations -- multiple traps in same place added seperately
+    int trapLocationsIndex;                                 // index of the most recently added trap location
+    PlaceId vampire;                                        // only one vampire alive at any time
+    Map map;                                                // graph thats been typedefed already
 };
 
 
@@ -76,22 +76,22 @@ struct gameView {
 // Helper function for reachables:
 static int Find_Rails (Map map, PlaceId place, PlaceId from, PlaceId *array, int i);
 //------------- GENERAL FUNCTIONS -------------
-static int placeIdCmp(const void *ptr1, const void *ptr2);			//Qsort comparator function
-static void memoryError (const void * input);						//Checks if memory was allocated properly
-static void sortPlaces(PlaceId *places, int numPlaces);				// Sorts an array of PlaceIds
-static int PlaceIdToAsciiDoubleBack (PlaceId place);				// Convert a doubleback placeid to doubleback value
-static void checkHunterHealth(GameView gv,Player hunter);			// Check the health of a hunter, sends them to hospital if needed
-static bool maxEncounters(GameView gv, PlaceId location);			//Check if maximum encounters at a particular place has been reached
+static int placeIdCmp(const void *ptr1, const void *ptr2);          // Qsort comparator function
+static void memoryError (const void * input);                       // Checks if memory was allocated properly
+static void sortPlaces(PlaceId *places, int numPlaces);             // Sorts an array of PlaceIds
+static int PlaceIdToAsciiDoubleBack (PlaceId place);                // Convert a doubleback placeid to doubleback value
+static void checkHunterHealth(GameView gv,Player hunter);           // Check the health of a hunter, sends them to hospital if needed
+static bool maxEncounters(GameView gv, PlaceId location);           // Check if maximum encounters at a particular place has been reached
 //------------- Parsing Player Moves -------------
-static Player parseMove (GameView gv, char *string);				// Parse the move string
-static void hunterMove(GameView gv, char *string, Player hunter);	// Apply hunter move from parsed string
-static void draculaMove(GameView gv, char * string);				// Apply dracula move from parsed string
+static Player parseMove (GameView gv, char *string);                // Parse the move string
+static void hunterMove(GameView gv, char *string, Player hunter);   // Apply hunter move from parsed string
+static void draculaMove(GameView gv, char * string);                // Apply dracula move from parsed string
 //------------- CONSTRUCTOR/ DESTRUCTOR -------------
-static void initialiseGame (GameView gv);							// Initialise an empty game to fill in
-static PlayerData initialisePlayer(GameView gv, Player player);		// Initialise PlayerData ADT
+static void initialiseGame (GameView gv);                           // Initialise an empty game to fill in
+static PlayerData initialisePlayer(GameView gv, Player player);     // Initialise PlayerData ADT
 //------------- Location & Move Histories -------------
-static void trapLocationAppend(GameView gv, PlaceId location);		// Add a trap location
-static void trapLocationRemove(GameView gv, PlaceId location);		// Remove a trap location
+static void trapLocationAppend(GameView gv, PlaceId location);      // Add a trap location
+static void trapLocationRemove(GameView gv, PlaceId location);      // Remove a trap location
 static void hunterLocationHistoryAppend(GameView gv, Player hunter, PlaceId location);
 static void draculaLocationHistoryAppend(GameView gv, PlaceId location);
 
@@ -550,9 +550,9 @@ static void memoryError (const void * input) {
 // COMPARATOR: Compare the order of the elements pointed to by *p and *q.
 // -- INPUT: two pointers, *p and *q
 // -- OUTPUT:
-//	<0 If the element pointed by p goes before the element pointed by q,
-//	0  If the element pointed by p is equivalent to the element pointed by q,
-//	>0 If the element pointed by p goes after the element pointed by q.
+//    <0 If the element pointed by p goes before the element pointed by q,
+//    0  If the element pointed by p is equivalent to the element pointed by q,
+//    >0 If the element pointed by p goes after the element pointed by q.
 static int placeIdCmp(const void *p, const void *q) {
     PlaceId p1 = *(PlaceId *)p;
     PlaceId p2 = *(PlaceId *)q;
@@ -678,7 +678,7 @@ static void draculaLocationHistoryAppend(GameView gv, PlaceId location) {
             DRACULA->health -= (LIFE_LOSS_SEA);
         }
         //Dracula gains health when he teleports home to CASTLE_DRACULA
-        if(location == TELEPORT || location == CASTLE_DRACULA || actualLocation == CASTLE_DRACULA) 		{
+        if(location == TELEPORT || location == CASTLE_DRACULA || actualLocation == CASTLE_DRACULA) {
             DRACULA->health += LIFE_GAIN_CASTLE_DRACULA;
         }
         DRACULA->currentLocationIndex++;
@@ -926,7 +926,7 @@ static void draculaMove(GameView gv, char *string) {
 
             // Trap placed
             if (*c == ITS_A_TRAP) {
-                if(maxEncounters(gv, curr_place) == false)	trapLocationAppend(gv, curr_place);
+                if(maxEncounters(gv, curr_place) == false) trapLocationAppend(gv, curr_place);
             }
         i++;
     }
