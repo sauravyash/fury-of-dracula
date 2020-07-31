@@ -724,7 +724,8 @@ int main(void)
             if (places[i] == NANTES) foundRoad = true;
             if (places[i] == COLOGNE) foundRail = true;
         }
-
+		free(places);
+		free(numPlaces);
         assert(foundSea && foundRoad && foundRail);
         GvFree(gv);
         printf("Test Passed\n");

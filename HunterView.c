@@ -580,7 +580,7 @@ static void draculaLocationHistoryAppend(HunterView hv, PlaceId location) {
 		fprintf(stderr, "%s", "location history indexed out of bounds, aborting");
 		exit(EXIT_FAILURE);
 	}
-
+	free(trail);
 	return;
 }
 
