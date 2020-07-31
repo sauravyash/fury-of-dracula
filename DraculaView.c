@@ -219,21 +219,20 @@ bool isInTrail(DraculaView dv, PlaceId location) {
 	// checks location against trail
 	int max = (DRACULA->currentLocationIndex < 6 ? DRACULA->currentLocationIndex : 6);
 	for (int i = 0; i < max; i++) {
-		if (location == DRACULA->locationHistory[i]) return false;
+		if (location == DRACULA->locationHistory[i]) return true;
 	}
-	// checks location against hide
-
-	// checks location against doubleback
-	return true;
-}
-
-bool canHide(DraculaView dv, PlaceId location) {
-	if ((dv->roundNumber - DRACULA->lastHidden) > 5) return true;
 	return false;
 }
 
-bool canDoubleBack(DraculaView dv, PlaceId location) {
-	if ((dv->roundNumber - DRACULA->lastDoubleback) > 5) return true;
+bool canHide(DraculaView dv) {
+	if ((dv->roundNumber - DRACULA->lastHidden) > 5
+		|| DRACULA->lastHidden < 0) return true;
+	return false;
+}
+
+bool canDoubleBack(DraculaView dv) {
+	if ((dv->roundNumber - DRACULA->lastDoubleback) > 5
+	|| DRACULA->lastHidden < 0) return true;
 	return false;
 }
 
@@ -244,45 +243,51 @@ PlaceId *DvGetValidMoves(DraculaView dv, int *numReturnedMoves)
 	Map map = dv->map;
 
 	// create dynamically allocated array
-	PlaceId *visited = malloc(sizeof(PlaceId));
+	PlaceId *possibleMoves = malloc(sizeof(PlaceId));
 
 	// get connections from current location
 	ConnList list = MapGetConnections(map, dv->allPlayers[PLAYER_DRACULA]->currentLocation);
 
 	// 3. Iterate through...
-	int loc_num = 0;
-	visited[loc_num] = dv->allPlayers[PLAYER_DRACULA]->currentLocation;
+	int moveIndex = 0;
+	//possibleMoves[moveIndex] = dv->allPlayers[PLAYER_DRACULA]->currentLocation;
 
-	while (loc_num < NUM_REAL_PLACES) {
+	while (moveIndex < NUM_REAL_PLACES) {
 		if (!isInTrail(dv, list->p)) {
 			// Extra conditions for drac:
-			if (list->p == HOSPITAL_PLACE) continue;
-			if (list->type == RAIL) continue;
+			if (list->p == HOSPITAL_PLACE) {
+				list = list->next;
+				continue;
+			} 
+			if (list->type == RAIL) {
+				list = list->next;
+				continue;
+			} 
 
 			// If it is a road type.
 			if (list->type == ROAD) {
-				visited[loc_num] = list->p;
-				loc_num++;
-				visited = realloc(visited, loc_num * sizeof(PlaceId));
+				possibleMoves[moveIndex] = list->p;
+				moveIndex++;
+				possibleMoves = realloc(possibleMoves, moveIndex * sizeof(PlaceId));
 			}
 
 			// If it is a boat type.
 			else if (list->type == BOAT) {
-				visited[loc_num] = list->p;
-				loc_num++;
-				visited = realloc(visited, loc_num * sizeof(PlaceId));
+				possibleMoves[moveIndex] = list->p;
+				moveIndex++;
+				possibleMoves = realloc(possibleMoves, moveIndex * sizeof(PlaceId));
 			}
 		}
-		// check if he can doubleback
-		else if (canDoubleBack(dv, list->p)) {
+		// check if he can doubleback to places further back than his last turn
+		else if (canDoubleBack(dv)) {
 			// checks location against trail
 			int max = (DRACULA->currentLocationIndex < 6 ? DRACULA->currentLocationIndex : 6);
-			for (int i = 0; i < max; i++) {
+			for (int i = 1; i < max; i++) {
 				if (list->p == DRACULA->locationHistory[DRACULA->currentLocationIndex - i]) {
 					// add appropriate doubleback move to list
-					visited[loc_num] = 103 + i;
-					loc_num++;
-					visited = realloc(visited, loc_num * sizeof(PlaceId));
+					possibleMoves[moveIndex] = 103 + i;
+					moveIndex++;
+					possibleMoves = realloc(possibleMoves, moveIndex * sizeof(PlaceId));
 				}
 			}
 		}	
@@ -290,106 +295,61 @@ PlaceId *DvGetValidMoves(DraculaView dv, int *numReturnedMoves)
 	    if (list->next == NULL) break;
 	    list = list->next;
 	}
-	if (canHide(dv, list->p)) {
-		visited[loc_num] = HIDE;
-		loc_num++;
-		visited = realloc(visited, loc_num * sizeof(PlaceId));
+	// check if drac can take a hide move
+	if (canHide(dv)) {
+		possibleMoves[moveIndex] = HIDE;
+		moveIndex++;
+		possibleMoves = realloc(possibleMoves, moveIndex * sizeof(PlaceId));
 	}
 
+	// check if he can doubleback to his last location (i.e. stay where he is)
+	if (canDoubleBack(dv)) {
+		possibleMoves[moveIndex] = DOUBLE_BACK_1;
+		moveIndex++;
+		possibleMoves = realloc(possibleMoves, moveIndex * sizeof(PlaceId));
+	}	
+
     // Return values
-	*numReturnedMoves = loc_num;
-	return visited;
+	*numReturnedMoves = moveIndex;
+	return possibleMoves;
 }
-// adapted from Gameview
+
+
 PlaceId *DvWhereCanIGo(DraculaView dv, int *numReturnedLocs)
 {
-	// 1. We need to access the map :)
-	Map map = dv->map;
-
-	// create dynamically allocated array
-	PlaceId *visited = malloc(sizeof(PlaceId));
-
-	// get connections from current location
-	ConnList list = MapGetConnections(map, dv->allPlayers[PLAYER_DRACULA]->currentLocation);
-
-	// 3. Iterate through...
-	int loc_num = 0;
-	visited[loc_num] = dv->allPlayers[PLAYER_DRACULA]->currentLocation;
-
-	while (loc_num < NUM_REAL_PLACES) {
-
-	    // Extra conditions for drac:
-		if (list->p == HOSPITAL_PLACE) continue;
-		if (list->type == RAIL) continue;
-
-	    // If it is a road type.
-	    if (list->type == ROAD) {
-	        visited[loc_num] = list->p;
-	        loc_num++;
-			visited = realloc(visited, loc_num * sizeof(PlaceId));
-	    }
-
-		// If it is a boat type.
-		else if (list->type == BOAT) {
-	        visited[loc_num] = list->p;
-	        loc_num++;
-			visited = realloc(visited, loc_num * sizeof(PlaceId));
-	    }
-
-	    if (list->next == NULL) break;
-	    list = list->next;
-	}
-
-    // Return values
-	*numReturnedLocs = loc_num;
-	return visited;
+	PlaceId *locs = DvWhereCanIGoByType(dv, 1, 1, numReturnedLocs);
+	// Return values
+	return locs;
 }
 
 PlaceId *DvWhereCanIGoByType(DraculaView dv, bool road, bool boat,
                              int *numReturnedLocs)
 {
-	// 1. We need to access the map :)
-	Map map = dv->map;
-
-	// create dynamically allocated array
-	PlaceId *visited = malloc(sizeof(PlaceId));
-
-	// get connections from current location
-	ConnList list = MapGetConnections(map, dv->allPlayers[PLAYER_DRACULA]->currentLocation);
-
-	// 3. Iterate through...
-	int loc_num = 0;
-	visited[loc_num] = dv->allPlayers[PLAYER_DRACULA]->currentLocation;
-
-	while (loc_num < NUM_REAL_PLACES) {
-
-	    // Extra conditions for drac:
-		if (list->p == HOSPITAL_PLACE) continue;
-		if (list->type == RAIL) continue;
-
-	    // If it is a road type and bool road is true
-	    if (list->type == ROAD && road) {
-	        visited[loc_num] = list->p;
-	        loc_num++;
-			visited = realloc(visited, loc_num * sizeof(PlaceId));
-	    }
-
-		// If it is a boat type and bool boat is true
-		else if (list->type == BOAT && boat) {
-	        visited[loc_num] = list->p;
-	        loc_num++;
-			visited = realloc(visited, loc_num * sizeof(PlaceId));
-	    }
-
-	    if (list->next == NULL) break;
-	    list = list->next;
+	int numReturnedMoves = 0;
+	PlaceId *moves = DvGetValidMoves(dv, &numReturnedMoves);
+	PlaceId *locs = malloc(sizeof(PlaceId));
+	int locsIndex = 0;
+	for (int i = 0; i < numReturnedMoves; i++) {
+		// if move is not a doubleback or hide add to possible locations
+		if (moves[i] != HIDE && (moves[i] < 103 || moves[i] > 107)) {
+			// only add roads if specified in call
+			if (road && placeIdToType(moves[i]) == LAND) {
+				locs[locsIndex] = moves[i];
+				locsIndex++;
+				locs = realloc(locs, locsIndex * sizeof(PlaceId));
+			}
+			// only add boats if specified in call
+			else if (boat && placeIdToType(moves[i]) == SEA) {
+				locs[locsIndex] = moves[i];
+				locsIndex++;
+				locs = realloc(locs, locsIndex * sizeof(PlaceId));
+			}		
+		}
 	}
-
-    // Return values
-	*numReturnedLocs = loc_num;
-	return visited;
+	// Return values
+	*numReturnedLocs = locsIndex;
+	return locs;	
 }
-
 
 PlaceId *DvWhereCanTheyGo(DraculaView dv, Player player,
                           int *numReturnedLocs)
@@ -586,6 +546,7 @@ static void hunterMove(DraculaView dv, char *string, Player hunter) {
 				break;
 		}
 	}
+	free(city);
     return;
 }
 
