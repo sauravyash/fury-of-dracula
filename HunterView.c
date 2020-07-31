@@ -46,43 +46,28 @@ typedef struct playerData *PlayerData;
 
 // ADT that stores all data for each player:
 struct playerData {
-	// Current player health
-	int health;
-	// Array of locations visited by player
-	PlaceId locationHistory[MAX_LOC_HISTORY_SIZE];
-	// Array of moves made by player (different to location history for drac)
-	PlaceId moveHistory[MAX_LOC_HISTORY_SIZE];
-	// Current location
-	PlaceId currentLocation;
-	// Index of current location in locationHistory
-	int currentLocationIndex;
+	
+	int health;											// Current player health
+	PlaceId locationHistory[MAX_LOC_HISTORY_SIZE];		// Array of locations visited by player
+	PlaceId moveHistory[MAX_LOC_HISTORY_SIZE];			// Array of moves made by player (different to loc history for drac)
+	PlaceId currentLocation;							// Current location
+	int currentLocationIndex;							// Index of current location in locationHistory
 
 	// ---- ONLY FOR DRAC
-	// Round in which drac last hid
-	int lastHidden;
-	// Round in which drac last doubled back
-	int lastDoubleback;
+	int lastHidden;										// Round in which drac last hid
+	int lastDoubleback;									// Round in which drac last doubled back
 };
 
 struct hunterView {
-    // Current round
-	Round roundNumber;
-	// Current game score
-	int score;
-	Player currentPlayer;
-	// Array of playerData structs
-	PlayerData allPlayers[NUM_PLAYERS];
-	// Array of trap locations -- multiple traps in same place added
-	// seperately
-	PlaceId trapLocations[MAX_LOC_HISTORY_SIZE];
-	// Index of the most recently added trap location
-	int trapLocationsIndex;
-	// Only one vampire alive at any time
-	PlaceId vampire;
-	// Graph thats been typedefed already
-	Map map;
-	// Temp round & place variable to determine shortest path...
-	int temp_round;
+	Round roundNumber;									// Current round
+	int score;											// Current game score
+	Player currentPlayer;								// The player currently having their turn
+	PlayerData allPlayers[NUM_PLAYERS]; 				// Array of playerData structs
+	PlaceId trapLocations[MAX_LOC_HISTORY_SIZE];		// Array of trap locations -- multiple traps in same place are seperate
+	int trapLocationsIndex;								// Index of the most recently added trap location
+	PlaceId vampire;									// Only one vampire alive at any time
+	Map map;											// Graph thats been typedefed already
+	int temp_round;										// Temp round & place variable to determine shortest path...
 	PlaceId temp_place;
 };
 
@@ -306,9 +291,7 @@ PlaceId *HvGetShortestPathTo(HunterView hv, Player hunter, PlaceId dest,
 	hv->temp_place = NOWHERE;
 	hv->temp_round = -1;
 
-	if (pathFound == 0) {
-		return 0;
-	}
+	if (pathFound == 0) return 0;
 
 	int reversePath[NUM_REAL_PLACES];
 	reversePath[0] = dest;
