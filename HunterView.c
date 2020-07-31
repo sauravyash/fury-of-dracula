@@ -248,6 +248,7 @@ PlaceId *HvGetShortestPathTo(HunterView hv, Player hunter, PlaceId dest,
 	// If destination == starting position.
 	if (src == des) {
 		PlaceId *path = malloc(2 * sizeof(PlaceId));
+		memoryError(path);
 		path[0] = dest;
 		path[1] = '\0';
 
@@ -326,6 +327,7 @@ PlaceId *HvGetShortestPathTo(HunterView hv, Player hunter, PlaceId dest,
 	reversePath[k] = src;
 
     PlaceId *path = malloc ((k + 1) * sizeof(PlaceId));
+	memoryError(path);
     PlaceId place;
 	for (int i = 0, j = k; i <= k; i++, j--) {
 		place = reversePath[j];
@@ -334,6 +336,7 @@ PlaceId *HvGetShortestPathTo(HunterView hv, Player hunter, PlaceId dest,
 
 	// Mind blank about shortening array from front, so...
 	PlaceId *path_without_src = malloc ((k) * sizeof(PlaceId));
+	memoryError(path_without_src);
 	for (int i = 0; i < k; i++) {
 	    path_without_src[i] = path[i + 1];
 	}
@@ -701,6 +704,7 @@ static void hunterMove(HunterView hv, char *string, Player hunter) {
 
 	// Store locationID into city[]:
 	char *city = malloc((LOCATION_ID_SIZE + 1)*sizeof(char));
+	memoryError(city);
 	city[0] = string[1];
 	city[1] = string[2];
 	city[2] = '\0';
@@ -760,6 +764,7 @@ static void draculaMove(HunterView hv, char *string) {
 
 	// Store locationID into city[]:
 	char *city = malloc((LOCATION_ID_SIZE + 1)*sizeof(char));
+	memoryError(city);
 	city[0] = string[1];
 	city[1] = string[2];
 	city[2] = '\0';
@@ -997,6 +1002,7 @@ static PlaceId *HvGetReachable(HunterView hv, Player player, Round round,
 	// Create temp array to keep track of  locations visited in this function.
 	PlaceId visited[NUM_REAL_PLACES];
 	PlaceId *visited_rail = malloc(NUM_REAL_PLACES * sizeof(PlaceId));
+	memoryError(visited_rail);
 	for (int j = 0; j < NUM_REAL_PLACES; j++) {
 	    visited_rail[j] = '\0';
 	    visited[j] = '\0';
@@ -1087,6 +1093,7 @@ static PlaceId *HvGetReachable(HunterView hv, Player player, Round round,
 
 	// Now copy into the dynamically allocated array.
 	PlaceId *final_loc_list = malloc(total_locs * sizeof(PlaceId));
+	memoryError(final_loc_list);
 	i = 0;
 	while (i < total_locs) {
 	    final_loc_list[i] = visited[i];
@@ -1120,6 +1127,7 @@ static PlaceId *HvGetReachableByType(HunterView hv, Player player, Round round,
 	// Create temp array to keep track of  locations visited in this function.
 	PlaceId visited[NUM_REAL_PLACES];
 	PlaceId *visited_rail = malloc(NUM_REAL_PLACES * sizeof(PlaceId));
+	memoryError(visited_rail);
 	for (int j = 0; j < NUM_REAL_PLACES; j++) {
 	    visited_rail[j] = '\0';
 	    visited[j] = '\0';
@@ -1212,6 +1220,7 @@ static PlaceId *HvGetReachableByType(HunterView hv, Player player, Round round,
 
 	// Now copy into the dynamically allocated array.
 	PlaceId *final_loc_list = malloc(total_locs * sizeof(PlaceId));
+	memoryError(final_loc_list);
 	i = 0;
 	while (i < total_locs) {
 	    final_loc_list[i] = visited[i];

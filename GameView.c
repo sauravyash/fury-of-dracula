@@ -303,6 +303,7 @@ PlaceId *GvGetReachable(GameView gv, Player player, Round round,
 	// Create temp array to keep track of  locations visited in this function.
 	PlaceId visited[NUM_REAL_PLACES];
 	PlaceId *visited_rail = malloc(NUM_REAL_PLACES * sizeof(PlaceId));
+	memoryError(visited_rail);
 	for (int j = 0; j < NUM_REAL_PLACES; j++) {
 	    visited_rail[j] = '\0';
 	    visited[j] = '\0';
@@ -393,6 +394,7 @@ PlaceId *GvGetReachable(GameView gv, Player player, Round round,
 
 	// Now copy into the dynamically allocated array.
 	PlaceId *final_loc_list = malloc(total_locs * sizeof(PlaceId));
+	memoryError(final_loc_list);
 	i = 0;
 	while (i < total_locs) {
 	    final_loc_list[i] = visited[i];
@@ -423,6 +425,7 @@ PlaceId *GvGetReachableByType(GameView gv, Player player, Round round,
 	// Create temp array to keep track of  locations visited in this function.
 	PlaceId visited[NUM_REAL_PLACES];
 	PlaceId *visited_rail = malloc(NUM_REAL_PLACES * sizeof(PlaceId));
+	memoryError(visited_rail);
 	for (int j = 0; j < NUM_REAL_PLACES; j++) {
 	    visited_rail[j] = '\0';
 	    visited[j] = '\0';
@@ -515,6 +518,7 @@ PlaceId *GvGetReachableByType(GameView gv, Player player, Round round,
 
 	// Now copy into the dynamically allocated array.
 	PlaceId *final_loc_list = malloc(total_locs * sizeof(PlaceId));
+	memoryError(final_loc_list);
 	i = 0;
 	while (i < total_locs) {
 	    final_loc_list[i] = visited[i];
@@ -822,6 +826,7 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
 
 	// Store locationID into city[]:
 	char *city = malloc((LOCATION_ID_SIZE + 1)*sizeof(char));
+	memoryError(city);
 	city[0] = string[1];
 	city[1] = string[2];
 	city[2] = '\0';
@@ -881,6 +886,7 @@ static void draculaMove(GameView gv, char *string) {
 
 	// Store locationID into city[]:
 	char *city = malloc((LOCATION_ID_SIZE + 1)*sizeof(char));
+	memoryError(city);
 	city[0] = string[1];
 	city[1] = string[2];
 	city[2] = '\0';

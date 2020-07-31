@@ -204,7 +204,7 @@ PlaceId *DvGetTrapLocations(DraculaView dv, int *numTraps)
 {
 	*numTraps = dv->trapLocationsIndex + 1;
 	PlaceId *traps = malloc(sizeof(PlaceId) * *numTraps);
-
+	memoryError(traps);
 	for (int i = 0; i < *numTraps; i++) {
 		traps[i] = dv->trapLocations[i];
 	}
@@ -244,6 +244,7 @@ PlaceId *DvGetValidMoves(DraculaView dv, int *numReturnedMoves)
 
 	// create dynamically allocated array
 	PlaceId *possibleMoves = malloc(sizeof(PlaceId));
+	memoryError(possibleMoves);
 
 	// get connections from current location
 	ConnList list = MapGetConnections(map, dv->allPlayers[PLAYER_DRACULA]->currentLocation);
@@ -253,29 +254,34 @@ PlaceId *DvGetValidMoves(DraculaView dv, int *numReturnedMoves)
 	//possibleMoves[moveIndex] = dv->allPlayers[PLAYER_DRACULA]->currentLocation;
 
 	while (moveIndex < NUM_REAL_PLACES) {
+		printf("move index is %d\n", moveIndex);
+		printf("place is %s\n", placeIdToName(list->p));
 		if (!isInTrail(dv, list->p)) {
 			// Extra conditions for drac:
 			if (list->p == HOSPITAL_PLACE) {
 				list = list->next;
 				continue;
-			} 
+			}
 			if (list->type == RAIL) {
 				list = list->next;
 				continue;
-			} 
+			}
 
 			// If it is a road type.
 			if (list->type == ROAD) {
+				printf("here\n");
 				possibleMoves[moveIndex] = list->p;
 				moveIndex++;
-				possibleMoves = realloc(possibleMoves, moveIndex * sizeof(PlaceId));
+				possibleMoves = realloc(possibleMoves, (moveIndex + 1) * sizeof(PlaceId));
+				memoryError(possibleMoves);
 			}
 
 			// If it is a boat type.
 			else if (list->type == BOAT) {
 				possibleMoves[moveIndex] = list->p;
 				moveIndex++;
-				possibleMoves = realloc(possibleMoves, moveIndex * sizeof(PlaceId));
+				possibleMoves = realloc(possibleMoves, (moveIndex + 1) * sizeof(PlaceId));
+				memoryError(possibleMoves);
 			}
 		}
 		// check if he can doubleback to places further back than his last turn
@@ -287,10 +293,11 @@ PlaceId *DvGetValidMoves(DraculaView dv, int *numReturnedMoves)
 					// add appropriate doubleback move to list
 					possibleMoves[moveIndex] = 103 + i;
 					moveIndex++;
-					possibleMoves = realloc(possibleMoves, moveIndex * sizeof(PlaceId));
+					possibleMoves = realloc(possibleMoves, (moveIndex + 1) * sizeof(PlaceId));
+					memoryError(possibleMoves);
 				}
 			}
-		}	
+		}
 
 	    if (list->next == NULL) break;
 	    list = list->next;
@@ -299,15 +306,17 @@ PlaceId *DvGetValidMoves(DraculaView dv, int *numReturnedMoves)
 	if (canHide(dv)) {
 		possibleMoves[moveIndex] = HIDE;
 		moveIndex++;
-		possibleMoves = realloc(possibleMoves, moveIndex * sizeof(PlaceId));
+		possibleMoves = realloc(possibleMoves, (moveIndex + 1) * sizeof(PlaceId));
+		memoryError(possibleMoves);
 	}
 
 	// check if he can doubleback to his last location (i.e. stay where he is)
 	if (canDoubleBack(dv)) {
 		possibleMoves[moveIndex] = DOUBLE_BACK_1;
 		moveIndex++;
-		possibleMoves = realloc(possibleMoves, moveIndex * sizeof(PlaceId));
-	}	
+		possibleMoves = realloc(possibleMoves, (moveIndex + 1) * sizeof(PlaceId));
+		memoryError(possibleMoves);
+	}
 
     // Return values
 	*numReturnedMoves = moveIndex;
@@ -328,6 +337,7 @@ PlaceId *DvWhereCanIGoByType(DraculaView dv, bool road, bool boat,
 	int numReturnedMoves = 0;
 	PlaceId *moves = DvGetValidMoves(dv, &numReturnedMoves);
 	PlaceId *locs = malloc(sizeof(PlaceId));
+	memoryError(locs);
 	int locsIndex = 0;
 	for (int i = 0; i < numReturnedMoves; i++) {
 		// if move is not a doubleback or hide add to possible locations
@@ -336,19 +346,22 @@ PlaceId *DvWhereCanIGoByType(DraculaView dv, bool road, bool boat,
 			if (road && placeIdToType(moves[i]) == LAND) {
 				locs[locsIndex] = moves[i];
 				locsIndex++;
-				locs = realloc(locs, locsIndex * sizeof(PlaceId));
+				locs = realloc(locs, (locsIndex + 1) * sizeof(PlaceId));
+				memoryError(locs);
 			}
 			// only add boats if specified in call
 			else if (boat && placeIdToType(moves[i]) == SEA) {
 				locs[locsIndex] = moves[i];
 				locsIndex++;
-				locs = realloc(locs, locsIndex * sizeof(PlaceId));
-			}		
+				locs = realloc(locs, (locsIndex + 1) * sizeof(PlaceId));
+				memoryError(locs);
+			}
 		}
 	}
 	// Return values
+	free(moves);
 	*numReturnedLocs = locsIndex;
-	return locs;	
+	return locs;
 }
 
 PlaceId *DvWhereCanTheyGo(DraculaView dv, Player player,
@@ -364,10 +377,10 @@ PlaceId *DvWhereCanTheyGo(DraculaView dv, Player player,
 	PlaceId from = DvGetPlayerLocation(dv, player);
 	PlaceId *locs = NULL;
 	int numLocs = -1;
-	
+
 	// Use function:
 	locs = DvGetReachableByType(dv, player, round, from, 1, 1, 1, &numLocs);
-	
+
 	// Return values:
 	*numReturnedLocs = numLocs;
 	return locs;
@@ -382,10 +395,10 @@ PlaceId *DvWhereCanTheyGoByType(DraculaView dv, Player player,
 	PlaceId from = DvGetPlayerLocation(dv, player);
 	PlaceId *locs = NULL;
 	int numLocs = -1;
-	
+
 	// Use function:
 	locs = DvGetReachableByType(dv, player, round, from, road, rail, boat, numReturnedLocs);
-	
+
 	// Return values:
 	*numReturnedLocs = numLocs;
 	return locs;
@@ -485,6 +498,7 @@ static void hunterMove(DraculaView dv, char *string, Player hunter) {
 
 	// Store locationID into city[]:
 	char *city = malloc((LOCATION_ID_SIZE + 1)*sizeof(char));
+	memoryError(city);
 	city[0] = string[1];
 	city[1] = string[2];
 	city[2] = '\0';
@@ -561,6 +575,7 @@ static void draculaMove(DraculaView dv, char *string) {
 
 	// Store locationID into city[]:
 	char *city = malloc((LOCATION_ID_SIZE + 1)*sizeof(char));
+	memoryError(city);
 	city[0] = string[1];
 	city[1] = string[2];
 	city[2] = '\0';
@@ -618,6 +633,7 @@ static void draculaMove(DraculaView dv, char *string) {
 		//if(trail[PlaceIdToAsciiDoubleBack(curr_place)-1] == SEA_UNKNOWN) DRACULA->health -= (LIFE_LOSS_SEA);
 		draculaLocationHistoryAppend(dv, curr_place);
 		DRACULA->lastDoubleback = dv->roundNumber;
+		free(trail);
 	}
 
 	// Teleports to castle dracula
@@ -794,6 +810,7 @@ static void draculaLocationHistoryAppend(DraculaView dv, PlaceId location) {
 		fprintf(stderr, "%s", "location history indexed out of bounds, aborting");
 		exit(EXIT_FAILURE);
 	}
+	free(trail);
 	return;
 }
 
@@ -884,12 +901,12 @@ PlaceId *dvGetLocationHistory(DraculaView dv, Player player,
 	//if there are no moves in history, return NULL
 	if(index < 0) return NULL;
 	*canFree = true;
-	PlaceId *allLocs = malloc(sizeof(PlaceId) * *numReturnedLocs);
-	memoryError(allLocs);
+
 	if (player == PLAYER_DRACULA) {
 		// todo make sure rounds when drac not visible returned as unknowns
 		// depends on how visibility is parsed in dracmove
-
+		PlaceId *allLocs = malloc(sizeof(PlaceId) * *numReturnedLocs);
+		memoryError(allLocs);
 		// add locs to all locs, checking if drac visible, and if not adding as unknown
 		for (int i = 0; i < *numReturnedLocs; i++) {
 			// if visible
@@ -904,6 +921,7 @@ PlaceId *dvGetLocationHistory(DraculaView dv, Player player,
 		}
 		return allLocs;
 	}
+	//free(allLocs);
 	return dvGetMoveHistory(dv, player, numReturnedLocs, canFree);
 }
 
@@ -982,7 +1000,7 @@ static PlaceId *DvGetReachableByType(DraculaView dv, Player player, Round round,
 
 	// We need to access the map :)
 	Map map = dv->map;
-	
+
 	// Make a temp round variable for use with finding shortest path...
 	if (dv->temp_round > -1) round = dv->temp_round;
 	if (dv->temp_place != NOWHERE) from = dv->temp_place;
@@ -994,6 +1012,7 @@ static PlaceId *DvGetReachableByType(DraculaView dv, Player player, Round round,
 	// Create temp array to keep track of  locations visited in this function.
 	PlaceId visited[NUM_REAL_PLACES];
 	PlaceId *visited_rail = malloc(NUM_REAL_PLACES * sizeof(PlaceId));
+	memoryError(visited_rail);
 	for (int j = 0; j < NUM_REAL_PLACES; j++) {
 	    visited_rail[j] = '\0';
 	    visited[j] = '\0';
@@ -1018,7 +1037,7 @@ static PlaceId *DvGetReachableByType(DraculaView dv, Player player, Round round,
 
 	    // If it is a road type.
 	    if (list->type == ROAD && road == true) {
-	        
+
 	        visited[loc_num] = list->p;
 	        loc_num++;
 	        // If it is a rail type check for hunter.
@@ -1075,6 +1094,7 @@ static PlaceId *DvGetReachableByType(DraculaView dv, Player player, Round round,
 
 	// Now copy into the dynamically allocated array.
 	PlaceId *final_loc_list = malloc(total_locs * sizeof(PlaceId));
+	memoryError(final_loc_list);
 	i = 0;
 	while (i < total_locs) {
 	    final_loc_list[i] = visited[i];
