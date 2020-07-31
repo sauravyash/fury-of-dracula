@@ -345,6 +345,8 @@ PlaceId *HvGetShortestPathTo(HunterView hv, Player hunter, PlaceId dest,
 ////////////////////////////////////////////////////////////////////////
 // Making a Move
 
+// WHERE CAN I GO: returns a list of all the locations reachable by the current
+// player on their turn
 PlaceId *HvWhereCanIGo (HunterView hv, int *numReturnedLocs) {
 	// Set values:
 	Player hunter = HvGetPlayer(hv);
@@ -361,6 +363,8 @@ PlaceId *HvWhereCanIGo (HunterView hv, int *numReturnedLocs) {
 	return locs;
 }
 
+// WHERE CAN I GO: returns a list of all the locations reachable by the current
+// player on their turn, with the ability to filter by location type
 PlaceId *HvWhereCanIGoByType (HunterView hv, bool road, bool rail,
                              bool boat, int *numReturnedLocs) {
 	// Set values:
@@ -378,8 +382,9 @@ PlaceId *HvWhereCanIGoByType (HunterView hv, bool road, bool rail,
 	return locs;
 }
 
-PlaceId *HvWhereCanTheyGo (HunterView hv, Player player, int *numReturnedLocs)
-{
+// WHERE CAN THEY GO: returns a list of all the locations reachable by the specified
+// player on their turn
+PlaceId *HvWhereCanTheyGo (HunterView hv, Player player, int *numReturnedLocs) {
 	// Set values:
 	Round round = hv->allPlayers[player]->currentLocationIndex + 1;
 	if (round == -1) round = 0;
@@ -396,10 +401,12 @@ PlaceId *HvWhereCanTheyGo (HunterView hv, Player player, int *numReturnedLocs)
 	return locs;
 }
 
+
+// WHERE CAN THEY GO BY TYPE: returns a list of all the locations reachable by the
+// specified player on their turn, with the ability to filter by location type
 PlaceId *HvWhereCanTheyGoByType (HunterView hv, Player player,
                                 bool road, bool rail, bool boat,
-                                int *numReturnedLocs)
-{
+                                int *numReturnedLocs) {
 	// Set values:
 	Round round = hv->allPlayers[player]->currentLocationIndex + 1;
 	if (round == -1) round = 0;
