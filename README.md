@@ -8,6 +8,7 @@ This is a game client written in C for the COMP2521 assignment 'Fury of Dracula'
 - Member 3: TaraAndresson, Tara Andresson, z5255646, H13A
 - Member 4: cindyjbli, Cindy Li, z5059048, H13A
 
+# Submitted The View!
 
 # Tests
 ## Default
