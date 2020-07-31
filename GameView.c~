@@ -128,7 +128,6 @@ GameView GvNew(char *pastPlays, Message messages[]) {
 		new->currentPlayer = parseMove(new, token);
 		token = strtok(NULL, " ");
 	}
-
 	return new;
 }
 
@@ -162,20 +161,7 @@ int GvGetHealth(GameView gv, Player player) {
 }
 
 PlaceId GvGetPlayerLocation(GameView gv, Player player) {
-	//i dont think we need this section due to how draculaLocationHistoryAppend works?
-	// todo visibility of dracula depends on draculamove implementation
-	/*if (player == PLAYER_DRACULA) {
-		// todo if has been revealed
-		return gv->allPlayers[player]->currentLocation;
-		// else return SEA/CITY
-		if (placeIdToType(gv->allPlayers[player]->currentLocation) == SEA)
-			return SEA_UNKNOWN;
-		else
-			return CITY_UNKNOWN;
-	}
-	else
-	*/
-		return gv->allPlayers[player]->currentLocation;
+	return gv->allPlayers[player]->currentLocation;
 }
 
 PlaceId GvGetVampireLocation(GameView gv) {
@@ -303,13 +289,14 @@ PlaceId *GvGetLastLocations(GameView gv, Player player, int numLocs,
 // Status: Iterative Fully functioning for hunter- passed all given tests plus own tests
 // and works with any railDist, player and round. Need to test Drac...
 // TODO: Recursive version?
-PlaceId *GvGetReachable(GameView gv, Player player, Round round,
+static PlaceId *GvGetReachable(GameView gv, Player player, Round round,
                         PlaceId from, int *numReturnedLocs)
 {
-	// 1. We need to access the map
+
+	// We need to access the map :)
 	Map map = gv->map;
 
-	// 2. Calculate the number of rails a hunter can travel.
+	// Calculate the number of rails a hunter can travel.
 	int railDist = 0;
 	if (player != PLAYER_DRACULA) railDist = (round + player) % 4;
 
@@ -324,7 +311,7 @@ PlaceId *GvGetReachable(GameView gv, Player player, Round round,
 	// Get the connections from that point.
 	ConnList list = MapGetConnections(map, from);
 
-	// 3. Iterate through...
+	// Iterate through...
 	int loc_num = 0;
 	int rail_num = 0;
 	visited[loc_num] = from;
@@ -334,8 +321,16 @@ PlaceId *GvGetReachable(GameView gv, Player player, Round round,
 
 	    // Extra conditions for drac:
 	    if (player == PLAYER_DRACULA) {
-	        if (list->p == HOSPITAL_PLACE) continue;
-	        if (list->type == RAIL) continue;
+	        if (list->p == HOSPITAL_PLACE) {
+	            if (list->next == NULL) break;
+	            list = list->next;
+	            continue;
+            }
+	        if (list->type == RAIL) {
+	            if (list->next == NULL) break;
+	            list = list->next;
+	            continue;
+            }
 	    }
 
 	    // If it is a road type.
@@ -343,7 +338,7 @@ PlaceId *GvGetReachable(GameView gv, Player player, Round round,
 	        visited[loc_num] = list->p;
 	        loc_num++;
 	        // If it is a rail type check for hunter.
-	    } else if (list->type == RAIL && railDist >= 1) {
+	    } else if (list->type == RAIL && railDist > 0) {
 	        visited_rail[rail_num] = list->p;
 	        rail_num++;
 	        // If it is a boat type.
@@ -367,7 +362,7 @@ PlaceId *GvGetReachable(GameView gv, Player player, Round round,
 	        i++;
 	    }
 	    rail_num = rail_num + conn_new;
-	    
+
 	    // 3 Rails:
 	    i = 0;
 	    if (railDist > 2) {
@@ -379,11 +374,11 @@ PlaceId *GvGetReachable(GameView gv, Player player, Round round,
 	            i++;
 	        }
 	        rail_num = rail_num + conn_new;
-	        
+
 	    }
 	}
 
-	// 4. Combine arrays!!
+	// Combine arrays!!
 	// So we know the number of locs/ rails in each array;
 	i = 0;
 	int j = loc_num;
@@ -396,31 +391,32 @@ PlaceId *GvGetReachable(GameView gv, Player player, Round round,
 	}
 	int total_locs = j;
 
-	// 5. Now copy into the dynamically allocated array.
+	// Now copy into the dynamically allocated array.
 	PlaceId *final_loc_list = malloc(total_locs * sizeof(PlaceId));
 	i = 0;
 	while (i < total_locs) {
 	    final_loc_list[i] = visited[i];
 	    i++;
 	}
+
     // Memory
     free(visited_rail);
-    
+
     // Return values...
 	*numReturnedLocs = total_locs;
 	return final_loc_list;
 
 }
 
-PlaceId *GvGetReachableByType(GameView gv, Player player, Round round,
+static PlaceId *GvGetReachableByType(GameView gv, Player player, Round round,
                               PlaceId from, bool road, bool rail,
                               bool boat, int *numReturnedLocs)
 {
 
-	// 1. We need to access the map :)
+	// We need to access the map :)
 	Map map = gv->map;
 
-	// 2. Calculate the number of rails a hunter can travel.
+	// Calculate the number of rails a hunter can travel.
 	int railDist = 0;
 	if (player != PLAYER_DRACULA) railDist = (round + player) % 4;
 
@@ -435,7 +431,7 @@ PlaceId *GvGetReachableByType(GameView gv, Player player, Round round,
 	// Get the connections from that point.
 	ConnList list = MapGetConnections(map, from);
 
-	// 3. Iterate through...
+	// Iterate through...
 	int loc_num = 0;
 	int rail_num = 0;
 	visited[loc_num] = from;
@@ -445,19 +441,28 @@ PlaceId *GvGetReachableByType(GameView gv, Player player, Round round,
 
 	    // Extra conditions for drac:
 	    if (player == PLAYER_DRACULA) {
-	        if (list->p == HOSPITAL_PLACE) continue;
-	        if (list->type == RAIL) continue;
+	        if (list->p == HOSPITAL_PLACE) {
+	            if (list->next == NULL) break;
+	            list = list->next;
+	            continue;
+            }
+	        if (list->type == RAIL) {
+	            if (list->next == NULL) break;
+	            list = list->next;
+	            continue;
+            }
 	    }
 
 	    // If it is a road type.
 	    if (list->type == ROAD && road == true) {
 	        visited[loc_num] = list->p;
 	        loc_num++;
+
 	        // If it is a rail type check for hunter.
-	    } else if (list->type == RAIL && railDist >= 1 && rail == true) {
+	    } else if (list->type == RAIL && railDist > 0 && rail == true) {
 	        visited_rail[rail_num] = list->p;
 	        rail_num++;
-	        // If it is a boat type.
+            // If it is a boat type.
 	    } else if (list->type == BOAT && boat == true) {
 	        visited[loc_num] = list->p;
 	        loc_num++;
@@ -466,7 +471,7 @@ PlaceId *GvGetReachableByType(GameView gv, Player player, Round round,
 	    if (list->next == NULL) break;
 	    list = list->next;
 	}
-    
+
 	// Consider more rails...
 	// 2 Rails:
 	int i = 0;
@@ -478,7 +483,7 @@ PlaceId *GvGetReachableByType(GameView gv, Player player, Round round,
 	        i++;
 	    }
 	    rail_num = rail_num + conn_new;
-	    
+
 	    // 3 Rails:
 	    i = 0;
 	    if (railDist > 2) {
@@ -490,11 +495,12 @@ PlaceId *GvGetReachableByType(GameView gv, Player player, Round round,
 	            i++;
 	        }
 	        rail_num = rail_num + conn_new;
-	        
+
 	    }
 	}
 
-	// 4. Combine arrays!!
+
+	// Combine arrays!!
 	// So we know the number of locs/ rails in each array;
 	i = 0;
 	int j = loc_num;
@@ -507,17 +513,17 @@ PlaceId *GvGetReachableByType(GameView gv, Player player, Round round,
 	}
 	int total_locs = j;
 
-	// 5. Now copy into the dynamically allocated array.
+	// Now copy into the dynamically allocated array.
 	PlaceId *final_loc_list = malloc(total_locs * sizeof(PlaceId));
 	i = 0;
 	while (i < total_locs) {
 	    final_loc_list[i] = visited[i];
 	    i++;
 	}
-    
+
     // Memory
     free(visited_rail);
-    
+
     // Return values...
 	*numReturnedLocs = total_locs;
 	return final_loc_list;
@@ -859,6 +865,7 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
 				break;
 		}
 	}
+	free(city);
     return;
 }
 
@@ -992,6 +999,5 @@ static int Find_Rails (Map map, PlaceId place, PlaceId from, PlaceId *array, int
         if (list->next == NULL) break;
         list = list->next;
     }
-
     return places_added;
 }
