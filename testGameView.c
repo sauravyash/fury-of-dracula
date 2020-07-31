@@ -706,23 +706,31 @@ int main(void)
 	{ //////////////////////////////////////////////////////////////////////
         printf("Test Road, Rail and Sea moves. \n");
         char *trail =
-			"GZU.... SFR.... HGE.... MGE.... DST.V.. "
-            // Road Move
-			"GGE.... SSTV... HGE.... MGE.... DC?T... "
-			"GPA.... SZU.... HGE.... MGE.... DC?T... "
-			"GLE.... SGE.... HGE.... MGE.... DC?T... "
-            // Sea Move
-			"GLO.... SGE.... HGE.... MGE.... DC?T... "
-			"GZU.... SGE.... HGE.... MGE.... DC?T... ";
-
+			"GZU.... SFR.... HGE.... MLE.... ";
+	
         Message messages[5] = {};
-		GameView gv = GvNew(trail, messages);
-            
-        assert(GvGetScore(gv) 
-                    == GAME_START_SCORE 
-                        - 6 * SCORE_LOSS_DRACULA_TURN);
+		GameView gv = GvNew(trail, messages);	
+
+        int *numPlaces = malloc(sizeof(int));
+        PlaceId *places = 
+            GvGetReachable(gv, PLAYER_MINA_HARKER, 0, LE_HAVRE, numPlaces);
+        bool foundRoad = false, 
+             foundSea = false, 
+             foundRail = false;
+
+        for (int i = 0; i < *numPlaces; i++) {
+            if (places[i] == ENGLISH_CHANNEL) foundSea = true;
+            if (places[i] == NANTES) foundRoad = true;
+            if (places[i] == COLOGNE) foundRail = true;
+        }
+
+        assert(foundSea && foundRoad && foundRail);
         GvFree(gv);
         printf("Test Passed\n");
+    }
+    {
+        
+
     }
     
     printf("ALL PROVIDED TESTS PASSED!!!\n");
