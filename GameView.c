@@ -81,6 +81,7 @@ static void memoryError (const void * input);						//Checks if memory was alloca
 static void sortPlaces(PlaceId *places, int numPlaces);				// Sorts an array of PlaceIds
 static int PlaceIdToAsciiDoubleBack (PlaceId place);				// Convert a doubleback placeid to doubleback value
 static void checkHunterHealth(GameView gv,Player hunter);			// Check the health of a hunter, sends them to hospital if needed
+//static bool maxTraps(GameView gv)
 //------------- Parsing Player Moves -------------
 static Player parseMove (GameView gv, char *string);				// Parse the move string
 static void hunterMove(GameView gv, char *string, Player hunter);	// Apply hunter move from parsed string
@@ -702,8 +703,9 @@ static void checkHunterHealth(GameView gv,Player hunter){
 	if(gv->allPlayers[hunter]->health <= 0) {
 		gv->allPlayers[hunter]->health = 0;
 		gv->score -= SCORE_LOSS_HUNTER_HOSPITAL;
-		hunterLocationHistoryAppend(gv, hunter, HOSPITAL_PLACE);
-		// todo need to update hunter hp? -> check at start of hunter round if they are in hospital, then restore health?
+		HUNTER->currentLocation = HOSPITAL_PLACE;
+		//hunterLocationHistoryAppend(gv, hunter, HOSPITAL_PLACE);
+
 	}
 	return;
 }

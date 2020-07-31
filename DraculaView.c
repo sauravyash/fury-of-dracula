@@ -728,8 +728,8 @@ static void checkHunterHealth(DraculaView dv,Player hunter){
 	if(dv->allPlayers[hunter]->health <= 0) {
 		dv->allPlayers[hunter]->health = 0;
 		dv->score -= SCORE_LOSS_HUNTER_HOSPITAL;
-		hunterLocationHistoryAppend(dv, hunter, HOSPITAL_PLACE);
-		// todo need to update hunter HP?
+		HUNTER->currentLocation = HOSPITAL_PLACE;
+		//hunterLocationHistoryAppend(gv, hunter, HOSPITAL_PLACE);
 	}
 	return;
 }
