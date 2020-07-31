@@ -334,7 +334,6 @@ PlaceId *DvGetValidMoves(DraculaView dv, int *numReturnedMoves) {
 // returns array of locations
 PlaceId *DvWhereCanIGo(DraculaView dv, int *numReturnedLocs) {
 	PlaceId *locs = DvWhereCanIGoByType(dv, 1, 1, numReturnedLocs);
-	// Return values
 	return locs;
 }
 
@@ -383,8 +382,11 @@ PlaceId *DvWhereCanTheyGo(DraculaView dv, Player player,
 		return DvWhereCanIGo(dv, numReturnedLocs);
 	}
 	// else for hunters
-	// Set values:
-	Round round = DvGetRound(dv);
+	// Some stuff to handle round number
+	Round round = dv->allPlayers[player]->currentLocationIndex + 1;
+	if (round == -1) round = 0;
+	if (player == dv->currentPlayer) round++;
+	// other values
 	PlaceId from = DvGetPlayerLocation(dv, player);
 	PlaceId *locs = NULL;
 	int numLocs = -1;
@@ -403,7 +405,11 @@ PlaceId *DvWhereCanTheyGoByType(DraculaView dv, Player player,
                                 bool road, bool rail, bool boat,
                                 int *numReturnedLocs) {
 	// Set values:
-	Round round = DvGetRound(dv);
+	// some stuff to make sure round is ok
+	Round round = dv->allPlayers[player]->currentLocationIndex + 1;
+	if (round == -1) round = 0;
+	if (player == dv->currentPlayer) round++;
+	// other values
 	PlaceId from = DvGetPlayerLocation(dv, player);
 	PlaceId *locs = NULL;
 	int numLocs = -1;
