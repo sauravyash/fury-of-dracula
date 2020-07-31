@@ -128,7 +128,6 @@ GameView GvNew(char *pastPlays, Message messages[]) {
 		new->currentPlayer = parseMove(new, token);
 		token = strtok(NULL, " ");
 	}
-
 	return new;
 }
 
@@ -354,7 +353,7 @@ PlaceId *GvGetReachable(GameView gv, Player player, Round round,
 	        i++;
 	    }
 	    rail_num = rail_num + conn_new;
-	    
+
 	    // 3 Rails:
 	    i = 0;
 	    if (railDist > 2) {
@@ -366,7 +365,7 @@ PlaceId *GvGetReachable(GameView gv, Player player, Round round,
 	            i++;
 	        }
 	        rail_num = rail_num + conn_new;
-	        
+
 	    }
 	}
 
@@ -392,7 +391,7 @@ PlaceId *GvGetReachable(GameView gv, Player player, Round round,
 	}
     // Memory
     free(visited_rail);
-    
+
     // Return values...
 	*numReturnedLocs = total_locs;
 	return final_loc_list;
@@ -453,7 +452,7 @@ PlaceId *GvGetReachableByType(GameView gv, Player player, Round round,
 	    if (list->next == NULL) break;
 	    list = list->next;
 	}
-    
+
 	// Consider more rails...
 	// 2 Rails:
 	int i = 0;
@@ -465,7 +464,7 @@ PlaceId *GvGetReachableByType(GameView gv, Player player, Round round,
 	        i++;
 	    }
 	    rail_num = rail_num + conn_new;
-	    
+
 	    // 3 Rails:
 	    i = 0;
 	    if (railDist > 2) {
@@ -477,7 +476,7 @@ PlaceId *GvGetReachableByType(GameView gv, Player player, Round round,
 	            i++;
 	        }
 	        rail_num = rail_num + conn_new;
-	        
+
 	    }
 	}
 
@@ -501,10 +500,10 @@ PlaceId *GvGetReachableByType(GameView gv, Player player, Round round,
 	    final_loc_list[i] = visited[i];
 	    i++;
 	}
-    
+
     // Memory
     free(visited_rail);
-    
+
     // Return values...
 	*numReturnedLocs = total_locs;
 	return final_loc_list;
@@ -846,6 +845,7 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
 				break;
 		}
 	}
+	free(city);
     return;
 }
 
