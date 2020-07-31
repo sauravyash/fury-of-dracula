@@ -366,7 +366,7 @@ PlaceId *GvGetReachable(GameView gv, Player player, Round round,
 	        i++;
 	    }
 	    rail_num = rail_num + conn_new;
-
+	    
 	    // 3 Rails:
 	    i = 0;
 	    if (railDist > 2) {
@@ -378,6 +378,7 @@ PlaceId *GvGetReachable(GameView gv, Player player, Round round,
 	            i++;
 	        }
 	        rail_num = rail_num + conn_new;
+	        
 	    }
 	}
 

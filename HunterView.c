@@ -1090,7 +1090,10 @@ static PlaceId *HvGetReachable(HunterView hv, Player player, Round round,
 	    final_loc_list[i] = visited[i];
 	    i++;
 	}
-
+    
+    // Memory
+    free(visited_rail);
+    
     // Return values...
 	*numReturnedLocs = total_locs;
 	return final_loc_list;
@@ -1213,7 +1216,10 @@ static PlaceId *HvGetReachableByType(HunterView hv, Player player, Round round,
 	    final_loc_list[i] = visited[i];
 	    i++;
 	}
-
+    
+    // Memory
+    free(visited_rail);
+    
     // Return values...
 	*numReturnedLocs = total_locs;
 	return final_loc_list;

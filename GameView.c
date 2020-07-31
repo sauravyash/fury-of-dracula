@@ -402,7 +402,9 @@ PlaceId *GvGetReachable(GameView gv, Player player, Round round,
 	    final_loc_list[i] = visited[i];
 	    i++;
 	}
-
+    // Memory
+    free(visited_rail);
+    
     // Return values...
 	*numReturnedLocs = total_locs;
 	return final_loc_list;
@@ -511,7 +513,10 @@ PlaceId *GvGetReachableByType(GameView gv, Player player, Round round,
 	    final_loc_list[i] = visited[i];
 	    i++;
 	}
-
+    
+    // Memory
+    free(visited_rail);
+    
     // Return values...
 	*numReturnedLocs = total_locs;
 	return final_loc_list;
