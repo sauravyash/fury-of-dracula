@@ -300,6 +300,7 @@ PlaceId *HvGetShortestPathTo(HunterView hv, Player hunter, PlaceId dest,
 				}
 			}
 		}
+		free(list);
     }
 	dropQueue(q);
 
@@ -336,7 +337,7 @@ PlaceId *HvGetShortestPathTo(HunterView hv, Player hunter, PlaceId dest,
 	for (int i = 0; i < k; i++) {
 	    path_without_src[i] = path[i + 1];
 	}
-
+	free(path);
 	*pathLength = k;
 	return path_without_src;
 }
@@ -645,7 +646,7 @@ static void initialiseGame (HunterView hv) {
 	hv->trapLocationsIndex = -1;
 	hv->vampire = NOWHERE;
 	hv->temp_round = -1;
-	hv->temp_round = NOWHERE;
+	hv->temp_place = NOWHERE;
 
 	return;
 
@@ -1112,7 +1113,6 @@ static PlaceId *HvGetReachableByType(HunterView hv, Player player, Round round,
 	// Make a temp round variable for use with finding shortest path...
 	if (hv->temp_round > -1) round = hv->temp_round;
 	if (hv->temp_place != NOWHERE) from = hv->temp_place;
-
 	// Calculate the number of rails a hunter can travel.
 	int railDist = 0;
 	if (player != PLAYER_DRACULA) railDist = (round + player) % 4;
