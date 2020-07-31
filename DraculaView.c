@@ -401,8 +401,7 @@ PlaceId *DvWhereCanTheyGo(DraculaView dv, Player player,
 // with the option to sort by type 
 PlaceId *DvWhereCanTheyGoByType(DraculaView dv, Player player,
                                 bool road, bool rail, bool boat,
-                                int *numReturnedLocs)
-{
+                                int *numReturnedLocs) {
 	// Set values:
 	Round round = DvGetRound(dv);
 	PlaceId from = DvGetPlayerLocation(dv, player);
