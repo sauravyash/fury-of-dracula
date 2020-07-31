@@ -31,6 +31,7 @@
 // some puns just for fun
 #define ITS_A_TRAP 'T'
 #define CLOSE_ENCOUNTERS_OF_THE_VTH_KIND 'V'
+#define MALFUNCTIONING_MACHIAVELLIAN_MACHINATIONS 'M'
 
 // #defines to make things more readable
 #define  LORD_GODALMING hv->allPlayers[PLAYER_LORD_GODALMING]
@@ -474,13 +475,7 @@ static void trapLocationAppend(HunterView hv, PlaceId location) {
 // -- INPUT: PlaceId
 // -- OUTPUT: void
 static int PlaceIdToAsciiDoubleBack (PlaceId place) {
-	//Does the same thing as IF block; This is more compact codewise but probably more confusing
-	//return 1 + (place - DOUBLE_BACK_1);
-	if(place == DOUBLE_BACK_1) return 1;
-	if(place == DOUBLE_BACK_2) return 2;
-	if(place == DOUBLE_BACK_3) return 3;
-	if(place == DOUBLE_BACK_4) return 4;
-	if(place == DOUBLE_BACK_5) return 5;
+	return 1 + (place - DOUBLE_BACK_1);
 	return NOWHERE;
 }
 
@@ -514,8 +509,13 @@ static void hunterLocationHistoryAppend(HunterView hv, Player hunter, PlaceId lo
 	if (index < MAX_LOC_HISTORY_SIZE) {
 		HUNTER->locationHistory[index + 1] = location;
 		HUNTER->moveHistory[index + 1] = location;
+		//Hunters gain health when resting at city
+		PlaceId previousLocation = HUNTER->currentLocation;
+		if (previousLocation == location) HUNTER->health += LIFE_GAIN_REST;
 		HUNTER->currentLocation = location;
 		HUNTER->currentLocationIndex++;
+		//Ensure hunter health is capped
+		if(HUNTER->health > GAME_START_HUNTER_LIFE_POINTS) HUNTER->health = GAME_START_HUNTER_LIFE_POINTS;
 	}
 	// otherwise print error and exit
 	else {
@@ -535,11 +535,10 @@ static void hunterLocationHistoryAppend(HunterView hv, Player hunter, PlaceId lo
 static void draculaLocationHistoryAppend(HunterView hv, PlaceId location) {
 
 	int index = DRACULA->currentLocationIndex;
-
-	// If dracula is at sea, he loses health
 	PlaceId actualLocation = NOWHERE;
 	int numReturnedLocs = 0;
 	bool canFree = false;
+	//Get Dracula's trail (last 6 moves)
 	PlaceId *trail = HvGetLastLocations(hv, PLAYER_DRACULA , TRAIL_SIZE,
 								&numReturnedLocs, &canFree);
 
@@ -575,7 +574,6 @@ static void draculaLocationHistoryAppend(HunterView hv, PlaceId location) {
 	    {
 			DRACULA->health += LIFE_GAIN_CASTLE_DRACULA;
 		}
-
 		DRACULA->currentLocationIndex++;
 	}
 
@@ -638,11 +636,9 @@ static void initialiseGame (HunterView hv) {
 	hv->currentPlayer = PLAYER_LORD_GODALMING;
 
 	// Allocate memory for players & Initialise starting information
-	hv->allPlayers[PLAYER_LORD_GODALMING] = initialisePlayer(hv, PLAYER_LORD_GODALMING);
-	hv->allPlayers[PLAYER_DR_SEWARD] = initialisePlayer(hv, PLAYER_DR_SEWARD);
-	hv->allPlayers[PLAYER_VAN_HELSING] = initialisePlayer(hv, PLAYER_VAN_HELSING);
-	hv->allPlayers[PLAYER_MINA_HARKER] = initialisePlayer(hv, PLAYER_MINA_HARKER);
-	hv->allPlayers[PLAYER_DRACULA] = initialisePlayer(hv, PLAYER_DRACULA);
+	for (int i = 0; i < NUM_PLAYERS; i++){
+		hv->allPlayers[i] = initialisePlayer(hv, i);
+	}
 
     // No trap locations at start of game, therefore no array yet..
 	// hv->trapLocations = NULL;
@@ -663,7 +659,7 @@ static Player parseMove (HunterView hv, char *string){
 	char *c = string;
 	Player curr_player;
 
-	// figure out whose move it was
+	// Figure out whose move it was
 	switch(*c){
 			case 'G':
 			    hunterMove(hv, string, PLAYER_LORD_GODALMING);
@@ -694,9 +690,9 @@ static Player parseMove (HunterView hv, char *string){
 	return curr_player;
 }
 
-// HUNTER MOVE:
-// -- Input:
-// -- Output:
+// HUNTER MOVE: Reads through hunter's string to determine actions taken
+// -- Input: GameView, pastPlays string, hunter in play
+// -- Output: void
 static void hunterMove(HunterView hv, char *string, Player hunter) {
 
 	// String must be of valid size
@@ -710,9 +706,7 @@ static void hunterMove(HunterView hv, char *string, Player hunter) {
 	city[2] = '\0';
 
     // Compare and find city by abbreviation:
-	PlaceId curr_place = NOWHERE;
-	//Using provided function from Place.h
-	curr_place =  placeAbbrevToId(city);
+	PlaceId curr_place = placeAbbrevToId(city);
 
  	if (curr_place == NOWHERE) printf("Error: Place not found...\n");
 
@@ -754,9 +748,9 @@ static void hunterMove(HunterView hv, char *string, Player hunter) {
     return;
 }
 
-// DRACULA MOVE:
-// -- Input:
-// -- Output:
+// DRACULA MOVE: Reads through drac's string to determine actions taken
+// -- Input: GameView, pastPlays string
+// -- Output: void
 static void draculaMove(HunterView hv, char *string) {
 
 	// String must be of valid size
@@ -770,47 +764,27 @@ static void draculaMove(HunterView hv, char *string) {
 	city[2] = '\0';
 
     // Compare and find city by abbreviation:
-	PlaceId curr_place = NOWHERE;
-	//Using provided function from Place.h
-	curr_place =  placeAbbrevToId(city);
+	PlaceId curr_place = placeAbbrevToId(city);
 
-    // Append history and current location:
 	//Unknown city move
 	if (strcmp(city, "C?") == 0) {
 		draculaLocationHistoryAppend(hv, CITY_UNKNOWN);
-
 	}
 
 	// Unknown sea move
 	else if (strcmp(city,"S?") == 0) {
 		draculaLocationHistoryAppend(hv, SEA_UNKNOWN);
-
 	}
 
 	// Hide move ->stays in the city for another round
 	else if (strcmp(city,"HI") == 0) {
 		DRACULA->lastHidden = hv->roundNumber;
 		draculaLocationHistoryAppend(hv, curr_place);
-
 	}
 	// Double back move
 	else if (strncmp(city,"D",1) == 0) {
-		//convert ascii number to int
-        //if double back is to sea, remove health
-		//retrieve dracula's trail
-
 		draculaLocationHistoryAppend(hv, curr_place);
 		DRACULA->lastDoubleback = hv->roundNumber;
-	}
-
-	// Teleports to castle dracula
-	else if (curr_place == TELEPORT) {
-		draculaLocationHistoryAppend(hv, TELEPORT);
-
-	}
-
-	else if (curr_place == CASTLE_DRACULA){
-    	draculaLocationHistoryAppend(hv, curr_place);
 	}
 	// Location move that was revealed (ie all other cases)
 	else {
@@ -826,25 +800,24 @@ static void draculaMove(HunterView hv, char *string) {
 
 		// If there are extra characters indicating trap or immature vampire
 			// Trap left the trail due to age
-			if (*c == 'M') {
+			if (*c == MALFUNCTIONING_MACHIAVELLIAN_MACHINATIONS) {
 				int numReturnedLocs = 0;
 				bool canFree = false;
 				PlaceId *trail = HvGetLastLocations(hv, PLAYER_DRACULA , TRAIL_SIZE,
 				                            &numReturnedLocs, &canFree);
+				//remove the oldest trap in trail from trapLocations
 				PlaceId brokenTrap = trail[0];
 				trapLocationRemove(hv, brokenTrap);
-				// Temove from trapLocations
-				// Trap leaves trail (from the move that left trail?)
 				free(trail);
 			}
 
-			// Immature vampire has matured
 			if (*c == CLOSE_ENCOUNTERS_OF_THE_VTH_KIND) {
+				// Immature vampire has matured
 				if( i == 5) {
-					// Vampire matures
 					hv->vampire = NOWHERE;
 					hv->score -= SCORE_LOSS_VAMPIRE_MATURES;
 				}
+				//immature vampire placed
 				else {
 					hv->vampire = curr_place;
 				}
@@ -853,17 +826,13 @@ static void draculaMove(HunterView hv, char *string) {
 			// Trap placed
 			if (*c == ITS_A_TRAP) trapLocationAppend(hv, curr_place);
 			// Immature vampire placed
-
-
 		i++;
 	}
 
 	// Game score decreases each time drac finishes turn
     hv->score -= SCORE_LOSS_DRACULA_TURN;
     free(city);
-
     return;
-
 }
 
 // ------------------ HELPING WITH GAME HISTORY ------------------ //

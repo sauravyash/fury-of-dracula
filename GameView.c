@@ -29,6 +29,7 @@
 // some puns just for fun
 #define ITS_A_TRAP 'T'
 #define CLOSE_ENCOUNTERS_OF_THE_VTH_KIND 'V'
+#define MALFUNCTIONING_MACHIAVELLIAN_MACHINATIONS 'M'
 
 // defines to make things more readable
 #define  LORD_GODALMING gv->allPlayers[PLAYER_LORD_GODALMING]
@@ -52,7 +53,6 @@ struct playerData {
 	PlaceId currentLocation;						  	// current location
 	int currentLocationIndex;						  	// index of current location in locationHistory
 	// -------------------------- BLOOD BOIS ONLY BEYOND THIS POINT --------------------------
-	// do we even need these?
 	int lastHidden;									  	// round in which drac last hid
 	int lastDoubleback;									// round in which drac last doubled back
 };
@@ -106,8 +106,6 @@ static void draculaLocationHistoryAppend(GameView gv, PlaceId location);
 GameView GvNew(char *pastPlays, Message messages[]) {
 	// Allocate memory for new GV
 	GameView new = malloc(sizeof(* new));
-
-	// Check if memory was allocated correctly
 	memoryError(new);
 	new->map = MapNew();
 	initialiseGame (new);
@@ -544,7 +542,7 @@ PlaceId *GvGetReachableByType(GameView gv, Player player, Round round,
 // -- OUTPUT: void, but prints error message and exits code 1
 static void memoryError (const void * input) {
 	if (input == NULL) {
-		fprintf(stderr, "Couldn't allocate Memory!\n");
+		fprintf(stderr, "Couldn't Allocate Memory!\n");
 		exit(EXIT_FAILURE);
 	}
 	return;
@@ -590,12 +588,12 @@ static void trapLocationAppend(GameView gv, PlaceId location) {
 // -- OUTPUT: void
 static int PlaceIdToAsciiDoubleBack (PlaceId place) {
 	//Does the same thing as IF block; This is more compact codewise but probably more confusing
-	//return 1 + (place - DOUBLE_BACK_1);
-	if(place == DOUBLE_BACK_1) return 1;
-	if(place == DOUBLE_BACK_2) return 2;
-	if(place == DOUBLE_BACK_3) return 3;
-	if(place == DOUBLE_BACK_4) return 4;
-	if(place == DOUBLE_BACK_5) return 5;
+	return 1 + (place - DOUBLE_BACK_1);
+	//if(place == DOUBLE_BACK_1) return 1;
+	//if(place == DOUBLE_BACK_2) return 2;
+	//if(place == DOUBLE_BACK_3) return 3;
+	//if(place == DOUBLE_BACK_4) return 4;
+	//if(place == DOUBLE_BACK_5) return 5;
 	return NOWHERE;
 }
 
@@ -709,7 +707,6 @@ static void draculaLocationHistoryAppend(GameView gv, PlaceId location) {
 // -- OUTPUT: void
 static void checkHunterHealth(GameView gv,Player hunter){
 	if(gv->allPlayers[hunter]->health <= 0) {
-		printf("Hunter has died!\n");
 		gv->allPlayers[hunter]->health = 0;
 		gv->score -= SCORE_LOSS_HUNTER_HOSPITAL;
 		hunterLocationHistoryAppend(gv, hunter, HOSPITAL_PLACE);
@@ -733,7 +730,6 @@ static PlayerData initialisePlayer(GameView gv, Player player) {
 	new -> moveHistory[0] = '\0';
 	new -> lastHidden = -1;
 	new -> lastDoubleback = -1;
-
 	if (player == PLAYER_DRACULA) {
 		new -> health = GAME_START_BLOOD_POINTS;
 	} else {
@@ -756,17 +752,11 @@ static void initialiseGame (GameView gv) {
 	for (int i = 0; i < NUM_PLAYERS; i++){
 		gv->allPlayers[i] = initialisePlayer(gv, i);
 	}
-	//gv->allPlayers[PLAYER_LORD_GODALMING] = initialisePlayer(gv, PLAYER_LORD_GODALMING);
-	//gv->allPlayers[PLAYER_DR_SEWARD] = initialisePlayer(gv, PLAYER_DR_SEWARD);
-	//gv->allPlayers[PLAYER_VAN_HELSING] = initialisePlayer(gv, PLAYER_VAN_HELSING);
-	//gv->allPlayers[PLAYER_MINA_HARKER] = initialisePlayer(gv, PLAYER_MINA_HARKER);
-	//gv->allPlayers[PLAYER_DRACULA] = initialisePlayer(gv, PLAYER_DRACULA);
 
 	gv->trapLocationsIndex = -1;
 	gv->vampire = NOWHERE;
 
 	return;
-
 }
 
 // PARSE MOVE: interprets a single move, calls hunter/draculaMove, updates curr_player
@@ -782,31 +772,26 @@ static Player parseMove (GameView gv, char *string){
 	// 5 players that always go in order of G->S->H->M->D
 	switch(*c){
 			case 'G':
-			    printf("it is Lord G\n");
 			    hunterMove(gv, string, PLAYER_LORD_GODALMING);
 			    curr_player = PLAYER_DR_SEWARD;
 			    break;
 
 			case 'S':
-			    printf("it is Dr S\n");
 			    hunterMove(gv, string, PLAYER_DR_SEWARD);
 			    curr_player = PLAYER_VAN_HELSING;
 			    break;
 
 			case 'H':
-			    printf("it is VH\n");
 			    hunterMove(gv, string, PLAYER_VAN_HELSING);
 			    curr_player = PLAYER_MINA_HARKER;
 			    break;
 
 			case 'M':
-			   printf("it is Mina\n");
 			    hunterMove(gv, string, PLAYER_MINA_HARKER);
 			    curr_player = PLAYER_DRACULA;
 			    break;
 
 			case 'D':
-			    printf("it is Drac\n");
 			    draculaMove(gv, string);
 			    curr_player = PLAYER_LORD_GODALMING;
 			    break;
@@ -846,7 +831,6 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
 		switch(*c){
 			// It's a trap!
 			case ITS_A_TRAP:
-				printf("Hunter encountered trap!\n");
 				gv->allPlayers[hunter]->health -= LIFE_LOSS_TRAP_ENCOUNTER;
 				checkHunterHealth(gv, hunter);
 				//remove trap
@@ -855,13 +839,11 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
 
 			// Immature Vampire encounter
 			case CLOSE_ENCOUNTERS_OF_THE_VTH_KIND:
-				printf("Hunter encountered immature vampire!\n");
 				gv->vampire = NOWHERE;
 				break;
 
 			// Dracula encounter
 			case 'D':
-				printf("Hunter encountered dracula!\n");
 				gv->allPlayers[hunter]->health -= LIFE_LOSS_DRACULA_ENCOUNTER;
 				checkHunterHealth(gv, hunter);
 				DRACULA->health -= LIFE_LOSS_HUNTER_ENCOUNTER;
@@ -924,8 +906,7 @@ static void draculaMove(GameView gv, char *string) {
 		c = &string[i];
 		// if there are extra characters indicating trap or immature vampire
 			// trap left the trail due to age (after 6 moves)
-			if (*c == 'M') {
-				printf("Trap has left trail!\n");
+			if (*c ==MALFUNCTIONING_MACHIAVELLIAN_MACHINATIONS) {
 				int numReturnedLocs = 0;
 				bool canFree = false;
 				//retrieve dracula's trail
@@ -938,10 +919,8 @@ static void draculaMove(GameView gv, char *string) {
 			}
 
 			if (*c == CLOSE_ENCOUNTERS_OF_THE_VTH_KIND) {
-				//immature vampire has matured
+				// Immature vampire has matured
 				if( i == 5) {
-
-					printf("Vampire matured! -%d game points\n", SCORE_LOSS_VAMPIRE_MATURES);
 					gv->vampire = NOWHERE;
 					gv->score -= SCORE_LOSS_VAMPIRE_MATURES;
 				}
@@ -955,7 +934,7 @@ static void draculaMove(GameView gv, char *string) {
 			if (*c == ITS_A_TRAP) trapLocationAppend(gv, curr_place);
 		i++;
 	}
-	// game score decreases each time drac finishes turn
+	// Game score decreases each time drac finishes turn
     gv->score -= SCORE_LOSS_DRACULA_TURN;
     free(city);
     return;
