@@ -587,14 +587,7 @@ static void trapLocationAppend(GameView gv, PlaceId location) {
 // -- INPUT: PlaceId
 // -- OUTPUT: void
 static int PlaceIdToAsciiDoubleBack (PlaceId place) {
-	//Does the same thing as IF block; This is more compact codewise but probably more confusing
 	return 1 + (place - DOUBLE_BACK_1);
-	//if(place == DOUBLE_BACK_1) return 1;
-	//if(place == DOUBLE_BACK_2) return 2;
-	//if(place == DOUBLE_BACK_3) return 3;
-	//if(place == DOUBLE_BACK_4) return 4;
-	//if(place == DOUBLE_BACK_5) return 5;
-	return NOWHERE;
 }
 
 // TRAP LOCATION REMOVE: Removes a specified location from trap location array

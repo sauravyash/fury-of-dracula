@@ -476,7 +476,6 @@ static void trapLocationAppend(HunterView hv, PlaceId location) {
 // -- OUTPUT: void
 static int PlaceIdToAsciiDoubleBack (PlaceId place) {
 	return 1 + (place - DOUBLE_BACK_1);
-	return NOWHERE;
 }
 
 // TRAP LOCATION REMOVE: Removes a specified location from trap location array

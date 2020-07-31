@@ -847,7 +847,6 @@ PlaceId *dvGetMoveHistory(DraculaView dv, Player player,
 // -- OUTPUT: void
 static int PlaceIdToAsciiDoubleBack (PlaceId place) {
 	return 1 + (place - DOUBLE_BACK_1);
-	return NOWHERE;
 }
 
 // TRAP LOCATION APPEND: Appends input to the trap location array, updates index,
