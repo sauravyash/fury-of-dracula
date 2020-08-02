@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 #include "Game.h"
 #include "GameView.h"
@@ -52,6 +53,7 @@ struct playerData {
     PlaceId moveHistory[MAX_LOC_HISTORY_SIZE];              //array of moves made by player (different to location history for drac)
     PlaceId currentLocation;                                // current location
     int currentLocationIndex;                               // index of current location in locationHistory
+    char ** messageBank;
     // -------------------------- BLOOD BOIS ONLY BEYOND THIS POINT --------------------------
     int lastHidden;                                         // round in which drac last hid
     int lastDoubleback;                                     // round in which drac last doubled back
@@ -71,7 +73,8 @@ struct gameView {
 
 // PRIVATE FUNCTION DECLARATIONS
 // ****************************************
-
+// Store's players messages into player data. MESSAGE STRING MUST HAVE SAME SIZE AS # PLAYS
+static void initialiseMessageMemory(GameView gv,Message messageString[]);
 //------------- MAKING A MOVE -------------
 // Helper function for reachables:
 static int Find_Rails (Map map, PlaceId place, PlaceId from, PlaceId *array, int i);
@@ -109,14 +112,14 @@ GameView GvNew(char *pastPlays, Message messages[]) {
     GameView new = malloc(sizeof(* new));
     memoryError(new);
     new->map = MapNew();
-    initialiseGame (new);
 
+    //initialiseGame (new);
     // Number of Rounds can be determined from size of string
     // (each play is 7 chars + space)
     // Note last move has no space...
     // Note each round is 5 plays...
     new->roundNumber = (strlen(pastPlays) + 1) / ((PLAY_S_SIZE + 1)*5);
-
+    initialiseGame (new);
     // Need to create a copy of pastPlays rather than just pointing to it.
     char string[strlen(pastPlays)];
     strcpy(string, pastPlays);
@@ -127,14 +130,20 @@ GameView GvNew(char *pastPlays, Message messages[]) {
         new->currentPlayer = parseMove(new, token);
         token = strtok(NULL, " ");
     }
+    initialiseMessageMemory(new,messages);
     return new;
 }
 
 // GV FREE: Frees the current GameView
 void GvFree(GameView gv) {
     // free player structs
-    for (int i = 0; i < NUM_PLAYERS; i++)
+    for (int i = 0; i < NUM_PLAYERS; i++) {
+        for(int j = 0; j <= gv->roundNumber; j++) {
+            free(gv->allPlayers[i]->messageBank[j]);
+        }
+        free(gv->allPlayers[i]->messageBank);
         free(gv->allPlayers[i]);
+    }
     // free map
     MapFree(gv->map);
     free(gv);
@@ -715,7 +724,6 @@ static PlayerData initialisePlayer(GameView gv, Player player) {
 
     PlayerData new = malloc(sizeof(* new));
     memoryError (new);
-
     new -> health = GAME_START_HUNTER_LIFE_POINTS;
     new -> currentLocation = NOWHERE;
     new -> currentLocationIndex = -1;
@@ -723,6 +731,8 @@ static PlayerData initialisePlayer(GameView gv, Player player) {
     new -> moveHistory[0] = '\0';
     new -> lastHidden = -1;
     new -> lastDoubleback = -1;
+    new -> messageBank = malloc(sizeof(char *) * (gv->roundNumber+1));
+    memoryError (new->messageBank);
     if (player == PLAYER_DRACULA) {
         new -> health = GAME_START_BLOOD_POINTS;
     } else {
@@ -736,7 +746,7 @@ static PlayerData initialisePlayer(GameView gv, Player player) {
 // -- OUTPUT: void
 static void initialiseGame (GameView gv) {
 
-    gv->roundNumber = 0;
+    //gv->roundNumber = 0;
     gv->score = GAME_START_SCORE;
     // Always starts with G
     gv->currentPlayer = PLAYER_LORD_GODALMING;
@@ -995,4 +1005,55 @@ static int Find_Rails (Map map, PlaceId place, PlaceId from, PlaceId *array, int
         list = list->next;
     }
     return places_added;
+}
+
+// INITIALISE MESSAGE MEMORY: Takes player's messages and stores into player data
+// in an array sorted by round number
+// INPUT: Gameview, Message Array
+// OUTPUT: void
+// This will output random data is messageString[x] = {}.
+// Only for use for our own AI hunters really
+// Assumes that size of messageString = number of plays
+// Will have a segfault if messagString is of incorrect size!
+// But this function will only be used for our hunters (and not our drac)
+// Suppose then this can just be inside hunterview only? gameview doesnt really care i Suppose
+// I used testGameview to test this though
+static void initialiseMessageMemory(GameView gv,Message messageString[]){
+    //cant get Message datatype to work :(
+    char * string;
+    bool valid = true;
+    int player = PLAYER_LORD_GODALMING;
+    int round = 0;
+    while( round <= gv->roundNumber) {
+        string = (messageString[player + (round * 5)]);
+        valid = true;
+        //if(string[0] != '\0') {
+        printf("stringlength = %ld\n", strlen(string));
+        //Valid string size
+        if(strlen(string) > 0 && strlen(string) < MESSAGE_SIZE) {
+            //Checks if string contains onlu printable characters
+            for(int i = 0; i < strlen(string); i++) {
+                if(isprint(string[i]) == 0) {
+                    valid = false;
+                    break;
+                }
+            }
+            if(valid == true) {
+
+                PLAYER->messageBank[round] = strdup(string);
+                printf("message is %s\n", PLAYER->messageBank[round]);
+            } else {
+                PLAYER->messageBank[round] = '\0';
+            }
+        } else {
+            PLAYER->messageBank[round] = '\0';
+        }
+
+        player++;
+        if (player == NUM_PLAYERS) {
+            player = PLAYER_LORD_GODALMING;
+            round++;
+        }
+    }
+    return;
 }

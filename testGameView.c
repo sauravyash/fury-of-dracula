@@ -739,13 +739,13 @@ int main(void)
 			"GZU.... SGE.... HGE.... MGE.... DCOT... "
 			"GZU.... SGE.... HGE.... MGE.... DBUT... "
 			"GSTV... SGE.... HGE.... MGE.... DPAT... "
-			"GZU.... SGE.... HGE.... MGE.... DSTT... " //st 
+			"GZU.... SGE.... HGE.... MGE.... DSTT... " //st
 			"GZU.... SGE.... HGE.... MGE.... DFRT... "
 			"GZU.... SGE.... HGE.... MGE.... DLIT... "
 			"GZU.... SGE.... HGE.... MGE.... DCOT... "
 			"GZU.... SGE.... HGE.... MGE.... DBUT... "
 			"GST.... SGE.... HGE.... MGE.... DPAT... "
-			"GZU.... SGE.... HGE.... MGE.... DSTT... " //st 
+			"GZU.... SGE.... HGE.... MGE.... DSTT... " //st
 			"GZU.... SGE.... HGE.... MGE.... DFR.V.. "
 			"GZU.... SGE.... HGE.... MGE.... DLIT... "
 			"GSTV... SGE.... HGE.... MGE.... DCOT... "
@@ -754,12 +754,13 @@ int main(void)
             "GZU.... SGE.... HGE.... MGE.... DSTT... "
             "GST.... "; // st but no encounter should be here
 
-        Message messages[5] = {};
+        Message messages[19*5] = {};
 		GameView gv = GvNew(trail, messages);
         int score = GAME_START_SCORE - 19 * SCORE_LOSS_DRACULA_TURN;
 
-        assert(GvGetScore(gv) == score);   
-        assert(GvGetHealth(gv, PLAYER_LORD_GODALMING) == GAME_START_HUNTER_LIFE_POINTS); 
+        assert(GvGetScore(gv) == score);
+        assert(GvGetHealth(gv, PLAYER_LORD_GODALMING) == GAME_START_HUNTER_LIFE_POINTS);
+		GvFree(gv);
     }
 
     printf("ALL PROVIDED TESTS PASSED!!!\n");
