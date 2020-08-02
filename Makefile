@@ -9,7 +9,7 @@ CC = gcc
 CFLAGS = -Wall -Werror -g
 
 # do not change the following line
-BINS = dracula hunter
+BINS = dracula hunter testGameView testHunterView testDraculaView
 
 # add any other *.o files that your solution requires
 # (and add their dependencies below after DraculaView.o)
@@ -23,11 +23,18 @@ all: $(BINS)
 
 dracula: playerDracula.o dracula.o DraculaView.o $(OBJS) $(LIBS)
 hunter: playerHunter.o hunter.o HunterView.o Queue.o $(OBJS) $(LIBS)
+testGameView: testGameView.o testUtils.o GameView.o Map.o Places.o
+testHunterView: testHunterView.o testUtils.o HunterView.o GameView.o Map.o Places.o Queue.o
+testDraculaView: testDraculaView.o testUtils.o DraculaView.o GameView.o Map.o Places.o
 
 playerDracula.o: player.c dracula.h Game.h DraculaView.h GameView.h Places.h
 	$(CC) $(CFLAGS) -DI_AM_DRACULA -c $< -o $@
 playerHunter.o: player.c hunter.h Game.h HunterView.h GameView.h Places.h
 	$(CC) $(CFLAGS) -c $< -o $@
+
+testGameView.o: testGameView.c GameView.h Map.h Places.h Game.h
+testHunterView.o: testHunterView.c HunterView.h GameView.h Map.h Places.h Game.h Queue.h
+testDraculaView.o: testDraculaView.c DraculaView.h GameView.h Map.h Places.h Game.h
 
 dracula.o: dracula.c dracula.h DraculaView.h GameView.h Places.h Game.h
 hunter.o: hunter.c hunter.h HunterView.h GameView.h Places.h Game.h
