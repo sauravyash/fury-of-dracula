@@ -1027,8 +1027,6 @@ static void initialiseMessageMemory(GameView gv,Message messageString[]){
     while( round <= gv->roundNumber) {
         string = (messageString[player + (round * 5)]);
         valid = true;
-        //if(string[0] != '\0') {
-        printf("stringlength = %ld\n", strlen(string));
         //Valid string size
         if(strlen(string) > 0 && strlen(string) < MESSAGE_SIZE) {
             //Checks if string contains onlu printable characters
@@ -1041,7 +1039,7 @@ static void initialiseMessageMemory(GameView gv,Message messageString[]){
             if(valid == true) {
 
                 PLAYER->messageBank[round] = strdup(string);
-                printf("message is %s\n", PLAYER->messageBank[round]);
+                printf("Player %d said: %s\n",player, PLAYER->messageBank[round]);
             } else {
                 PLAYER->messageBank[round] = '\0';
             }

@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 #include "Game.h"
 #include "HunterView.h"
@@ -51,7 +52,7 @@ struct playerData {
     PlaceId moveHistory[MAX_LOC_HISTORY_SIZE];          // Array of moves made by player (different to loc history for drac)
     PlaceId currentLocation;                            // Current location
     int currentLocationIndex;                           // Index of current location in locationHistory
-
+    char ** messageBank;
     // ---- ONLY FOR DRAC
     int lastHidden;                                     // Round in which drac last hid
     int lastDoubleback;                                 // Round in which drac last doubled back
@@ -72,7 +73,8 @@ struct hunterView {
 
 // PRIVATE FUNCTION DECLARATIONS
 // ****************************************
-
+// Store's players messages into player data. MESSAGE STRING MUST HAVE SAME SIZE AS # PLAYS
+static void initialiseMessageMemory(HunterView hv,Message messageString[]);
 //------------- MAKING A MOVE -------------
 // Helper function for reachables:
 static int Find_Rails (Map map, PlaceId place, PlaceId from, PlaceId *array, int i);
@@ -136,12 +138,12 @@ HunterView HvNew(char *pastPlays, Message messages[]) {
     // Check if memory was allocated correctly:
     memoryError(new);
     new->map = MapNew();
-    initialiseGame (new);
+
 
     // Number of Rounds can be determined from size of string
     // ( each play is 7 chars + space)
     new->roundNumber = (strlen(pastPlays) + 1) / ((PLAY_S_SIZE + 1)*5);
-
+    initialiseGame (new);
     // Need to create a copy of pastPlays.
     char string[strlen(pastPlays)];
     strcpy(string, pastPlays);
@@ -152,16 +154,20 @@ HunterView HvNew(char *pastPlays, Message messages[]) {
         new->currentPlayer = parseMove(new, token);
         token = strtok(NULL, " ");
     }
-
+    initialiseMessageMemory(new,messages);
     return new;
 }
 
 // HV FREE: frees memory associated with the input HunterView
 void HvFree(HunterView hv) {
     // Free player structs
-    for (int i = 0; i < NUM_PLAYERS; i++)
+    for (int i = 0; i < NUM_PLAYERS; i++){
+        for(int j = 0; j <= hv->roundNumber; j++) {
+            free(hv->allPlayers[i]->messageBank[j]);
+        }
+        free(hv->allPlayers[i]->messageBank);
         free(hv->allPlayers[i]);
-
+    }
     // Free map
     MapFree(hv->map);
     // Free hunter view
@@ -602,6 +608,7 @@ static PlayerData initialisePlayer(HunterView hv, Player player) {
     new -> moveHistory[0] = '\0';
     new -> lastHidden = -1;
     new -> lastDoubleback = -1;
+    new -> messageBank = malloc(sizeof(char *) * (hv->roundNumber+1));
     if (player == PLAYER_DRACULA) {
         new -> health = GAME_START_BLOOD_POINTS;
     } else {
@@ -616,7 +623,6 @@ static PlayerData initialisePlayer(HunterView hv, Player player) {
 // -- OUTPUT: void
 static void initialiseGame (HunterView hv) {
 
-    hv->roundNumber = 0;
     hv->score = GAME_START_SCORE;
     // Always starts with G
     hv->currentPlayer = PLAYER_LORD_GODALMING;
@@ -1252,4 +1258,54 @@ static bool maxEncounters(HunterView hv, PlaceId location){
         if(hv->trapLocations[i] == location) counter++;
     }
     return (counter >= 3);
+}
+
+
+// INITIALISE MESSAGE MEMORY: Takes player's messages and stores into player data
+// in an array sorted by round number
+// INPUT: Gameview, Message Array
+// OUTPUT: void
+// This will output random data is messageString[x] = {}.
+// Only for use for our own AI hunters really
+// Assumes that size of messageString = number of plays
+// Will have a segfault if messagString is of incorrect size!
+// But this function will only be used for our hunters (and not our drac)
+// Suppose then this can just be inside hunterview only? gameview doesnt really care i Suppose
+// I used testGameview to test this though
+static void initialiseMessageMemory(HunterView hv,Message messageString[]){
+    //cant get Message datatype to work :(
+    char * string;
+    bool valid = true;
+    int player = PLAYER_LORD_GODALMING;
+    int round = 0;
+    while( round <= hv->roundNumber) {
+        string = (messageString[player + (round * 5)]);
+        valid = true;
+        //Valid string size
+        if(strlen(string) > 0 && strlen(string) < MESSAGE_SIZE) {
+            //Checks if string contains onlu printable characters
+            for(int i = 0; i < strlen(string); i++) {
+                if(isprint(string[i]) == 0) {
+                    valid = false;
+                    break;
+                }
+            }
+            if(valid == true) {
+
+                PLAYER->messageBank[round] = strdup(string);
+                printf("Player %d said: %s\n",player, PLAYER->messageBank[round]);
+            } else {
+                PLAYER->messageBank[round] = '\0';
+            }
+        } else {
+            PLAYER->messageBank[round] = '\0';
+        }
+
+        player++;
+        if (player == NUM_PLAYERS) {
+            player = PLAYER_LORD_GODALMING;
+            round++;
+        }
+    }
+    return;
 }
