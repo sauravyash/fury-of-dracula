@@ -28,6 +28,8 @@ void decideDraculaMove(DraculaView dv)
 // Returns an array of all placeids reachable by drac this turn
 PlaceId *getPossibleMoves(DraculaView dv, int *numPossibleMoves) {
 	PlaceId *possibleMoves = DvGetValidMoves(dv, numPossibleMoves);
+	// if no other legal moves, drac tps to castle dracula
+	if (*numPossibleMoves == 0) return "TP"; 
 	// write this to our array?
 	return possibleMoves;
 }
