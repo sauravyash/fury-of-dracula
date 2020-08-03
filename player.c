@@ -32,6 +32,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
+#include <time.h>
 
 #include "Game.h"
 #ifdef I_AM_DRACULA
@@ -79,49 +80,57 @@ typedef HunterView View;
 
 int main(void)
 {
+
 	//char *pastPlays = xPastPlays;
 	char * pastString;
 	Message msgs[] = xMsgs;
 	printf("%s\n", whoseMove);
-	//int i = 0;
+	int i = 0;
 	//int maxPlays = 25;
 	char input[100];
-
+	char ** history;
+	history = malloc(sizeof(char *) * 50);
 	assert(pastString != NULL);
 	int player = PLAYER_LORD_GODALMING;
 while(1){
 	pastString = malloc(sizeof(char) * 8 * 5);
+	history[i] = pastString;
 	while(player != PLAYER_DRACULA) {
 
 		if(player == PLAYER_LORD_GODALMING) {
-			strcat(pastString,"G");
-			printf("Put in Lord G's City Move: ");
+			strcpy(pastString,"G");
+			//printf("Put in Lord G's City Move: ");
 		} else if (player == PLAYER_DR_SEWARD) {
 			strcat(pastString,"S");
-			printf("Put in Dr S's City Move: ");
+			//printf("Put in Dr S's City Move: ");
 		} else if (player == PLAYER_VAN_HELSING) {
 			strcat(pastString,"H");
-			printf("Put in Van Helsing's City Move: ");
+			//printf("Put in Van Helsing's City Move: ");
 		} else if (player == PLAYER_MINA_HARKER) {
 			strcat(pastString,"M");
-			printf("Put in Mina's City Move: ");
+			//printf("Put in Mina's City Move: ");
 		}
 		scanf("%s",input);
 		strcat(pastString,input);
 		strcat(pastString, ".... ");
-		printf("Current moves are:\n %s\n", pastString);
+		//printf("Current moves are:\n %s\n", pastString);
 		player++;
 
 	}
 
-	View state = ViewNew(pastString, msgs);
+	View state = ViewNew(*history, msgs);
 	decideMove(state);
 	ViewFree(state);
-	printf("Dracula's Move: %s, Message: %s\n", latestPlay, latestMessage);
+	printf("Current moves are:\n %s\n", pastString);
+	printf("Dracula's Move: %s, Message: %s\n", placeIdToName(placeAbbrevToId(latestPlay)), latestMessage);
+	strcat(pastString,"D");
 	strcat(pastString,latestPlay);
+	strcat(pastString, ".... ");
+	strcat(pastString, "\0");
 	printf("Current moves are:\n %s\n", pastString);
  	player = PLAYER_LORD_GODALMING;
-	free(pastString);
+	i++;
+
 }
 	return EXIT_SUCCESS;
 }

@@ -22,6 +22,7 @@ PlaceId getRandomMove();
 
 void decideDraculaMove(DraculaView dv)
 {
+
 	// TODO: Replace this with something better!
 	registerBestPlay(placeIdToAbbrev(getRandomMove(dv)), "You'll never expect this!");
 }
@@ -41,10 +42,12 @@ PlaceId *getPossibleMoves(DraculaView dv, int *numPossibleMoves) {
 // Returns the placeid of a random place reachable by drac this turn
 PlaceId getRandomMove(DraculaView dv) {
 	//for ultimate randomness. comment out if you want repeateability
-	srand ( time(NULL) );
+	srand ( time(0) );
+	int r = rand();
 	if (DvGetRound(dv) == 0){
 		//drac hasnt had a turn yet
-		PlaceId location = rand() % NUM_REAL_PLACES;
+		//printf("RNGods: %d\n", r);
+		PlaceId location = r % NUM_REAL_PLACES;
 		//printf("attempting to spawn at %s\n", placeIdToName(location));
 		while(placeIdToType(location) == SEA) {
 			location = rand() % NUM_REAL_PLACES;
@@ -60,5 +63,7 @@ PlaceId getRandomMove(DraculaView dv) {
 		printf("%s ", placeIdToName(possibleMoves[i]));
 	}
 	printf("\n");
-	return possibleMoves[rand() % numPossibleMoves];
+	int random = r % numPossibleMoves;
+	printf("RNG: %d\n", random);
+	return possibleMoves[random];
 }
