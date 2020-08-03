@@ -9,6 +9,9 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "dracula.h"
 #include "DraculaView.h"
 #include "Game.h"
@@ -17,4 +20,15 @@ void decideDraculaMove(DraculaView dv)
 {
 	// TODO: Replace this with something better!
 	registerBestPlay("CD", "Mwahahahaha");
+}
+
+int getPossibleMoves(DraculaView dv) {
+	int numPossibleMoves;
+	PlaceId *possibleMoves = DvGetValidMoves(dv, numPossibleMoves);
+	// write this to our array?
+	reutrn numPossibleMoves;
+}
+
+PlaceId getRandomMove(PlaceId *possibleMoves, int numPossibleMoves) {
+	return possibleMoves[rand() % (numPossibleMoves + 1)];
 }
