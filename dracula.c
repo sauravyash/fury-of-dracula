@@ -13,6 +13,8 @@
 #include "DraculaView.h"
 #include "Game.h"
 
+//Private Function Prototypes
+
 void decideDraculaMove(DraculaView dv)
 {
 	// TODO: Replace this with something better!
