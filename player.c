@@ -83,11 +83,14 @@ int main(void)
 	char * pastString;
 	Message msgs[] = xMsgs;
 	printf("%s\n", whoseMove);
+	//int i = 0;
+	//int maxPlays = 25;
 	char input[100];
-pastString = malloc(sizeof(char) * 8 * 5);
-assert(pastString != NULL);
-	int player = PLAYER_LORD_GODALMING;
 
+	assert(pastString != NULL);
+	int player = PLAYER_LORD_GODALMING;
+while(1){
+	pastString = malloc(sizeof(char) * 8 * 5);
 	while(player != PLAYER_DRACULA) {
 
 		if(player == PLAYER_LORD_GODALMING) {
@@ -108,13 +111,18 @@ assert(pastString != NULL);
 		strcat(pastString, ".... ");
 		printf("Current moves are:\n %s\n", pastString);
 		player++;
+
 	}
 
 	View state = ViewNew(pastString, msgs);
 	decideMove(state);
 	ViewFree(state);
-
 	printf("Dracula's Move: %s, Message: %s\n", latestPlay, latestMessage);
+	strcat(pastString,latestPlay);
+	printf("Current moves are:\n %s\n", pastString);
+ 	player = PLAYER_LORD_GODALMING;
+	free(pastString);
+}
 	return EXIT_SUCCESS;
 }
 

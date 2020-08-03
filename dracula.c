@@ -45,15 +45,20 @@ PlaceId getRandomMove(DraculaView dv) {
 	if (DvGetRound(dv) == 0){
 		//drac hasnt had a turn yet
 		PlaceId location = rand() % NUM_REAL_PLACES;
-		printf("attempting to spawn at %s\n", placeIdToName(location));
+		//printf("attempting to spawn at %s\n", placeIdToName(location));
 		while(placeIdToType(location) == SEA) {
 			location = rand() % NUM_REAL_PLACES;
-			printf("attempting to spawn at %s\n", placeIdToName(location));
+			//printf("attempting to spawn at %s\n", placeIdToName(location));
 		}
-		printf("successfully spawned at %s\n", placeIdToName(location));
+		//printf("successfully spawned at %s\n", placeIdToName(location));
 		return location;
 	}
 	int numPossibleMoves;
 	PlaceId *possibleMoves = getPossibleMoves(dv, &numPossibleMoves);
+	printf("Possible moves are:");
+	for (int i = 0; i < numPossibleMoves; i ++) {
+		printf("%s ", placeIdToName(possibleMoves[i]));
+	}
+	printf("\n");
 	return possibleMoves[rand() % numPossibleMoves];
 }
