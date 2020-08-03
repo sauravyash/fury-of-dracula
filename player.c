@@ -31,6 +31,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
 #include "Game.h"
 #ifdef I_AM_DRACULA
@@ -59,7 +60,7 @@ typedef DraculaView View;
 # define ViewNew DvNew
 # define decideMove decideDraculaMove
 # define ViewFree DvFree
-
+# define whoseMove "Dracula's Move"
 # define xPastPlays "GZA.... SED.... HZU.... MZU...."
 # define xMsgs { "", "", "", "" }
 
@@ -70,7 +71,7 @@ typedef HunterView View;
 # define ViewNew HvNew
 # define decideMove decideHunterMove
 # define ViewFree HvFree
-
+# define whoseMove "Hunter's Move"
 # define xPastPlays "GZA.... SED.... HZU...."
 # define xMsgs { "", "", "" }
 
@@ -78,14 +79,42 @@ typedef HunterView View;
 
 int main(void)
 {
-	char *pastPlays = xPastPlays;
+	//char *pastPlays = xPastPlays;
+	char * pastString;
 	Message msgs[] = xMsgs;
+	printf("%s\n", whoseMove);
+	char input[100];
+pastString = malloc(sizeof(char) * 8 * 5);
+assert(pastString != NULL);
+	int player = PLAYER_LORD_GODALMING;
 
-	View state = ViewNew(pastPlays, msgs);
+	while(player != PLAYER_DRACULA) {
+
+		if(player == PLAYER_LORD_GODALMING) {
+			strcat(pastString,"G");
+			printf("Put in Lord G's City Move: ");
+		} else if (player == PLAYER_DR_SEWARD) {
+			strcat(pastString,"S");
+			printf("Put in Dr S's City Move: ");
+		} else if (player == PLAYER_VAN_HELSING) {
+			strcat(pastString,"H");
+			printf("Put in Van Helsing's City Move: ");
+		} else if (player == PLAYER_MINA_HARKER) {
+			strcat(pastString,"M");
+			printf("Put in Mina's City Move: ");
+		}
+		scanf("%s",input);
+		strcat(pastString,input);
+		strcat(pastString, ".... ");
+		printf("Current moves are:\n %s\n", pastString);
+		player++;
+	}
+
+	View state = ViewNew(pastString, msgs);
 	decideMove(state);
 	ViewFree(state);
 
-	printf("Move: %s, Message: %s\n", latestPlay, latestMessage);
+	printf("Dracula's Move: %s, Message: %s\n", latestPlay, latestMessage);
 	return EXIT_SUCCESS;
 }
 

@@ -29,7 +29,9 @@ void decideDraculaMove(DraculaView dv)
 PlaceId *getPossibleMoves(DraculaView dv, int *numPossibleMoves) {
 	PlaceId *possibleMoves = DvGetValidMoves(dv, numPossibleMoves);
 	// if no other legal moves, drac tps to castle dracula
-	if (*numPossibleMoves == 0) return "TP"; 
+	if (*numPossibleMoves == 0) {
+		possibleMoves[0] = TELEPORT;
+	}
 	// write this to our array?
 	return possibleMoves;
 }
