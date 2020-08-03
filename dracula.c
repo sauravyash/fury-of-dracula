@@ -11,6 +11,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #include "dracula.h"
 #include "DraculaView.h"
@@ -31,6 +32,7 @@ PlaceId *getPossibleMoves(DraculaView dv, int *numPossibleMoves) {
 	// if no other legal moves, drac tps to castle dracula
 	if (*numPossibleMoves == 0) {
 		possibleMoves[0] = TELEPORT;
+		*numPossibleMoves = 1;
 	}
 	// write this to our array?
 	return possibleMoves;
@@ -38,6 +40,19 @@ PlaceId *getPossibleMoves(DraculaView dv, int *numPossibleMoves) {
 
 // Returns the placeid of a random place reachable by drac this turn
 PlaceId getRandomMove(DraculaView dv) {
+	//for ultimate randomness. comment out if you want repeateability
+	srand ( time(NULL) );
+	if (DvGetRound(dv) == 0){
+		//drac hasnt had a turn yet
+		PlaceId location = rand() % NUM_REAL_PLACES;
+		printf("attempting to spawn at %s\n", placeIdToName(location));
+		while(placeIdToType(location) == SEA) {
+			location = rand() % NUM_REAL_PLACES;
+			printf("attempting to spawn at %s\n", placeIdToName(location));
+		}
+		printf("successfully spawned at %s\n", placeIdToName(location));
+		return location;
+	}
 	int numPossibleMoves;
 	PlaceId *possibleMoves = getPossibleMoves(dv, &numPossibleMoves);
 	return possibleMoves[rand() % numPossibleMoves];
