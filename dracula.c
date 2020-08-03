@@ -25,14 +25,16 @@ void decideDraculaMove(DraculaView dv)
 	registerBestPlay(placeIdToAbbrev(getRandomMove(dv)), "You'll never expect this!");
 }
 
+// Returns an array of all placeids reachable by drac this turn
 PlaceId *getPossibleMoves(DraculaView dv, int *numPossibleMoves) {
 	PlaceId *possibleMoves = DvGetValidMoves(dv, numPossibleMoves);
 	// write this to our array?
 	return possibleMoves;
 }
 
+// Returns the placeid of a random place reachable by drac this turn
 PlaceId getRandomMove(DraculaView dv) {
 	int numPossibleMoves;
 	PlaceId *possibleMoves = getPossibleMoves(dv, &numPossibleMoves);
-	return possibleMoves[rand() % (numPossibleMoves + 1)];
+	return possibleMoves[rand() % numPossibleMoves];
 }
