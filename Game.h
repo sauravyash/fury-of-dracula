@@ -81,6 +81,6 @@ typedef int Round;
  * The array `message` will be stored in the game history;
  * it must be a well-formed string.
  */
-void registerBestPlay(char *play, Message message);
+void registerBestPlay(const char *play, Message message);
 
 #endif // !defined(FOD__GAME_H_)
