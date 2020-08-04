@@ -12,15 +12,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <stdbool.h>
 
 #include "dracula.h"
 #include "DraculaView.h"
 #include "Game.h"
+#include "Map.h"
+#include "Queue.h"
 
 typedef struct moveweight {
 	PlaceId *location;
 	double *weight;
-} *MoveWeight
+} *MoveWeight;
 
 
 PlaceId *getPossibleMoves(DraculaView dv, int *numPossibleMoves);
@@ -29,9 +32,9 @@ PlaceId getRandomMove();
 void decideDraculaMove(DraculaView dv)
 {
 	int numPossibleMoves;
-	getPossibleMoves(dv, numPossibleMoves);
+	getPossibleMoves(dv, &numPossibleMoves);
 	MoveWeight moves = malloc(numPossibleMoves * sizeof(struct moveweight));
-	moves->location = getPossibleMoves(dv, numPossibleMoves);					// yeah its called twice but w/e
+	moves->location = getPossibleMoves(dv, &numPossibleMoves);					// yeah its called twice but w/e
 	// TODO: Replace this with something better!
 	registerBestPlay(placeIdToAbbrev(getRandomMove(dv)), "You'll never expect this!");
 }
@@ -78,101 +81,96 @@ PlaceId getRandomMove(DraculaView dv) {
 }
 
 // add weights based on distance from drac
-weightMovesByLocation(DraculaView dv, moveweight *mw) {
+MoveWeight *weightMovesByLocation(DraculaView dv, MoveWeight *mw) {
 	// initialise
-    Map map = hv->map;
-    int src = HUNTER->currentLocation; //todo
-    int des = dest; //todo
+	int *numReturnedLocs = malloc(sizeof(int));
+	memoryError(*numReturnedLocs);
+	PlaceId *possibleMoves = DvWhereCanIGo(dv, numReturnedLocs);
+	int numPossibleMoves = *numReturnedLocs;
+    
+	PlaceId src = possibleMoves[0];
+    PlaceId final_dest = NOWHERE;
 
-    // check map loaded correctly
-    assert (map != NULL);
-    // If destination == starting position simply return start
-    if (src == des) {
-        PlaceId *path = malloc(2 * sizeof(PlaceId));
-        memoryError(path);
-        path[0] = dest;
-        path[1] = '\0';
+	// pos 0 is the current pos, which doesn't need a movement score
+	for (int i = 1; i < numPossibleMoves - 1; i++) {
+		PlaceId dest = possibleMoves[i];
+		// Make a visited array
+		int visited[NUM_REAL_PLACES];
+		for (int i = 0; i < NUM_REAL_PLACES; i++) {
+			visited[i] = -1;
+		}
 
-        *pathLength = 1;
-        return path;
-    }
+		visited[0] = src;
 
-    // Make a visited array
-    int visited[NUM_REAL_PLACES];
-    for (int i = 0; i < NUM_REAL_PLACES; i++) {
-        visited[i] = -1;
-    }
+		bool found = false;
+		bool pathFound = false;
+		int temp_round = 0;
+		PlaceId temp_place = NOWHERE;
 
-    visited[0] = src;
+		// Make Queue to travel breadth-first
+		Queue q = newQueue();
+		QueueJoin(q, src);
 
-    int found = 0;
-    int pathFound = 0;
-    hv->temp_round = hv->roundNumber;
-    hv->temp_place = HUNTER->currentLocation;
+		// BFS
+		while (!found && !QueueIsEmpty(q)) {
+			int prev_place = QueueLeave(q);
+			// When we create a new_place, we must create from connections of prev.
+			temp_place = prev_place;
+			// Checking the round:
+			int path_count = 0;
+			PlaceId prev = prev_place;
+			while (prev != src) {
+				path_count++;
+				prev = visited[prev];
+			}
+			temp_round += path_count;
 
-    // Make Queue to travel breadth-first
-    Queue q = newQueue();
-    QueueJoin(q, src);
+			int numLocs;
+			PlaceId *list = possibleMoves;
 
-    // BFS
-    while (!found && !QueueIsEmpty(q)) {
-        int prev_place = QueueLeave(q);
-        // When we create a new_place, we must create from connections of prev.
-        hv->temp_place = prev_place;
-        // Checking the round:
-        int path_count = 0;
-        int prev = prev_place;
-        while (prev != src) {
-            path_count++;
-            prev = visited[prev];
-        }
-        hv->temp_round = hv->roundNumber + path_count;
+			if (prev_place == dest) {
+				found = true;
+			} else for (int i = 1; i < numLocs; i++) {
+				int new_place = possibleMoves[i];
+				if (visited[new_place] == -1 && prev_place != new_place) {
+					visited[new_place] = prev_place;
+					QueueJoin(q, new_place);
+					if (new_place == dest) {
+						pathFound = true;
+					}
+				}
+			}
+			free(list);
+		}
+		dropQueue(q);
 
-        int numLocs;
-        PlaceId *list = HvWhereCanTheyGo(hv, hunter, &numLocs);
+		// Reset values:
+		temp_place = NOWHERE;
+		temp_round = 0;
 
-        if (prev_place == des) {
-            found = 1;
-        } else for (int i = 1; i < numLocs; i++) {
-            int new_place = list[i];
-            if (visited[new_place] == -1 && prev_place != new_place) {
-                visited[new_place] = prev_place;
-                QueueJoin(q, new_place);
-                if (new_place == dest) {
-                    pathFound = 1;
-                }
-            }
-        }
-        free(list);
-    }
-    dropQueue(q);
+		if (pathFound == 0) return 0;
 
-    // Reset values:
-    hv->temp_place = NOWHERE;
-    hv->temp_round = -1;
+		int reversePath[NUM_REAL_PLACES];
+		reversePath[0] = dest;
 
-    if (pathFound == 0) return 0;
+		int prev = visited[dest];
+		int k = 1;
+		while (prev != src) {
+			reversePath[k] = prev;
+			k++;
+			prev = visited[prev];
+		}
 
-    int reversePath[NUM_REAL_PLACES];
-    reversePath[0] = dest;
+		reversePath[k] = src;
 
-    int prev = visited[dest];
-    int k = 1;
-     while (prev != src) {
-        reversePath[k] = prev;
-        k++;
-        prev = visited[prev];
-    }
-
-    reversePath[k] = src;
-
-    PlaceId *path = malloc ((k + 1) * sizeof(PlaceId));
-    memoryError(path);
-    PlaceId place;
-    for (int i = 0, j = k; i <= k; i++, j--) {
-        place = reversePath[j];
-        path[i] = place;
-    }
+		PlaceId *path = malloc ((k + 1) * sizeof(PlaceId));
+		memoryError(path);
+		PlaceId place;
+		for (int i = 0, j = k; i <= k; i++, j--) {
+			place = reversePath[j];
+			path[i] = place;
+		}
+	}
 
     // Mind blank about shortening array from front, so...
     PlaceId *path_without_src = malloc ((k) * sizeof(PlaceId));
@@ -180,7 +178,9 @@ weightMovesByLocation(DraculaView dv, moveweight *mw) {
     for (int i = 0; i < k; i++) {
         path_without_src[i] = path[i + 1];
     }
+
     free(path);
-    *pathLength = k;
+
+	free(numReturnedLocs);
     return path_without_src;
 }
