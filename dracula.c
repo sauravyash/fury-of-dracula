@@ -17,12 +17,21 @@
 #include "DraculaView.h"
 #include "Game.h"
 
+typedef struct moveweight {
+	PlaceId *location;
+	double *weight;
+} *MoveWeight
+
+
 PlaceId *getPossibleMoves(DraculaView dv, int *numPossibleMoves);
 PlaceId getRandomMove();
 
 void decideDraculaMove(DraculaView dv)
 {
-
+	int numPossibleMoves;
+	getPossibleMoves(dv, numPossibleMoves);
+	MoveWeight moves = malloc(numPossibleMoves * sizeof(struct moveweight));
+	moves->location = getPossibleMoves(dv, numPossibleMoves);					// yeah its called twice but w/e
 	// TODO: Replace this with something better!
 	registerBestPlay(placeIdToAbbrev(getRandomMove(dv)), "You'll never expect this!");
 }
