@@ -368,7 +368,38 @@ PlaceId *DvWhereCanIGoByType(DraculaView dv, bool road, bool boat,
                 memoryError(locs);
             }
         }
+        // check whether he can doubleback to places further back than his last turn
+        else if (canDoubleBack(dv)) {
+            // checks location against trail
+            int max = (DRACULA->currentLocationIndex < 6 ? DRACULA->currentLocationIndex : 6);
+            for (int i = 1; i < max; i++) {
+                if (moves[i] == DRACULA->locationHistory[DRACULA->currentLocationIndex - i]) {
+                    // add appropriate doubleback move to list
+                    locs[locsIndex] = DRACULA->locationHistory[DRACULA->currentLocationIndex - i];
+                    locsIndex++;
+                    locs = realloc(locs, (locsIndex + 1) * sizeof(PlaceId));
+                    memoryError(locs);
+                }
+            }
+        }
     }
+
+    // check if drac can take a hide move
+    if (canHide(dv)) {
+        locs[locsIndex] = DvGetPlayerLocation(dv, PLAYER_DRACULA);
+        locsIndex++;
+        locs = realloc(locs, (locsIndex + 1) * sizeof(PlaceId));
+        memoryError(locs);
+    }
+
+    // check if he can doubleback to his last location (i.e. stay where he is)
+    if (canDoubleBack(dv)) {
+        locs[locsIndex] = DvGetPlayerLocation(dv, PLAYER_DRACULA);
+        locsIndex++;
+        locs = realloc(locs, (locsIndex + 1) * sizeof(PlaceId));
+        memoryError(locs);
+    }
+
     // Return values
     free(moves);
     *numReturnedLocs = locsIndex;
