@@ -372,10 +372,10 @@ PlaceId *DvWhereCanIGoByType(DraculaView dv, bool road, bool boat,
         else if (canDoubleBack(dv)) {
             // checks location against trail
             int max = (DRACULA->currentLocationIndex < 6 ? DRACULA->currentLocationIndex : 6);
-            for (int i = 1; i < max; i++) {
-                if (moves[i] == DRACULA->locationHistory[DRACULA->currentLocationIndex - i]) {
+            for (int j = 1; j < max; j++) {
+                if (moves[i] == DRACULA->locationHistory[DRACULA->currentLocationIndex - j]) {
                     // add appropriate doubleback move to list
-                    locs[locsIndex] = DRACULA->locationHistory[DRACULA->currentLocationIndex - i];
+                    locs[locsIndex] = DRACULA->locationHistory[DRACULA->currentLocationIndex - j];
                     locsIndex++;
                     locs = realloc(locs, (locsIndex + 1) * sizeof(PlaceId));
                     memoryError(locs);
