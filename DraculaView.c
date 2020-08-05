@@ -252,6 +252,7 @@ PlaceId *DvGetValidMoves(DraculaView dv, int *numReturnedMoves) {
     PlaceId *possibleMoves = malloc(sizeof(PlaceId));
     memoryError(possibleMoves);
 
+//THIS DOESNT WORK IF DRACULA IS NOT ON MAP YET! SEG FAULTS NEEDS FIX
     // get connections from current location
     ConnList list = MapGetConnections(map, dv->allPlayers[PLAYER_DRACULA]->currentLocation);
 
@@ -294,7 +295,7 @@ PlaceId *DvGetValidMoves(DraculaView dv, int *numReturnedMoves) {
             for (int i = 1; i < max; i++) {
                 if (list->p == DRACULA->locationHistory[DRACULA->currentLocationIndex - i]) {
                     // add appropriate doubleback move to list
-                    possibleMoves[moveIndex] = 103 + i;
+                    possibleMoves[moveIndex] = DOUBLE_BACK_1 + i;
                     moveIndex++;
                     possibleMoves = realloc(possibleMoves, (moveIndex + 1) * sizeof(PlaceId));
                     memoryError(possibleMoves);
@@ -323,6 +324,10 @@ PlaceId *DvGetValidMoves(DraculaView dv, int *numReturnedMoves) {
 
     // Return values
     *numReturnedMoves = moveIndex;
+    if(moveIndex == 0) {
+        free(possibleMoves);
+        return NULL;
+    }
     return possibleMoves;
 }
 
@@ -347,7 +352,7 @@ PlaceId *DvWhereCanIGoByType(DraculaView dv, bool road, bool boat,
     // sort through all moves, rejecting duplicate locs from hide/doubleback
     for (int i = 0; i < numReturnedMoves; i++) {
         // if move is not a doubleback or hide add to possible locations
-        if (moves[i] != HIDE && (moves[i] < 103 || moves[i] > 107)) {
+        if (moves[i] != HIDE && (moves[i] < DOUBLE_BACK_1 || moves[i] > DOUBLE_BACK_5)) {
             // only add roads if specified in call
             if (road && placeIdToType(moves[i]) == LAND) {
                 locs[locsIndex] = moves[i];
@@ -363,10 +368,45 @@ PlaceId *DvWhereCanIGoByType(DraculaView dv, bool road, bool boat,
                 memoryError(locs);
             }
         }
+        // check whether he can doubleback to places further back than his last turn
+        else if (canDoubleBack(dv)) {
+            // checks location against trail
+            int max = (DRACULA->currentLocationIndex < 6 ? DRACULA->currentLocationIndex : 6);
+            for (int i = 1; i < max; i++) {
+                if (moves[i] == DRACULA->locationHistory[DRACULA->currentLocationIndex - i]) {
+                    // add appropriate doubleback move to list
+                    locs[locsIndex] = DRACULA->locationHistory[DRACULA->currentLocationIndex - i];
+                    locsIndex++;
+                    locs = realloc(locs, (locsIndex + 1) * sizeof(PlaceId));
+                    memoryError(locs);
+                }
+            }
+        }
     }
+
+    // check if drac can take a hide move
+    if (canHide(dv)) {
+        locs[locsIndex] = DvGetPlayerLocation(dv, PLAYER_DRACULA);
+        locsIndex++;
+        locs = realloc(locs, (locsIndex + 1) * sizeof(PlaceId));
+        memoryError(locs);
+    }
+
+    // check if he can doubleback to his last location (i.e. stay where he is)
+    else if (canDoubleBack(dv)) {
+        locs[locsIndex] = DvGetPlayerLocation(dv, PLAYER_DRACULA);
+        locsIndex++;
+        locs = realloc(locs, (locsIndex + 1) * sizeof(PlaceId));
+        memoryError(locs);
+    }
+
     // Return values
     free(moves);
     *numReturnedLocs = locsIndex;
+    if(locsIndex == 0) {
+        free(locs);
+        return NULL;
+    }
     return locs;
 }
 
@@ -384,12 +424,17 @@ PlaceId *DvWhereCanTheyGo(DraculaView dv, Player player,
     if (player == dv->currentPlayer) round++;
     // other values
     PlaceId from = DvGetPlayerLocation(dv, player);
+    //printf("Current hunter location is %s\n", placeIdToName(from));
     PlaceId *locs = NULL;
     int numLocs = -1;
 
     // Use function:
     locs = DvGetReachableByType(dv, player, round, from, 1, 1, 1, &numLocs);
-
+    printf("\nLocations returned in DvWhereCanTheyGo:       ");
+	for (int i = 0; i < numLocs; i ++) {
+		printf("%s, \n", placeIdToName(locs[i]));
+	}
+    printf("\n");
     // Return values:
     *numReturnedLocs = numLocs;
     return locs;
@@ -503,7 +548,7 @@ static void hunterMove(DraculaView dv, char *string, Player hunter) {
     PlaceId curr_place = placeAbbrevToId(city);
 
      if (curr_place == NOWHERE) printf("Error: Place not found...\n");
-
+     //printf("they are in %s\n", city);
     // Append history and current location:
     hunterLocationHistoryAppend(dv, hunter, curr_place);
 

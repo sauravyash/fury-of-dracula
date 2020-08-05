@@ -5,7 +5,7 @@
 // You may augment this with as many of your own functions as you like,
 // but do NOT remove or modify any of the existing function signatures,
 // otherwise, your code will not be able to compile with our tests.
-// 
+//
 // 2014-07-01	v1.0	Team Dracula <cs2521@cse.unsw.edu.au>
 // 2017-11-30	v1.1	Team Dracula <cs2521@cse.unsw.edu.au>
 // 2018-12-31	v2.0	Team Dracula <cs2521@cse.unsw.edu.au>
@@ -150,7 +150,7 @@ PlaceId *DvWhereCanIGoByType(DraculaView dv, bool road, bool boat,
  * next move (for Dracula that is this turn).
  *
  * This  function  should return the locations in a dynamically alloated
- * array, and set *numReturnedLocs to the number of locations  returned. 
+ * array, and set *numReturnedLocs to the number of locations  returned.
  * The  array can be in any order but must contain unique entries.
  *
  * If  the given player is a hunter, the function must take into account
