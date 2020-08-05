@@ -21,6 +21,7 @@
 #include "DraculaView.h"
 #include "Game.h"
 #include "Map.h"
+#include "Places.h"
 #include "Queue.h"
 
 typedef struct moveweight *MoveWeight;
@@ -89,8 +90,22 @@ void decideDraculaMove(DraculaView dv)
 		registerBestPlay(placeIdToAbbrev(spawnDracula(dv)), "Happy Birthday To Me!");
 		return;
 	}
-	int numPossibleLocations = -1;
-	PlaceId * possibleLocations = DvWhereCanIGo(dv, &numPossibleLocations);
+
+	int numPossibleMoves = -1;
+	PlaceId * possibleMoves = DvGetValidMoves(dv, &numPossibleMoves);
+
+	printf("\nPossible moves are:       ");
+	for (int i = 0; i < numPossibleMoves; i ++) {
+		printf("%s, ", placeIdToName(possibleMoves[i]));
+	}
+
+	int numPossibleLocations;
+	PlaceId *possibleLocations =DvWhereCanIGo(dv, &numPossibleLocations);
+	printf("\nPossible locations are:   ");
+	for (int i = 0; i < numPossibleLocations; i ++) {
+		printf("%s, ", placeIdToName(possibleLocations[i]));
+	}
+	printf("\n");
 	//int numPossibleMoves = -1;
 	//PlaceId * possibleLocations = DvGetValidMoves(dv, &numPossibleMoves);
 	//either there are no valid moves besides teleport, or drac hasnt made a move yet
@@ -117,8 +132,14 @@ void decideDraculaMove(DraculaView dv)
 	PlaceId bestMove = MvArray[0]->location;
 	printf("best move is: %s\n", placeIdToName(bestMove));
 	printMW(MvArray, MvArraySize);
-	//See if it will be a double back/hide move
-	registerBestPlay(placeIdToAbbrev(getRandomMove(dv)), "You'll never expect this!");
+
+	//make a hide move
+	//if(bestMove == DvGetPlayerLocation(dv,PLAYER_DRACULA)) {
+	//	registerBestPlay(placeIdToAbbrev(HIDE), "marco polo?");
+	//}
+
+
+	registerBestPlay(placeIdToAbbrev(bestMove), "doing my best ");
 	freeArray(MvArray,numPossibleLocations);
 	return;
 }
@@ -135,30 +156,39 @@ PlaceId getRandomMove(DraculaView dv) {
 		//drac hasnt had a turn yet
 		//printf("RNGods: %d\n", r);
 		PlaceId location = r % NUM_REAL_PLACES;
+
 		//printf("attempting to spawn at %s\n", placeIdToName(location));
-		while(placeIdToType(location) == SEA) {
+		//PlaceId *possibleMovesHunter;
+		//int numHunterLocations = -1;
+//drac doesnt like spain or ireland or on top of hunters or cagliarya
+		while(placeIdToType(location) == SEA || location == GALWAY || location == DUBLIN
+		 || location == SARAGOSSA || location == ALICANTE || location == BARCELONA || location == SANTANDER
+		 || location == MADRID || location == GRANADA || location == CADIZ || location == LISBON || location == CAGLIARI
+	 	 || location == DvGetPlayerLocation(dv, PLAYER_LORD_GODALMING) || location
+		 == DvGetPlayerLocation(dv, PLAYER_DR_SEWARD) || location ==
+		 DvGetPlayerLocation(dv, PLAYER_VAN_HELSING) || location == DvGetPlayerLocation(dv, PLAYER_MINA_HARKER)) {
 			location = rand() % NUM_REAL_PLACES;
 			//printf("attempting to spawn at %s\n", placeIdToName(location));
 		}
 		//printf("successfully spawned at %s\n", placeIdToName(location));
 		return location;
 	}
-	printf("Current Location: %s\n", placeIdToName(DvGetPlayerLocation(dv, PLAYER_DRACULA)));
+	//printf("Current Location: %s\n", placeIdToName(DvGetPlayerLocation(dv, PLAYER_DRACULA)));
 	int numPossibleMoves;
 	PlaceId *possibleMoves =DvGetValidMoves(dv, &numPossibleMoves);
-	printf("\nPossible moves are:       ");
-	for (int i = 0; i < numPossibleMoves; i ++) {
-		printf("%s, ", placeIdToName(possibleMoves[i]));
-	}
-	int numPossibleLocations;
-	PlaceId *possibleLocations =DvWhereCanIGo(dv, &numPossibleLocations);
-	printf("\nPossible locations are:   ");
-	for (int i = 0; i < numPossibleLocations; i ++) {
-		printf("%s, ", placeIdToName(possibleLocations[i]));
-	}
-	printf("\n");
+	//printf("\nPossible moves are:       ");
+	//for (int i = 0; i < numPossibleMoves; i ++) {
+	//	printf("%s, ", placeIdToName(possibleMoves[i]));
+	//}
+	//int numPossibleLocations;
+	//PlaceId *possibleLocations =DvWhereCanIGo(dv, &numPossibleLocations);
+	//printf("\nPossible locations are:   ");
+	//for (int i = 0; i < numPossibleLocations; i ++) {
+	//	printf("%s, ", placeIdToName(possibleLocations[i]));
+	//}
+	//printf("\n");
 	int random = r % numPossibleMoves;
-	printf("RNG: %d\n", random);
+	//printf("RNG: %d\n", random);
 	return possibleMoves[random];
 }
 
@@ -193,9 +223,9 @@ void weightMovesByLocation(DraculaView dv, MoveWeight * mw, int mwSize, PlaceId 
 		if (numHunterLocations != 0) {
 			sortPlaces(possibleMovesHunter,numHunterLocations);
 			//printf("\nPossible moves for hunter %d at %s are:       \n", hunter, placeIdToName(DvGetPlayerLocation(dv, hunter)));
-			for (int i = 0; i < numHunterLocations; i ++) {
-				printf("%s, ", placeIdToName(possibleMovesHunter[i]));
-			}
+			//for (int i = 0; i < numHunterLocations; i ++) {
+			//	printf("%s, ", placeIdToName(possibleMovesHunter[i]));
+			//}
 			//both MW already sorted as possibleLocations is sorted.
 			applyHunterFactor(mw, mwSize, possibleMovesHunter,numHunterLocations);
 		}
