@@ -192,6 +192,10 @@ void weightMovesByLocation(DraculaView dv, MoveWeight * mw, int mwSize, PlaceId 
 		possibleMovesHunter = DvWhereCanTheyGo(dv, hunter, &numHunterLocations);
 		if (numHunterLocations != 0) {
 			sortPlaces(possibleMovesHunter,numHunterLocations);
+			//printf("\nPossible moves for hunter %d at %s are:       \n", hunter, placeIdToName(DvGetPlayerLocation(dv, hunter)));
+			for (int i = 0; i < numHunterLocations; i ++) {
+				printf("%s, ", placeIdToName(possibleMovesHunter[i]));
+			}
 			//both MW already sorted as possibleLocations is sorted.
 			applyHunterFactor(mw, mwSize, possibleMovesHunter,numHunterLocations);
 		}

@@ -252,6 +252,7 @@ PlaceId *DvGetValidMoves(DraculaView dv, int *numReturnedMoves) {
     PlaceId *possibleMoves = malloc(sizeof(PlaceId));
     memoryError(possibleMoves);
 
+//THIS DOESNT WORK IF DRACULA IS NOT ON MAP YET! SEG FAULTS NEEDS FIX
     // get connections from current location
     ConnList list = MapGetConnections(map, dv->allPlayers[PLAYER_DRACULA]->currentLocation);
 
@@ -392,12 +393,17 @@ PlaceId *DvWhereCanTheyGo(DraculaView dv, Player player,
     if (player == dv->currentPlayer) round++;
     // other values
     PlaceId from = DvGetPlayerLocation(dv, player);
+    printf("Current hunter location is %s\n", placeIdToName(from));
     PlaceId *locs = NULL;
     int numLocs = -1;
 
     // Use function:
     locs = DvGetReachableByType(dv, player, round, from, 1, 1, 1, &numLocs);
-
+    printf("\nLocations returned in DvWhereCanTheyGo:       ");
+	for (int i = 0; i < numLocs; i ++) {
+		printf("%s, \n", placeIdToName(locs[i]));
+	}
+    printf("\n");
     // Return values:
     *numReturnedLocs = numLocs;
     return locs;
@@ -511,7 +517,7 @@ static void hunterMove(DraculaView dv, char *string, Player hunter) {
     PlaceId curr_place = placeAbbrevToId(city);
 
      if (curr_place == NOWHERE) printf("Error: Place not found...\n");
-
+     printf("they are in %s\n", city);
     // Append history and current location:
     hunterLocationHistoryAppend(dv, hunter, curr_place);
 
