@@ -25,39 +25,30 @@ typedef struct moveweight {
 	double weight;
 } *MoveWeight;
 
-
-PlaceId *getPossibleMoves(DraculaView dv, int *numPossibleMoves);
+static void memoryError (const void * input);
+//PlaceId *getPossibleMoves(DraculaView dv, int *numPossibleMoves);
 PlaceId getRandomMove();
-void applyHunterFactor(MoveWeight *mw, 
-	int numPossibleMoves, 
+void applyHunterFactor(MoveWeight *mw,
+	int numPossibleMoves,
 	PlaceId *possibleMovesHunter, int numPossibleMovesHunter);
 
 void decideDraculaMove(DraculaView dv)
 {
-	int *numPossibleMoves;
-	getPossibleMoves(dv, numPossibleMoves);
+	int numPossibleMoves = -1;
+	PlaceId *possibleMoves = DvGetValidMoves(dv, &numPossibleMoves);
 	// MoveWeight moves = malloc(*numPossibleMoves * sizeof(struct moveweight));
-	
-	//moves->location = getPossibleMoves(dv, numPossibleMoves);	
+
+	//moves->location = getPossibleMoves(dv, numPossibleMoves);
 	// yeah its called twice but w/e
 
 	// TODO: Replace this with something better!
-	registerBestPlay(placeIdToAbbrev(getRandomMove(dv)), "You'll never expect this!");
+	registerBestPlay(placeIdToAbbrev(possibleMoves[0]), "You'll never expect this!");
 }
 
-// Returns an array of all placeids reachable by drac this turn
-PlaceId *getPossibleMoves(DraculaView dv, int *numPossibleMoves) {
-	PlaceId *possibleMoves = DvGetValidMoves(dv, numPossibleMoves);
-	// if no other legal moves, drac tps to castle dracula
-	if (*numPossibleMoves == 0) {
-		possibleMoves[0] = TELEPORT;
-		*numPossibleMoves = 1;
-	}
-	// write this to our array?
-	return possibleMoves;
-}
+
 
 // Returns the placeid of a random place reachable by drac this turn
+//discountinued
 PlaceId getRandomMove(DraculaView dv) {
 	//for ultimate randomness. comment out if you want repeateability
 	srand ( time(0) );
@@ -75,7 +66,7 @@ PlaceId getRandomMove(DraculaView dv) {
 		return location;
 	}
 	int numPossibleMoves;
-	PlaceId *possibleMoves = getPossibleMoves(dv, &numPossibleMoves);
+	PlaceId *possibleMoves =DvGetValidMoves(dv, &numPossibleMoves);
 	printf("Possible moves are:");
 	for (int i = 0; i < numPossibleMoves; i ++) {
 		printf("%s ", placeIdToName(possibleMoves[i]));
@@ -90,10 +81,10 @@ PlaceId getRandomMove(DraculaView dv) {
 // return value must be freed
 MoveWeight *weightMovesByLocation(DraculaView dv, MoveWeight *mw) {
 	// initialise
-	int *numReturnedLocs = malloc(sizeof(int));
-	memoryError(*numReturnedLocs);
-	PlaceId *possibleMoves = DvWhereCanIGo(dv, numReturnedLocs);
-	int numPossibleMoves = *numReturnedLocs;
+	int numReturnedLocs = -1;
+	PlaceId *possibleMoves = DvWhereCanIGo(dv,&numReturnedLocs);
+	memoryError(possibleMoves);
+	int numPossibleMoves = numReturnedLocs;
 	PlaceId src = DvGetVampireLocation(dv);
 	MoveWeight *placeWeights = mw;//malloc(sizeof(MoveWeight) * numPossibleMoves);
 
@@ -101,9 +92,9 @@ MoveWeight *weightMovesByLocation(DraculaView dv, MoveWeight *mw) {
 		placeWeights[i]->location = possibleMoves[i];
 		placeWeights[i]->weight = 0.5;
 	}
-    
+
 	// Find places with weights
-	
+
 	if (possibleMoves == NULL) {
 		// first move
 		// TODO
@@ -174,10 +165,10 @@ MoveWeight *weightMovesByLocation(DraculaView dv, MoveWeight *mw) {
 					break;
 				}
 			}
-			
+
 			if (!pathFound) {
 				// This should never occur (indicates problem in DvWhereCanIGo)
-				
+
 				// TODO: create error handling in case this happens
 			} else {
 				int reversePath[NUM_REAL_PLACES];
@@ -201,7 +192,7 @@ MoveWeight *weightMovesByLocation(DraculaView dv, MoveWeight *mw) {
 						placeWeights[i]->weight = 0.5;
 					}
 				}
-				
+
 				// Code for finding path from src->dest
 				// PlaceId *path = malloc ((len + 1) * sizeof(PlaceId));
 				// memoryError(path);
@@ -221,26 +212,24 @@ MoveWeight *weightMovesByLocation(DraculaView dv, MoveWeight *mw) {
 	}
 
 	// Factor in possible hunter move collisions
-	PlaceId *possibleMovesHunter = DvWhereCanTheyGo(dv, PLAYER_LORD_GODALMING, numReturnedLocs);
-	applyHunterFactor(placeWeights, numPossibleMoves, possibleMovesHunter,*numReturnedLocs);
+	PlaceId *possibleMovesHunter = DvWhereCanTheyGo(dv, PLAYER_LORD_GODALMING, &numReturnedLocs);
+	applyHunterFactor(placeWeights, numPossibleMoves, possibleMovesHunter,numReturnedLocs);
 
-	possibleMovesHunter = DvWhereCanTheyGo(dv, PLAYER_DR_SEWARD, numReturnedLocs);
-	applyHunterFactor(placeWeights, numPossibleMoves, possibleMovesHunter,*numReturnedLocs);
+	possibleMovesHunter = DvWhereCanTheyGo(dv, PLAYER_DR_SEWARD, &numReturnedLocs);
+	applyHunterFactor(placeWeights, numPossibleMoves, possibleMovesHunter,numReturnedLocs);
 
-	possibleMovesHunter = DvWhereCanTheyGo(dv, PLAYER_MINA_HARKER, numReturnedLocs);
-	applyHunterFactor(placeWeights, numPossibleMoves, possibleMovesHunter,*numReturnedLocs);
+	possibleMovesHunter = DvWhereCanTheyGo(dv, PLAYER_MINA_HARKER, &numReturnedLocs);
+	applyHunterFactor(placeWeights, numPossibleMoves, possibleMovesHunter,numReturnedLocs);
 
-	possibleMovesHunter = DvWhereCanTheyGo(dv, PLAYER_VAN_HELSING, numReturnedLocs);
-	applyHunterFactor(placeWeights, numPossibleMoves, possibleMovesHunter,*numReturnedLocs);
+	possibleMovesHunter = DvWhereCanTheyGo(dv, PLAYER_VAN_HELSING, &numReturnedLocs);
+	applyHunterFactor(placeWeights, numPossibleMoves, possibleMovesHunter,numReturnedLocs);
 
-	
 
-	free(numReturnedLocs);
-	
+
     return placeWeights;
 }
 
-void applyHunterFactor(MoveWeight *mw, int numPossibleMoves, 
+void applyHunterFactor(MoveWeight *mw, int numPossibleMoves,
 	PlaceId *possibleMovesHunter, int numPossibleMovesHunter) {
 	for (int i = 0; i < numPossibleMoves; i++) {
 		for (int j = 0; j < numPossibleMovesHunter; j++) {
@@ -250,4 +239,17 @@ void applyHunterFactor(MoveWeight *mw, int numPossibleMoves,
 			}
 		}
 	}
+}
+
+
+// MEMORY ERROR: Helper function to check correct memory allocation. Exits if
+// memory was not correctly allocated
+// -- INPUT: pointer to a malloced object
+// -- OUTPUT: void, but prints error message and exits code 1
+static void memoryError (const void * input) {
+    if (input == NULL) {
+        fprintf(stderr, "Couldn't Allocate Memory!\n");
+        exit(EXIT_FAILURE);
+    }
+    return;
 }

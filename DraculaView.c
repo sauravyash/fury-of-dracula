@@ -320,7 +320,11 @@ PlaceId *DvGetValidMoves(DraculaView dv, int *numReturnedMoves) {
         possibleMoves = realloc(possibleMoves, (moveIndex + 1) * sizeof(PlaceId));
         memoryError(possibleMoves);
     }
-
+    //if drac can go nowhere, his only move is teleport
+    if (moveIndex == 0) {
+		possibleMoves[moveIndex] = TELEPORT;
+		moveIndex = 1;
+	}
     // Return values
     *numReturnedMoves = moveIndex;
     return possibleMoves;
