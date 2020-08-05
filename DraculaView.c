@@ -393,7 +393,7 @@ PlaceId *DvWhereCanIGoByType(DraculaView dv, bool road, bool boat,
     }
 
     // check if he can doubleback to his last location (i.e. stay where he is)
-    if (canDoubleBack(dv)) {
+    else if (canDoubleBack(dv)) {
         locs[locsIndex] = DvGetPlayerLocation(dv, PLAYER_DRACULA);
         locsIndex++;
         locs = realloc(locs, (locsIndex + 1) * sizeof(PlaceId));
