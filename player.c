@@ -99,16 +99,16 @@ while(1){
 
 		if(player == PLAYER_LORD_GODALMING) {
 			strcpy(pastString,"G");
-			//printf("Put in Lord G's City Move: ");
+			printf("Put in Lord G's City Move: ");
 		} else if (player == PLAYER_DR_SEWARD) {
 			strcat(pastString,"S");
-			//printf("Put in Dr S's City Move: ");
+			printf("Put in Dr S's City Move: ");
 		} else if (player == PLAYER_VAN_HELSING) {
 			strcat(pastString,"H");
-			//printf("Put in Van Helsing's City Move: ");
+			printf("Put in Van Helsing's City Move: ");
 		} else if (player == PLAYER_MINA_HARKER) {
 			strcat(pastString,"M");
-			//printf("Put in Mina's City Move: ");
+			printf("Put in Mina's City Move: ");
 		}
 		scanf("%s",input);
 		strcat(pastString,input);

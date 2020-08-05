@@ -294,7 +294,7 @@ PlaceId *DvGetValidMoves(DraculaView dv, int *numReturnedMoves) {
             for (int i = 1; i < max; i++) {
                 if (list->p == DRACULA->locationHistory[DRACULA->currentLocationIndex - i]) {
                     // add appropriate doubleback move to list
-                    possibleMoves[moveIndex] = 103 + i;
+                    possibleMoves[moveIndex] = DOUBLE_BACK_1 + i;
                     moveIndex++;
                     possibleMoves = realloc(possibleMoves, (moveIndex + 1) * sizeof(PlaceId));
                     memoryError(possibleMoves);
@@ -324,7 +324,7 @@ PlaceId *DvGetValidMoves(DraculaView dv, int *numReturnedMoves) {
     // Return values
     *numReturnedMoves = moveIndex;
     if(moveIndex == 0) {
-        free possibleMoves;
+        free(possibleMoves);
         return NULL;
     }
     return possibleMoves;
@@ -351,7 +351,7 @@ PlaceId *DvWhereCanIGoByType(DraculaView dv, bool road, bool boat,
     // sort through all moves, rejecting duplicate locs from hide/doubleback
     for (int i = 0; i < numReturnedMoves; i++) {
         // if move is not a doubleback or hide add to possible locations
-        if (moves[i] != HIDE && (moves[i] < 103 || moves[i] > 107)) {
+        if (moves[i] != HIDE && (moves[i] < DOUBLE_BACK_1 || moves[i] > DOUBLE_BACK_5)) {
             // only add roads if specified in call
             if (road && placeIdToType(moves[i]) == LAND) {
                 locs[locsIndex] = moves[i];
@@ -372,7 +372,7 @@ PlaceId *DvWhereCanIGoByType(DraculaView dv, bool road, bool boat,
     free(moves);
     *numReturnedLocs = locsIndex;
     if(locsIndex == 0) {
-        free locs;
+        free(locs);
         return NULL;
     }
     return locs;

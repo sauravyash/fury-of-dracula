@@ -13,6 +13,9 @@
 #include <stdlib.h>
 #include <time.h>
 #include <stdbool.h>
+#include <assert.h>
+#include <string.h>
+#include <ctype.h>
 
 #include "dracula.h"
 #include "DraculaView.h"
@@ -20,29 +23,104 @@
 #include "Map.h"
 #include "Queue.h"
 
-typedef struct moveweight {
+typedef struct moveweight *MoveWeight;
+struct moveweight {
 	PlaceId location;
 	double weight;
-} *MoveWeight;
+	PlaceId moveType;
+} ;
 
 static void memoryError (const void * input);
 //PlaceId *getPossibleMoves(DraculaView dv, int *numPossibleMoves);
 PlaceId getRandomMove();
-void applyHunterFactor(MoveWeight *mw,
-	int numPossibleMoves,
-	PlaceId *possibleMovesHunter, int numPossibleMovesHunter);
+void applyHunterFactor(MoveWeight *mw, int numPossibleMoves, PlaceId *possibleMovesHunter, int numPossibleMovesHunter);
+void weightMovesByLocation(DraculaView dv, MoveWeight *mw, int numPossibleLocations, PlaceId *possibleLocations);
+static void sortMVbyWeight(MoveWeight *array, int arraySize);
+static int  MVWeightcompare(const void *p, const void *q);
+static int placeIdCmp(const void *p, const void *q);
+static void sortPlaces(PlaceId *places, int numPlaces);
+
+
+MoveWeight MVNewNode(void){
+	MoveWeight new = malloc(sizeof(*new));
+	memoryError(new);
+	new->location = NOWHERE;
+	new->weight = -1;
+	new->moveType = NOWHERE;
+	return new;
+}
+
+void freeArray (MoveWeight * array, int size) {
+	for(int i = 0; i < size; i++){
+		free(array[i]);
+	}
+	free(array);
+}
+
+MoveWeight * MvArrayNew(int size) {
+	MoveWeight * arrayWeightedMoves = malloc(size * sizeof(MoveWeight));
+	for (int i = 0; i < size; i++){
+		arrayWeightedMoves[i] = MVNewNode();
+	}
+	return arrayWeightedMoves;
+}
+
+//Currently just spawns drac in a random land location
+PlaceId spawnDracula (DraculaView dv) {
+	srand (time(0));
+	PlaceId location = rand() % NUM_REAL_PLACES;
+	while(placeIdToType(location) == SEA) {
+		location = rand() % NUM_REAL_PLACES;
+	}
+	return location;
+}
+
+void printMW (MoveWeight * mw, int size) {
+	printf("\nMW is:   \n");
+	for (int i = 0; i < size; i++) {
+		printf("%s; %lf\n", placeIdToName(mw[i]->location), mw[i]->weight);
+	}
+	printf("\n");
+}
 
 void decideDraculaMove(DraculaView dv)
 {
-	int numPossibleMoves = -1;
-	PlaceId *possibleMoves = DvGetValidMoves(dv, &numPossibleMoves);
-	// MoveWeight moves = malloc(*numPossibleMoves * sizeof(struct moveweight));
-
-	//moves->location = getPossibleMoves(dv, numPossibleMoves);
-	// yeah its called twice but w/e
-
-	// TODO: Replace this with something better!
-	registerBestPlay(placeIdToAbbrev(possibleMoves[0]), "You'll never expect this!");
+	if (DvGetRound(dv) == 0) {
+		registerBestPlay(placeIdToAbbrev(spawnDracula(dv)), "Happy Birthday To Me!");
+		return;
+	}
+	int numPossibleLocations = -1;
+	PlaceId * possibleLocations = DvWhereCanIGo(dv, &numPossibleLocations);
+	//int numPossibleMoves = -1;
+	//PlaceId * possibleLocations = DvGetValidMoves(dv, &numPossibleMoves);
+	//either there are no valid moves besides teleport, or drac hasnt made a move yet
+	if (numPossibleLocations == 0) {
+		//If it is not round 0 (where drac hasnt made a move yet) and there are no possible moves, dracula must teleport
+		if (DvGetRound(dv) != 0) {
+			registerBestPlay(placeIdToAbbrev(TELEPORT), "You'll never expect this!");
+			return;
+		//This is first round, just spawn dracula
+		} else {
+			registerBestPlay(placeIdToAbbrev(spawnDracula(dv)), "Happy Birthday To Me!");
+			return;
+		}
+	}
+	//sorts array alphabethically
+	sortPlaces(possibleLocations,numPossibleLocations);
+	printf("Number of possible moves is %d\n",numPossibleLocations);
+	int MvArraySize = numPossibleLocations;
+	MoveWeight * MvArray = MvArrayNew(MvArraySize);
+	weightMovesByLocation(dv, MvArray, MvArraySize,possibleLocations);
+	//do Stuff
+	sortMVbyWeight(MvArray, MvArraySize);
+	//highest weighted location is best choice
+	PlaceId bestMove = MvArray[0]->location;
+	printf("best move is: %s\n", placeIdToName(bestMove));
+	printMW(MvArray, MvArraySize);
+	//See if it will be a double back/hide move
+	registerBestPlay(placeIdToAbbrev(getRandomMove(dv)), "You'll never expect this!");
+	freeArray(MvArray,numPossibleLocations);
+	return;
 }
 
 
@@ -65,11 +143,18 @@ PlaceId getRandomMove(DraculaView dv) {
 		//printf("successfully spawned at %s\n", placeIdToName(location));
 		return location;
 	}
+	printf("Current Location: %s\n", placeIdToName(DvGetPlayerLocation(dv, PLAYER_DRACULA)));
 	int numPossibleMoves;
 	PlaceId *possibleMoves =DvGetValidMoves(dv, &numPossibleMoves);
-	printf("Possible moves are:");
+	printf("\nPossible moves are:       ");
 	for (int i = 0; i < numPossibleMoves; i ++) {
-		printf("%s ", placeIdToName(possibleMoves[i]));
+		printf("%s, ", placeIdToName(possibleMoves[i]));
+	}
+	int numPossibleLocations;
+	PlaceId *possibleLocations =DvWhereCanIGo(dv, &numPossibleLocations);
+	printf("\nPossible locations are:   ");
+	for (int i = 0; i < numPossibleLocations; i ++) {
+		printf("%s, ", placeIdToName(possibleLocations[i]));
 	}
 	printf("\n");
 	int random = r % numPossibleMoves;
@@ -77,168 +162,67 @@ PlaceId getRandomMove(DraculaView dv) {
 	return possibleMoves[random];
 }
 
-// add weights based on distance from drac
-// return value must be freed
-MoveWeight *weightMovesByLocation(DraculaView dv, MoveWeight *mw) {
-	// initialise
-	int numReturnedLocs = -1;
-	PlaceId *possibleMoves = DvWhereCanIGo(dv,&numReturnedLocs);
-	memoryError(possibleMoves);
-	int numPossibleMoves = numReturnedLocs;
-	PlaceId src = DvGetVampireLocation(dv);
-	MoveWeight *placeWeights = mw;//malloc(sizeof(MoveWeight) * numPossibleMoves);
-
-	for (int i = 0; i < numPossibleMoves; i++) {
-		placeWeights[i]->location = possibleMoves[i];
-		placeWeights[i]->weight = 0.5;
+bool isHunterPresent (DraculaView dv, PlaceId location) {
+	Player hunter = PLAYER_LORD_GODALMING;
+	while (hunter < PLAYER_DRACULA) {
+		if(DvGetPlayerLocation(dv,hunter) == location) return true;
+		hunter++;
 	}
+	return false;
+}
 
-	// Find places with weights
+// weight dracula's possible moves based on if a hunter is currently there or reaachable by
+void weightMovesByLocation(DraculaView dv, MoveWeight * mw, int mwSize, PlaceId *possibleLocations) {
 
-	if (possibleMoves == NULL) {
-		// first move
-		// TODO
-	} else if (numPossibleMoves < 1) {
-		// when no possible moves, only option: TP
-		// TODO
-	} else {
-		// find distance to all positions
-		for (int i = 0; i < numPossibleMoves; i++) {
-			PlaceId dest = possibleMoves[i];
-			// Make a visited array
-			int visited[NUM_REAL_PLACES];
-			for (int i = 0; i < NUM_REAL_PLACES; i++) {
-				visited[i] = -1;
-			}
-
-			visited[0] = src;
-			bool found = false;
-
-			// Make Queue to travel breadth-first
-			Queue q = newQueue();
-			QueueJoin(q, src);
-
-			// bool pathFound = false;
-			// int temp_round = 0;
-			// PlaceId temp_place = NOWHERE;
-
-			// BFS
-			while (!found && !QueueIsEmpty(q)) {
-				int prev_place = QueueLeave(q);
-				// Checking the round:
-				// int path_count = 0;
-				// PlaceId prev = prev_place;
-				// while (prev != src) {
-				// 	path_count++;
-				// 	prev = visited[prev];
-				// }
-				// temp_round += path_count;
-
-				int numLocs = numPossibleMoves;
-				PlaceId *list = possibleMoves;
-
-				if (prev_place == dest) {
-					found = true;
-				} else for (int i = 0; i < numLocs; i++) {
-					int new_place = possibleMoves[i];
-					if (visited[new_place] == -1 && prev_place != new_place) {
-						visited[new_place] = prev_place;
-						QueueJoin(q, new_place);
-						// if (new_place == dest) {
-						// 	pathFound = true;
-						// }
-					}
-				}
-				free(list);
-			}
-			dropQueue(q);
-
-			// Reset values:
-			// temp_place = NOWHERE;
-			// temp_round = 0;
-
-			// if (!pathFound) return 0;
-			bool pathFound = false;
-			for (int i = 0; i < NUM_REAL_PLACES; i++) {
-				if (visited[i] == src) {
-					pathFound = true;
-					break;
-				}
-			}
-
-			if (!pathFound) {
-				// This should never occur (indicates problem in DvWhereCanIGo)
-
-				// TODO: create error handling in case this happens
-			} else {
-				int reversePath[NUM_REAL_PLACES];
-				reversePath[0] = dest;
-
-				int prev = visited[dest];
-				int len = 1;
-				while (visited[prev] != -1) {
-					reversePath[len] = prev;
-					len++;
-					prev = visited[prev];
-					if (prev == src) {
-						reversePath[len] = src;
-						break;
-					}
-				}
-
-				for (int i = 0; i < numPossibleMoves; i++) {
-					if (placeWeights[i]->location == reversePath[i]) {
-						// do stuff to weights here
-						placeWeights[i]->weight = 0.5;
-					}
-				}
-
-				// Code for finding path from src->dest
-				// PlaceId *path = malloc ((len + 1) * sizeof(PlaceId));
-				// memoryError(path);
-				// for (int i = 0, j = len; i <= len; i++, j--) {
-				// 	path[i] = reversePath[j];
-				// }
-				//free(path);
-			}
-		}
-		/* Mind blank about shortening array from front, so...
-		PlaceId *path_without_src = malloc ((k) * sizeof(PlaceId));
-		memoryError(path_without_src);
-		for (int i = 0; i < k; i++) {
-			path_without_src[i] = path[i + 1];
-		}
-		*/
+	assert(mwSize > 0);
+	//associate a certain weight to each location
+	for (int i = 0; i < mwSize; i++) {
+		mw[i]->location = possibleLocations[i];
+		mw[i]->weight = 10;
+		//if hunter is already at location, decrease weight even further
+		if (isHunterPresent(dv,possibleLocations[i]) == true) mw[i]->weight *= 0.3;
+		if (placeIdToType(possibleLocations[i]) == SEA) mw[i]->weight *= 0.8;
 	}
 
 	// Factor in possible hunter move collisions
-	PlaceId *possibleMovesHunter = DvWhereCanTheyGo(dv, PLAYER_LORD_GODALMING, &numReturnedLocs);
-	applyHunterFactor(placeWeights, numPossibleMoves, possibleMovesHunter,numReturnedLocs);
+	PlaceId *possibleMovesHunter;
+	int numHunterLocations = -1;
+	for (Player hunter = PLAYER_LORD_GODALMING; hunter < PLAYER_DRACULA; hunter++) {
+		numHunterLocations = -1;
+		possibleMovesHunter = DvWhereCanTheyGo(dv, hunter, &numHunterLocations);
+		if (numHunterLocations != 0) {
+			sortPlaces(possibleMovesHunter,numHunterLocations);
+			//both MW already sorted as possibleLocations is sorted.
+			applyHunterFactor(mw, mwSize, possibleMovesHunter,numHunterLocations);
+		}
 
-	possibleMovesHunter = DvWhereCanTheyGo(dv, PLAYER_DR_SEWARD, &numReturnedLocs);
-	applyHunterFactor(placeWeights, numPossibleMoves, possibleMovesHunter,numReturnedLocs);
-
-	possibleMovesHunter = DvWhereCanTheyGo(dv, PLAYER_MINA_HARKER, &numReturnedLocs);
-	applyHunterFactor(placeWeights, numPossibleMoves, possibleMovesHunter,numReturnedLocs);
-
-	possibleMovesHunter = DvWhereCanTheyGo(dv, PLAYER_VAN_HELSING, &numReturnedLocs);
-	applyHunterFactor(placeWeights, numPossibleMoves, possibleMovesHunter,numReturnedLocs);
-
-
-
-    return placeWeights;
+	}
+    return;
 }
 
-void applyHunterFactor(MoveWeight *mw, int numPossibleMoves,
-	PlaceId *possibleMovesHunter, int numPossibleMovesHunter) {
-	for (int i = 0; i < numPossibleMoves; i++) {
-		for (int j = 0; j < numPossibleMovesHunter; j++) {
-			if (mw[i]->location == possibleMovesHunter[j]) {
-				// half the current weight
-				mw[i]->weight *= 0.5;
-			}
+//slightly better than n^2 complexity now since both pointers are bumped
+// INPUT: two sorted arrays, oneof MoveWeight type and oneof PlaceId
+void applyHunterFactor(MoveWeight *mw, int mwSize,
+	PlaceId *hunterArray, int hunterSize) {
+	int i = 0;
+	int j = 0;
+	while ( i < mwSize && j < hunterSize) {
+		//matches
+		if(mw[i]->location == hunterArray[j]) {
+			//half the current weighting
+			mw[i]->weight *= 0.5;
+			//advance both pointers
+			i++;
+			j++;
+		//if MW is less, advance MW pointer
+		} else if (mw[i]->location < hunterArray[j]) {
+			i++;
+		//if MW is more than hunterA, advance HunterA pointer
+		} else {
+			j++;
 		}
 	}
+
 }
 
 
@@ -251,5 +235,63 @@ static void memoryError (const void * input) {
         fprintf(stderr, "Couldn't Allocate Memory!\n");
         exit(EXIT_FAILURE);
     }
+    return;
+}
+
+int binarySearch(MoveWeight * array, int l, int r, PlaceId match)
+{
+    while (l <= r) {
+        int m = l + (r - l) / 2;
+        // Check if x is present at mid
+        if (array[m]->location == match) return m;
+        // If x greater, ignore left half
+        if (array[m]->location < match) l = m + 1;
+        // If x is smaller, ignore right half
+        else r = m - 1;
+    }
+
+    // if we reach here, then element was
+    // not present
+	return -1;
+}
+
+
+// COMPARATOR: Compare the order of the elements pointed to by *p and *q.
+// -- INPUT: two pointers, *p and *q
+// -- OUTPUT:
+//    <0 If the element pointed by p goes before the element pointed by q,
+//    0  If the element pointed by p is equivalent to the element pointed by q,
+//    >0 If the element pointed by p goes after the element pointed by q.
+static int MVWeightcompare(const void *p, const void *q) {
+    MoveWeight p1 = *(MoveWeight *)p;
+    MoveWeight p2 = *(MoveWeight *)q;
+	return p2->weight - p1->weight;
+}
+//SORT PLACES: Sorts an array of PlaceId's from largest value to smallest
+// -- INPUT: Array of PlaceId's, number of items in array to be sorted
+// -- OUTPUT: void
+//Author: testUtils.c; Edited: Cindy
+static void sortMVbyWeight(MoveWeight *array, int arraySize) {
+    qsort(array, (size_t)arraySize, sizeof(MoveWeight), MVWeightcompare);
+    return;
+}
+
+// COMPARATOR: Compare the order of the elements pointed to by *p and *q.
+// -- INPUT: two pointers, *p and *q
+// -- OUTPUT:
+//    <0 If the element pointed by p goes before the element pointed by q,
+//    0  If the element pointed by p is equivalent to the element pointed by q,
+//    >0 If the element pointed by p goes after the element pointed by q.
+static int placeIdCmp(const void *p, const void *q) {
+    PlaceId p1 = *(PlaceId *)p;
+    PlaceId p2 = *(PlaceId *)q;
+    return p1 - p2;
+}
+//SORT PLACES: Sorts an array of PlaceId's from largest value to smallest
+// -- INPUT: Array of PlaceId's, number of items in array to be sorted
+// -- OUTPUT: void
+//Author: testUtils.c; Edited: Cindy
+static void sortPlaces(PlaceId *places, int numPlaces) {
+    qsort(places, (size_t)numPlaces, sizeof(PlaceId), placeIdCmp);
     return;
 }
