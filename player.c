@@ -88,17 +88,20 @@ int main(void)
 	int i = 0;
 	//int maxPlays = 25;
 	char input[100];
-	char ** history;
-	history = malloc(sizeof(char *) * 50);
+	pastString = malloc(sizeof(char) * 8 * 5 * 10);
+
 	assert(pastString != NULL);
 	int player = PLAYER_LORD_GODALMING;
 while(1){
-	pastString = malloc(sizeof(char) * 8 * 5);
-	history[i] = pastString;
+
 	while(player != PLAYER_DRACULA) {
 
 		if(player == PLAYER_LORD_GODALMING) {
-			strcpy(pastString,"G");
+			if(i == 0) {
+				strcpy(pastString,"G");
+			} else {
+			strcat(pastString,"G");
+		}
 			printf("Put in Lord G's City Move: ");
 		} else if (player == PLAYER_DR_SEWARD) {
 			strcat(pastString,"S");
@@ -118,7 +121,7 @@ while(1){
 
 	}
 
-	View state = ViewNew(*history, msgs);
+	View state = ViewNew(pastString, msgs);
 	decideMove(state);
 	ViewFree(state);
 	printf("Current moves are:\n %s\n", pastString);
@@ -126,11 +129,12 @@ while(1){
 	strcat(pastString,"D");
 	strcat(pastString,latestPlay);
 	strcat(pastString, ".... ");
-	strcat(pastString, "\0");
+	//strcat(pastString, "\0");
 	printf("Current moves are:\n %s\n", pastString);
  	player = PLAYER_LORD_GODALMING;
 	i++;
-
+	//pastString = realloc(pastString,sizeof(char) * 8 * 5);
+	//assert(pastString != NULL);
 }
 	return EXIT_SUCCESS;
 }
