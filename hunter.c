@@ -16,5 +16,14 @@
 void decideHunterMove(HunterView hv)
 {
 	// TODO: Replace this with something better!
+	int *numPossibleMoves;
+	player whoseTurn = hv->currentPlayer;
+	//check where player is at, if hunter has 0 health, is in hospital
+	if (HvGetHealth(hv,whoseTurn) > 0) {
+		PlaceId currentLocation = HvGetPlayerLocation(hv,whoseTurn );
+	} else {
+		PlaceId currentLocation = HOSPITAL_PLACE;
+	}
+	PlaceId * possibleMoves = HvGetValidMoves(hv, numPossibleMoves);
 	registerBestPlay("TO", "Have we nothing Toulouse?");
 }
