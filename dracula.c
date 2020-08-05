@@ -161,7 +161,7 @@ PlaceId getRandomMove(DraculaView dv) {
 		//PlaceId *possibleMovesHunter;
 		//int numHunterLocations = -1;
 //drac doesnt like spain or ireland or on top of hunters or cagliarya
-		while(placeIdToType(location) == SEA || location == GALWAY || location == DUBLIN
+		while(placeIdToType(location) == SEA || location == GALWAY || location == HOSPITAL_PLACE ||location == DUBLIN
 		 || location == SARAGOSSA || location == ALICANTE || location == BARCELONA || location == SANTANDER
 		 || location == MADRID || location == GRANADA || location == CADIZ || location == LISBON || location == CAGLIARI
 	 	 || location == DvGetPlayerLocation(dv, PLAYER_LORD_GODALMING) || location
