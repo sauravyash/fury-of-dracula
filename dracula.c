@@ -161,8 +161,8 @@ void decideDraculaMove(DraculaView dv)
         return;
     }
 
-    int numPossibleMoves = -1;
-    PlaceId * possibleMoves = DvGetValidMoves(dv, &numPossibleMoves);
+    //int numPossibleMoves = -1;
+    //PlaceId * possibleMoves = DvGetValidMoves(dv, &numPossibleMoves);
 
     //printf("\nPossible moves are:       ");
     //for (int i = 0; i < numPossibleMoves; i ++) {
