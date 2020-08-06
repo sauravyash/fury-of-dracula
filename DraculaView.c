@@ -85,7 +85,7 @@ static void draculaMove(DraculaView dv, char * string);                  // Appl
 static void trapLocationRemove(DraculaView dv, PlaceId location);        // Remove a trap location
 static void trapLocationAppend(DraculaView dv, PlaceId location);        // Add a trap location
 
-static void checkHunterHealth(DraculaView dv,Player hunter);             // Check the health of a hunter, sends them to hospital if needed
+static bool isHunterAlive(DraculaView dv, Player hunter);                    // Check the health of a hunter, sends them to hospital if needed
 
 //------------- MOVES & HISTORIES -------------
 PlaceId *DvGetLastLocations(DraculaView dv, Player player, int numLocs,
@@ -639,7 +639,9 @@ static void hunterMove(DraculaView dv, char *string, Player hunter) {
             // It's a trap!
             case ITS_A_TRAP:
                 dv->allPlayers[hunter]->health -= LIFE_LOSS_TRAP_ENCOUNTER;
-                checkHunterHealth(dv, hunter);
+                if (isHunterAlive(dv, hunter) == false){
+                    break;
+                }
                 //remove trap
                 trapLocationRemove(dv, curr_place);
                 break;
@@ -652,7 +654,9 @@ static void hunterMove(DraculaView dv, char *string, Player hunter) {
             // Dracula encounter
             case 'D':
                 dv->allPlayers[hunter]->health -= LIFE_LOSS_DRACULA_ENCOUNTER;
-                checkHunterHealth(dv, hunter);
+                if (isHunterAlive(dv, hunter) == false){
+                    break;
+                }
                 DRACULA->health -= LIFE_LOSS_HUNTER_ENCOUNTER;
                 break;
             // other characters include trailing '.'
@@ -892,14 +896,16 @@ static void draculaLocationHistoryAppend(DraculaView dv, PlaceId location) {
 // CHECK HUNTER HEALTH: Checks if a hunter has died, if so, moves them to hospital
 // -- INPUT: DraculaView, Player
 // -- OUTPUT: void
-static void checkHunterHealth(DraculaView dv,Player hunter) {
+static bool isHunterAlive(DraculaView dv, Player hunter){
     if(dv->allPlayers[hunter]->health <= 0) {
         dv->allPlayers[hunter]->health = 0;
         dv->score -= SCORE_LOSS_HUNTER_HOSPITAL;
         HUNTER->currentLocation = HOSPITAL_PLACE;
-        //hunterLocationHistoryAppend(dv, hunter, HOSPITAL_PLACE);
+        return false;
+        //hunterLocationHistoryAppend(gv, hunter, HOSPITAL_PLACE);
+
     }
-    return;
+    return true;
 }
 
 // INITIALISE PLAYER: Initialises a player to defaults, assigns memory

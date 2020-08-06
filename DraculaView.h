@@ -261,5 +261,9 @@ PlaceId *DvGetLocationHistory(DraculaView dv, Player player,
 PlaceId *DvGetLastLocations(DraculaView dv, Player player, int numLocs,
                             int *numReturnedLocs, bool *canFree);
 
+bool canHide(DraculaView dv);
+
+bool canDoubleBack(DraculaView dv);
+
 
 #endif // !defined(FOD__DRACULA_VIEW_H_)
