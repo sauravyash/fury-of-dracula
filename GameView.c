@@ -630,7 +630,7 @@ static void hunterLocationHistoryAppend(GameView gv, Player hunter, PlaceId loca
         HUNTER->locationHistory[index + 1] = location;
         HUNTER->moveHistory[index + 1] = location;
         //Hunters gain health when resting at city
-        PlaceId previousLocation = HUNTER->currentLocation;
+        PlaceId previousLocation =HUNTER->locationHistory[index];
         if (previousLocation == location) HUNTER->health += LIFE_GAIN_REST;
         HUNTER->currentLocation = location;
         HUNTER->currentLocationIndex++;
@@ -863,6 +863,8 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
         }
     }
     free(city);
+    printf("hunter %d health is %d\n", hunter, HUNTER->health);
+    printf("curr place is %s\n", placeIdToName(curr_place));
     // Append history and current location:
     hunterLocationHistoryAppend(gv, hunter, curr_place);
     printf("hunter %d health is %d\n", hunter, HUNTER->health);

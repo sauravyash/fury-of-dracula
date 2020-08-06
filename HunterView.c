@@ -502,7 +502,7 @@ static void hunterLocationHistoryAppend(HunterView hv, Player hunter, PlaceId lo
         HUNTER->locationHistory[index + 1] = location;
         HUNTER->moveHistory[index + 1] = location;
         //Hunters gain health when resting at city
-        PlaceId previousLocation = HUNTER->currentLocation;
+        PlaceId previousLocation =HUNTER->locationHistory[index];
         if (previousLocation == location) HUNTER->health += LIFE_GAIN_REST;
         HUNTER->currentLocation = location;
         HUNTER->currentLocationIndex++;

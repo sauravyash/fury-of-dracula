@@ -824,7 +824,7 @@ static void hunterLocationHistoryAppend(DraculaView dv, Player hunter, PlaceId l
         HUNTER->locationHistory[index + 1] = location;
         HUNTER->moveHistory[index + 1] = location;
         //Hunters gain health when resting at city
-        PlaceId previousLocation = HUNTER->currentLocation;
+        PlaceId previousLocation =HUNTER->moveHistory[index];
         if (previousLocation == location) HUNTER->health += LIFE_GAIN_REST;
         HUNTER->currentLocation = location;
         HUNTER->currentLocationIndex++;
