@@ -100,7 +100,8 @@ static PlaceId *DvGetReachableByType(DraculaView dv, Player player, Round round,
                               bool boat, int *numReturnedLocs);
 static int Find_Rails (Map map, PlaceId place, PlaceId from, PlaceId *array, int i);
 static void hunterLocationHistoryAppend(DraculaView dv, Player hunter, PlaceId location);
-
+PlaceId *DvGetReachable(DraculaView dv, Player player, Round round,
+                        PlaceId from, int *numReturnedLocs);
 // ****************************************
 
 
@@ -429,7 +430,7 @@ PlaceId *DvWhereCanTheyGo(DraculaView dv, Player player,
     int numLocs = -1;
 
     // Use function:
-    locs = DvGetReachableByType(dv, player, round, from, 1, 1, 1, &numLocs);
+    locs = DvGetReachable(dv, player, round, from, &numLocs);
     printf("\nLocations returned in DvWhereCanTheyGo:       ");
 	for (int i = 0; i < numLocs; i ++) {
 		printf("%s, \n", placeIdToName(locs[i]));
@@ -604,7 +605,7 @@ static void draculaMove(DraculaView dv, char *string) {
     // careful when doublebacks, this turns into a doubleback code
     PlaceId curr_place = placeAbbrevToId(city);
     
-    // hide is last city
+    // if hiding, make currplace last city
     if (curr_place == HIDE) {
         curr_place = DRACULA->locationHistory[DRACULA->currentLocationIndex];
     }
@@ -706,6 +707,7 @@ static void draculaMove(DraculaView dv, char *string) {
     free(city);
     return;
 }
+
 // TRAP LOCATION REMOVE: Removes a specified location from trap location array
 // -- INPUT: DraculaView, PlaceId
 // -- OUTPUT: void
@@ -817,7 +819,7 @@ static void checkHunterHealth(DraculaView dv,Player hunter) {
         dv->allPlayers[hunter]->health = 0;
         dv->score -= SCORE_LOSS_HUNTER_HOSPITAL;
         HUNTER->currentLocation = HOSPITAL_PLACE;
-        //hunterLocationHistoryAppend(gv, hunter, HOSPITAL_PLACE);
+        //hunterLocationHistoryAppend(dv, hunter, HOSPITAL_PLACE);
     }
     return;
 }
@@ -915,7 +917,7 @@ PlaceId *dvGetLocationHistory(DraculaView dv, Player player,
 // GET MOVE HISTORY: Returns complete move history of a player directly from
 // locationHistory, indicates the number of moves and that the array cannot be
 // freed
-// -- INPUT: gv, player, pointer to an int storing the number of returned moves,
+// -- INPUT: dv, player, pointer to an int storing the number of returned moves,
 // pointer to a bool canFree
 // -- OUTPUT: array of PlaceIds
 PlaceId *dvGetMoveHistory(DraculaView dv, Player player,
@@ -969,17 +971,16 @@ static void sortPlaces(PlaceId *places, int numPlaces) {
     return;
 }
 
-
-static PlaceId *DvGetReachableByType(DraculaView dv, Player player, Round round,
-                              PlaceId from, bool road, bool rail,
-                              bool boat, int *numReturnedLocs) {
+// REACHABLE FUNCTIONS: Help to find all possible moves for the next play based
+// on round score, player, starting place, and other game deets.
+// Status: Iterative Fully functioning for hunter- passed all given tests plus own tests
+// and works with any railDist, player and round. Need to test Drac...
+PlaceId *DvGetReachable(DraculaView dv, Player player, Round round,
+                        PlaceId from, int *numReturnedLocs)
+{
 
     // We need to access the map :)
     Map map = dv->map;
-
-    // Make a temp round variable for use with finding shortest path...
-    if (dv->temp_round > -1) round = dv->temp_round;
-    if (dv->temp_place != NOWHERE) from = dv->temp_place;
 
     // Calculate the number of rails a hunter can travel.
     int railDist = 0;
@@ -1007,17 +1008,147 @@ static PlaceId *DvGetReachableByType(DraculaView dv, Player player, Round round,
 
         // Extra conditions for drac:
         if (player == PLAYER_DRACULA) {
-            if (list->p == HOSPITAL_PLACE) continue;
-            if (list->type == RAIL) continue;
+            if (list->p == HOSPITAL_PLACE) {
+                if (list->next == NULL) break;
+                list = list->next;
+                continue;
+            }
+            if (list->type == RAIL) {
+                if (list->next == NULL) break;
+                list = list->next;
+                continue;
+            }
+        }
+
+        // If it is a road type.
+        if (list->type == ROAD) {
+            visited[loc_num] = list->p;
+            loc_num++;
+            // If it is a rail type check for hunter.
+        } else if (list->type == RAIL && railDist > 0) {
+            visited_rail[rail_num] = list->p;
+            rail_num++;
+            // If it is a boat type.
+        } else if (list->type == BOAT) {
+            visited[loc_num] = list->p;
+            loc_num++;
+        }
+
+        if (list->next == NULL) break;
+        list = list->next;
+    }
+
+    // Consider more rails...
+    // 2 Rails:
+    int i = 0;
+    int conn_new = 0;
+    if (railDist > 1) {
+        while (i < rail_num) {
+            int index = rail_num + conn_new;
+            conn_new = conn_new + Find_Rails (map, visited_rail[i], from, visited_rail, index);
+            i++;
+        }
+        rail_num = rail_num + conn_new;
+
+        // 3 Rails:
+        i = 0;
+        if (railDist > 2) {
+        i = rail_num - conn_new;
+        conn_new = 0;
+            while (i < rail_num) {
+                int index = rail_num + conn_new;
+                conn_new = conn_new + Find_Rails (map, visited_rail[i], from, visited_rail, index);
+                i++;
+            }
+            rail_num = rail_num + conn_new;
+
+        }
+    }
+
+    // Combine arrays!!
+    // So we know the number of locs/ rails in each array;
+    i = 0;
+    int j = loc_num;
+    while (i < rail_num && j < NUM_REAL_PLACES) {
+
+        visited[j] = visited_rail[i];
+        j++;
+        i++;
+
+    }
+    int total_locs = j;
+
+    // Now copy into the dynamically allocated array.
+    PlaceId *final_loc_list = malloc(total_locs * sizeof(PlaceId));
+    memoryError(final_loc_list);
+    i = 0;
+    while (i < total_locs) {
+        final_loc_list[i] = visited[i];
+        i++;
+    }
+
+    // Memory
+    free(visited_rail);
+
+    // Return values...
+    *numReturnedLocs = total_locs;
+    return final_loc_list;
+
+}
+
+PlaceId *DvGetReachableByType(DraculaView dv, Player player, Round round,
+                              PlaceId from, bool road, bool rail,
+                              bool boat, int *numReturnedLocs)
+{
+
+    // We need to access the map :)
+    Map map = dv->map;
+
+    // Calculate the number of rails a hunter can travel.
+    int railDist = 0;
+    if (player != PLAYER_DRACULA) railDist = (round + player) % 4;
+
+    // Create temp array to keep track of  locations visited in this function.
+    PlaceId visited[NUM_REAL_PLACES];
+    PlaceId *visited_rail = malloc(NUM_REAL_PLACES * sizeof(PlaceId));
+    memoryError(visited_rail);
+    for (int j = 0; j < NUM_REAL_PLACES; j++) {
+        visited_rail[j] = '\0';
+        visited[j] = '\0';
+    }
+
+    // Get the connections from that point.
+    ConnList list = MapGetConnections(map, from);
+
+    // Iterate through...
+    int loc_num = 0;
+    int rail_num = 0;
+    visited[loc_num] = from;
+    loc_num = 1;
+
+    while (loc_num < NUM_REAL_PLACES && rail_num < NUM_REAL_PLACES) {
+
+        // Extra conditions for drac:
+        if (player == PLAYER_DRACULA) {
+            if (list->p == HOSPITAL_PLACE) {
+                if (list->next == NULL) break;
+                list = list->next;
+                continue;
+            }
+            if (list->type == RAIL) {
+                if (list->next == NULL) break;
+                list = list->next;
+                continue;
+            }
         }
 
         // If it is a road type.
         if (list->type == ROAD && road == true) {
-
             visited[loc_num] = list->p;
             loc_num++;
+
             // If it is a rail type check for hunter.
-        } else if (list->type == RAIL && railDist >= 1 && rail == true) {
+        } else if (list->type == RAIL && railDist > 0 && rail == true) {
             visited_rail[rail_num] = list->p;
             rail_num++;
             // If it is a boat type.
@@ -1053,14 +1184,17 @@ static PlaceId *DvGetReachableByType(DraculaView dv, Player player, Round round,
                 i++;
             }
             rail_num = rail_num + conn_new;
+
         }
     }
+
 
     // Combine arrays!!
     // So we know the number of locs/ rails in each array;
     i = 0;
     int j = loc_num;
     while (i < rail_num && j < NUM_REAL_PLACES) {
+
         visited[j] = visited_rail[i];
         j++;
         i++;
@@ -1076,6 +1210,9 @@ static PlaceId *DvGetReachableByType(DraculaView dv, Player player, Round round,
         final_loc_list[i] = visited[i];
         i++;
     }
+
+    // Memory
+    free(visited_rail);
 
     // Return values...
     *numReturnedLocs = total_locs;
@@ -1130,7 +1267,7 @@ static int Find_Rails (Map map, PlaceId place, PlaceId from, PlaceId *array, int
 }
 
 // MAX ENCOUNTERS: Reads through drac's string to determine actions taken
-// -- Input: GameView, Location of encounters to be checked
+// -- Input: DraculaView, Location of encounters to be checked
 // -- Output: If maximum encounters for a city has been reached
 static bool maxEncounters(DraculaView dv, PlaceId location) {
     int counter = 0;
