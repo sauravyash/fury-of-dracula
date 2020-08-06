@@ -630,7 +630,7 @@ static void hunterLocationHistoryAppend(GameView gv, Player hunter, PlaceId loca
         HUNTER->locationHistory[index + 1] = location;
         HUNTER->moveHistory[index + 1] = location;
         //Hunters gain health when resting at city
-        PlaceId previousLocation = HUNTER->currentLocation;
+        PlaceId previousLocation =HUNTER->locationHistory[index];
         if (previousLocation == location) HUNTER->health += LIFE_GAIN_REST;
         HUNTER->currentLocation = location;
         HUNTER->currentLocationIndex++;
@@ -824,8 +824,7 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
 
      if (curr_place == NOWHERE) printf("Error: Place not found...\n");
 
-    // Append history and current location:
-    hunterLocationHistoryAppend(gv, hunter, curr_place);
+
 
     // Parsing through characters after location to determine actions
     char *c;
@@ -837,7 +836,7 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
             printf("trap!\n");
                 gv->allPlayers[hunter]->health -= LIFE_LOSS_TRAP_ENCOUNTER;
                 if ( isHunterAlive(gv, hunter) == false){
-                    break;
+                    curr_place = HOSPITAL_PLACE;
                 }
                 //remove trap
                 trapLocationRemove(gv, curr_place);
@@ -854,7 +853,7 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
             printf("Dracula!\n");
                 gv->allPlayers[hunter]->health -= LIFE_LOSS_DRACULA_ENCOUNTER;
                 if ( isHunterAlive(gv, hunter) == false){
-                    break;
+                    curr_place = HOSPITAL_PLACE;
                 }
                 DRACULA->health -= LIFE_LOSS_HUNTER_ENCOUNTER;
                 break;
@@ -864,6 +863,10 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
         }
     }
     free(city);
+    printf("hunter %d health is %d\n", hunter, HUNTER->health);
+    printf("curr place is %s\n", placeIdToName(curr_place));
+    // Append history and current location:
+    hunterLocationHistoryAppend(gv, hunter, curr_place);
     printf("hunter %d health is %d\n", hunter, HUNTER->health);
     return;
 }

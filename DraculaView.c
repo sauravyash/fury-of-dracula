@@ -215,8 +215,8 @@ PlaceId *DvGetTrapLocations(DraculaView dv, int *numTraps)
 // -- OUTPUT: Bool
 bool isInTrail(DraculaView dv, PlaceId location) {
     // only compare against as many moves as exist
-    int max = (DRACULA->currentLocationIndex < 6 ? DRACULA->currentLocationIndex : 6);
-    for (int i = max - 6; i < max; i++) {
+    int max = DRACULA->currentLocationIndex;
+    for (int i = max - 5; i <= max; i++) {
         if (location == DRACULA->locationHistory[i]) return true;
         printf("i: %d\nlocation: %s\nlocationhistory[i]: %s\n", i, placeIdToName(location), placeIdToName(DRACULA->locationHistory[i]));
     }
@@ -629,8 +629,7 @@ static void hunterMove(DraculaView dv, char *string, Player hunter) {
 
      if (curr_place == NOWHERE) printf("Error: Place not found...\n");
      //printf("they are in %s\n", city);
-    // Append history and current location:
-    hunterLocationHistoryAppend(dv, hunter, curr_place);
+
 
     // Parsing through characters after location to determine actions
     char *c;
@@ -641,7 +640,7 @@ static void hunterMove(DraculaView dv, char *string, Player hunter) {
             case ITS_A_TRAP:
                 dv->allPlayers[hunter]->health -= LIFE_LOSS_TRAP_ENCOUNTER;
                 if (isHunterAlive(dv, hunter) == false){
-                    break;
+                    curr_place = HOSPITAL_PLACE;
                 }
                 //remove trap
                 trapLocationRemove(dv, curr_place);
@@ -656,7 +655,7 @@ static void hunterMove(DraculaView dv, char *string, Player hunter) {
             case 'D':
                 dv->allPlayers[hunter]->health -= LIFE_LOSS_DRACULA_ENCOUNTER;
                 if (isHunterAlive(dv, hunter) == false){
-                    break;
+                    curr_place = HOSPITAL_PLACE;
                 }
                 DRACULA->health -= LIFE_LOSS_HUNTER_ENCOUNTER;
                 break;
@@ -666,6 +665,8 @@ static void hunterMove(DraculaView dv, char *string, Player hunter) {
         }
     }
     free(city);
+    // Append history and current location:
+    hunterLocationHistoryAppend(dv, hunter, curr_place);
     return;
 }
 
@@ -823,7 +824,7 @@ static void hunterLocationHistoryAppend(DraculaView dv, Player hunter, PlaceId l
         HUNTER->locationHistory[index + 1] = location;
         HUNTER->moveHistory[index + 1] = location;
         //Hunters gain health when resting at city
-        PlaceId previousLocation = HUNTER->currentLocation;
+        PlaceId previousLocation =HUNTER->moveHistory[index];
         if (previousLocation == location) HUNTER->health += LIFE_GAIN_REST;
         HUNTER->currentLocation = location;
         HUNTER->currentLocationIndex++;
