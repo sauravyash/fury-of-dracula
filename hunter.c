@@ -117,7 +117,7 @@ PlaceId DraculaHunt (HunterView hv, PlaceId bestMove, Player current_player) {
     int temp_player = 0;
     int length = NUM_REAL_PLACES;
     int new_length = NUM_REAL_PLACES;
-    while (temp_player < NUM_PLAYERS) {
+    while (temp_player < NUM_PLAYERS - 1) {
         HvGetShortestPathTo(hv, temp_player, Drac_Loc, &new_length);
         if (new_length < length) {
             new_length = length;
