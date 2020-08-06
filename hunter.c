@@ -8,10 +8,13 @@
 // 2020-07-10	v3.0	Team Dracula <cs2521@cse.unsw.edu.au>
 //
 ////////////////////////////////////////////////////////////////////////
+#include <string.h>
+#include <stdio.h>
 
 #include "Game.h"
 #include "hunter.h"
 #include "HunterView.h"
+
 
 #define PLAYER1_START_POS 22
 #define PLAYER2_START_POS 11
@@ -20,21 +23,26 @@
 
 void decideHunterMove(HunterView hv)
 {
-	// TODO: Replace this with something better!
+	// First things first:
 	Round round = HvGetRound(hv);
-	int current_score = HvGetScore(hv);
+	//int current_score = HvGetScore(hv);
 	Player current_player = HvGetPlayer(hv);
 	
-	srand(time(NULL));
+	// ARE YOU DEAD!!!
     
+    // NOW FIND OUT WHERE DRAC IS FOR CHASING:
     // Basically, whoever is closest to Drac becomes Leader...
     // (or if drac is unknown, then Lord G)
-    PlaceId Drac_Loc = HvGetLastKnownDraculaLocation;
+    Round drac_round = -1;
+    PlaceId Drac_Loc = HvGetLastKnownDraculaLocation(hv, &drac_round);
+    // If drac_round < round && drac_round != 1: Maybe estimate dracs moves
+    // ie. aim for a location a few places away from his last known location
+    // that is not water and is not in the direction of the hunters.
     Player Leader;
-    if (Drac_Loc == NOWHERE) Leader = PLAYER_LORD_GOLDAMING;
+    if (!placeIsReal(Drac_Loc)) Leader = PLAYER_LORD_GODALMING;
     else {
     // Find player closest to Drac.
-    Player temp_player = 0;
+    int temp_player = 0;
     int length = NUM_REAL_PLACES;
     int new_length = NUM_REAL_PLACES;
         while (temp_player < NUM_PLAYERS) {
@@ -53,7 +61,7 @@ void decideHunterMove(HunterView hv)
 
 	PlaceId move = NOWHERE;
 	
-	if (current_round == 0) {
+	if (round == 0) {
 		if(current_player == PLAYER_LORD_GODALMING) move = PLAYER1_START_POS;
 		else if(current_player == PLAYER_DR_SEWARD) move = PLAYER2_START_POS;
 		else if(current_player == PLAYER_VAN_HELSING) move = PLAYER3_START_POS;
@@ -70,7 +78,7 @@ void decideHunterMove(HunterView hv)
 		printf("I am a follower");
 		// Basically move closer to the leader...
 		int len = 0;
-		PlaceId *followLead = HvGetShortestPathTo(hv, current_player, Lead_Loc, &len);
+		PlaceId *followLead = HvGetShortestPathTo(hv, current_player, Leader_Loc, &len);
 		if (len > 0) move = followLead[0];
 		else move = Leader_Loc;
 	}
