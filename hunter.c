@@ -14,6 +14,7 @@
 #include "Game.h"
 #include "hunter.h"
 #include "HunterView.h"
+#include "Places.h"
 
 
 #define PLAYER1_START_POS 22
@@ -21,14 +22,63 @@
 #define PLAYER3_START_POS 17
 #define PLAYER4_START_POS 44
 
+// FUNCTION DEC:
+PlaceId MapSleuth (HunterView hv);
+PlaceId DraculaHunt (HunterView hv, PlaceId bestMove, Player current_player);
+
+
 void decideHunterMove(HunterView hv)
 {
 	// First things first:
 	Round round = HvGetRound(hv);
 	//int current_score = HvGetScore(hv);
 	Player current_player = HvGetPlayer(hv);
+	PlaceId bestMove = NOWHERE;
 	
-	// ARE YOU DEAD!!!
+	// Do we need to check if the hunter is dead lol??
+	
+	// If it is the first round, give everyone a position:
+	if (round == 0) {    
+	    if(current_player == PLAYER_LORD_GODALMING) bestMove = PARIS;
+		else if(current_player == PLAYER_DR_SEWARD) bestMove = BERLIN;
+		else if(current_player == PLAYER_VAN_HELSING) bestMove = MADRID;
+		else if(current_player == PLAYER_MINA_HARKER) bestMove = CASTLE_DRACULA;
+		
+		// Checking that the player has a place to move to...
+		if (bestMove == NOWHERE) printf("ERROR: No place allocated...\n");
+	    
+	    registerBestPlay(placeIdToAbbrev(bestMove), "Lol we moving");
+	    return;
+	}
+    
+    // SORT PLAYERS BY ROLE:
+    
+    // PATROL EDGES OF MAP
+    // Van Hell to patrol the edges of the map...
+    // Go to furthest location from hunters...
+    if (current_player == PLAYER_VAN_HELSING) {
+        bestMove = MapSleuth (hv);
+    }
+    
+    // GUARD CASTLE DRAC
+    // When we have getlastlocation function maybe rotate:
+    // Castle_Drac->Galatz->Klausenburg and then stay there if encounter Drac.
+    if (current_player == PLAYER_MINA_HARKER) {
+        bestMove = CASTLE_DRACULA;
+    }
+    
+    // CHASING DRAC
+    // So if any player is closest to drac make them hunt him and leave earlier
+    // job, but don't make them leave their job just to follow the leader.
+    bestMove = DraculaHunt (hv, bestMove, current_player);
+	
+	// Return that move...
+	registerBestPlay(placeIdToAbbrev(bestMove), "Lol we moving");
+	return;
+	
+}
+
+PlaceId DraculaHunt (HunterView hv, PlaceId bestMove, Player current_player) {
     
     // NOW FIND OUT WHERE DRAC IS FOR CHASING:
     // Basically, whoever is closest to Drac becomes Leader...
@@ -58,34 +108,38 @@ void decideHunterMove(HunterView hv)
     printf("Current leader is %d.\n", Leader);
 	PlaceId Leader_Loc = HvGetPlayerLocation(hv, Leader);
 	printf("All patrolling players move towards <%s>.\n", placeIdToName(Leader_Loc));
-
-	PlaceId move = NOWHERE;
-	
-	if (round == 0) {
-		if(current_player == PLAYER_LORD_GODALMING) move = PLAYER1_START_POS;
-		else if(current_player == PLAYER_DR_SEWARD) move = PLAYER2_START_POS;
-		else if(current_player == PLAYER_VAN_HELSING) move = PLAYER3_START_POS;
-		else if(current_player == PLAYER_MINA_HARKER) move = PLAYER4_START_POS;
-		else printf("I am noone..\n");
-	} else if (current_player == Leader) {
+    
+    if (current_player == Leader) {
 		printf("I am the leader\n");
-		// Basically try and move closer to dracula or a vamp.
+		// Basically try and move closer to dracula.
 		int len = 0;
 		PlaceId *chaseDrac = HvGetShortestPathTo(hv, current_player, Drac_Loc, &len);
-		if (len > 0) move = chaseDrac[0];
-		else move = Leader_Loc;
+		if (len > 0) bestMove = chaseDrac[0];
+		else bestMove = Leader_Loc;
+	
 	} else {
+		if (current_player == PLAYER_MINA_HARKER || current_player == PLAYER_VAN_HELSING) {
+		    // Don't follow after drac... or should u hmm...
+		    return bestMove;
+		}
 		printf("I am a follower");
 		// Basically move closer to the leader...
 		int len = 0;
 		PlaceId *followLead = HvGetShortestPathTo(hv, current_player, Leader_Loc, &len);
-		if (len > 0) move = followLead[0];
-		else move = Leader_Loc;
+		if (len > 0) bestMove = followLead[0];
+		else bestMove = Leader_Loc;
 	}
 	
-	printf("Next move is to <%s>.\n",placeIdToName(move));
-	char *moveTo = malloc(2 * sizeof(char));
-	strcpy(moveTo, placeIdToAbbrev(move));
-	registerBestPlay(moveTo, "Lol we moving");
-	
+	return bestMove;
+}
+
+PlaceId MapSleuth (HunterView hv) {
+    
+    int poss_places;
+    PlaceId *possible_places = HvWhereCanIGoByType(hv, true, false,
+                             true, &poss_places);
+    
+    // Select one for now... randomly:
+    if (poss_places > 1) return possible_places[1];
+    else return possible_places[0];
 }
