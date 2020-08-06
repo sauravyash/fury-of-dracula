@@ -32,6 +32,7 @@
 #define BRITAIN_SIZE 6
 #define ITALY_MOVES CAGLIARI,NAPLES,BARI,ROME,FLORENCE	//I know athens isnt in italy but theres only one way in/out thats not by sea so i dont want drac to spawn there
 #define ITALY_SIZE 5
+#define MAGIC_NUMBER_SEED 15
 //PlaceId unwantedPlaces[] = {SPAIN_MOVES,IRELAND_MOVES,BRITAIN_MOVES,ITALY_MOVES};
 
 typedef struct moveweight *MoveWeight;
@@ -85,23 +86,52 @@ MoveWeight * MvArrayNew(int size) {
 }
 
 //Spawn Dracula in a random location that is not in
-// Ireland, Spain, Cagliari, a place hunters are in
+// Ireland, Spain, Cagliari, a place a hunter is in or can reach
 // INPUT: DraculaView
 // OUTPUT: non specific spawn location
 PlaceId spawnDracula (DraculaView dv) {
-	PlaceId unwantedPlaces[] = {SPAIN_MOVES,IRELAND_MOVES,BRITAIN_MOVES,ITALY_MOVES,ATHENS
-		DvGetPlayerLocation(dv, PLAYER_LORD_GODALMING),
-		DvGetPlayerLocation(dv, PLAYER_DR_SEWARD),
-		DvGetPlayerLocation(dv, PLAYER_VAN_HELSING),
-		DvGetPlayerLocation(dv, PLAYER_MINA_HARKER) };
-	sortPlaces(unwantedPlaces,SPAIN_SIZE+ITALY_SIZE+IRELAND_SIZE+BRITAIN_SIZE+1+(NUM_PLAYERS-1));
+	PlaceId unwantedPlaces[] = {SPAIN_MOVES,IRELAND_MOVES,BRITAIN_MOVES,ITALY_MOVES,
+		ATHENS,HOSPITAL_PLACE,CASTLE_DRACULA};
+	//dont reallly care about duplicates? ->check if binary search can handle it
+	//sortPlaces(unwantedPlaces,SPAIN_SIZE+ITALY_SIZE+IRELAND_SIZE+BRITAIN_SIZE+1+(NUM_PLAYERS-1));
 	printf("Unwanted places are:\n");
-	for(int i = 0; i <SPAIN_SIZE+ITALY_SIZE+IRELAND_SIZE+BRITAIN_SIZE+1+(NUM_PLAYERS-1); i++ ){
-		printf("%s\n", placeIdToName(unwantedPlaces[i]));
+	PlaceId placeList[NUM_REAL_PLACES] = {0};
+	int numReturnedLocs = -1;
+	PlaceId * hunterLocations;
+	Player hunter = PLAYER_LORD_GODALMING;
+	while (hunter < PLAYER_DRACULA) {
+		hunterLocations= DvWhereCanTheyGo(dv, hunter, &numReturnedLocs);
+		memoryError(hunterLocations);
+		for (int i = 0; i < numReturnedLocs; i++){
+			printf("%d: %s\n", hunter, placeIdToName(hunterLocations[i]));
+			placeList[hunterLocations[i]] = 1;
+		}
+		hunter++;
 	}
-	srand (time(0));
-	PlaceId location = rand() % NUM_REAL_PLACES;
+	for(int i = 0; i < SPAIN_SIZE + ITALY_SIZE + IRELAND_SIZE + BRITAIN_SIZE + 3; i++ ){
+		printf("%s\n", placeIdToName(unwantedPlaces[i]));
+		placeList[unwantedPlaces[i]] = 1;
+	}
+	for (int i = 0; i < NUM_REAL_PLACES; i++) {
+		if(placeIdToType(i) == SEA) placeList[i] = 1;
+		printf("[%d]", placeList[i]);
 
+	}
+
+
+	srand (time(0));
+	printf("\n");
+	int i = 0;
+	PlaceId location = rand() % NUM_REAL_PLACES;
+	while (placeList[location] == 1) {
+		printf("cant' be %s\n", placeIdToName(location));
+		//char input [10];
+		//scanf("%s",input);
+		i+=MAGIC_NUMBER_SEED;
+		srand (time(0));
+		location = (rand() + i )% NUM_REAL_PLACES;
+		printf("trying %s\n",placeIdToName(location));
+	}
 	return location;
 }
 
