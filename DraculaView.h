@@ -176,8 +176,90 @@ PlaceId *DvWhereCanTheyGoByType(DraculaView dv, Player player,
                                 int *numReturnedLocs);
 
 ////////////////////////////////////////////////////////////////////////
-// Your own interface functions
+////////////////////////////////////////////////////////////////////////
+// Game History
 
-// TODO
+/**
+ * Gets  the complete move history, in chronological order, of the given
+ * player as shown in the play string.
+ *
+ * This  function  should  return  the  moves in a dynamically allocated
+ * array, and set *numReturnedMoves to the number of moves returned.
+ *
+ * This  function can decide whether the caller is allowed to  modify or
+ * free the returned array. (If the array is part of the  DraculaView  data
+ * structure,  you may not want the caller to modify or free it.) If the
+ * returned array can be modified/freed, set *canFree to true  to  avoid
+ * memory leaks. Otherwise, set it to false.
+ */
+PlaceId *DvGetMoveHistory(DraculaView dv, Player player,
+                          int *numReturnedMoves, bool *canFree);
+
+/**
+ * Gets  the given player's last `numMoves` moves in chronological order
+ * as shown in the play string.
+ *
+ * This  function  should  return  the  moves in a dynamically allocated
+ * array, and set *numReturnedMoves to the number of moves returned  (in
+ * case  `numMoves`  is  greater than the number of moves the player has
+ * actually made).
+ *
+ * This  function can decide whether the caller is allowed to  modify or
+ * free the returned array. (If the array is part of the  DraculaView  data
+ * structure,  you may not want the caller to modify or free it.) If the
+ * returned array can be modified/freed, set *canFree to true  to  avoid
+ * memory leaks. Otherwise, set it to false.
+ *
+ * NOTE: This  function is very similar to DvGetMoveHistory, except that
+ *       it gets only the last `numMoves` moves rather than the complete
+ *       move history.
+ */
+PlaceId *DvGetLastMoves(DraculaView dv, Player player, int numMoves,
+                        int *numReturnedMoves, bool *canFree);
+
+/**
+ * Gets  the  complete  location history, in chronological order, of the
+ * given player.
+ *
+ * This  function should return the locations in a dynamically allocated
+ * array, and set *numReturnedLocs to the number of locations returned.
+ *
+ * If  the given player is a hunter, this function should behave exactly
+ * the same as DvGetMoveHistory. If the given  player  is  Dracula,  the
+ * PlaceIds  returned  should  either  correspond  to real places, or be
+ * CITY_UNKNOWN or SEA_UNKNOWN. See the comment for  DvGetPlayerLocation
+ * for more details.
+ *
+ * This  function can decide whether the caller is allowed to  modify or
+ * free the returned array. (If the array is part of the  DraculaView  data
+ * structure,  you may not want the caller to modify or free it.) If the
+ * returned array can be modified/freed, set *canFree to true  to  avoid
+ * memory leaks. Otherwise, set it to false.
+ */
+PlaceId *DvGetLocationHistory(DraculaView dv, Player player,
+                              int *numReturnedLocs, bool *canFree);
+
+/**
+ * Gets  the  given   player's last `numLocs` locations in chronological
+ * order.
+ *
+ * This  function should return the locations in a dynamically allocated
+ * array, and set *numReturnedLocs to the number of  locations  returned
+ * (in  case  `numLocs` is greater than the number of  moves  the player
+ * has actually made).
+ *
+ * This  function can decide whether the caller is allowed to  modify or
+ * free the returned array. (If the array is part of the  DraculaView  data
+ * structure,  you may not want the caller to modify or free it.) If the
+ * returned array can be modified/freed, set *canFree to true  to  avoid
+ * memory leaks. Otherwise, set it to false.
+ *
+ * NOTE: This function is very similar to  DvGetLocationHistory,  except
+ *       that  it gets only the last `numLocs` locations rather than the
+ *       complete location history.
+ */
+PlaceId *DvGetLastLocations(DraculaView dv, Player player, int numLocs,
+                            int *numReturnedLocs, bool *canFree);
+
 
 #endif // !defined(FOD__DRACULA_VIEW_H_)

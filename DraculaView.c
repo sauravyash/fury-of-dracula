@@ -464,6 +464,84 @@ PlaceId *DvWhereCanTheyGoByType(DraculaView dv, Player player,
     return locs;
 }
 
+
+////////////////////////////////////////////////////////////////////////
+// Game History
+
+// GET MOVE HISTORY: Returns complete move history of a player directly from
+// locationHistory, indicates the number of moves and that the array cannot be
+// freed
+// -- INPUT: dv, player, pointer to an int storing the number of returned moves,
+// pointer to a bool canFree
+// -- OUTPUT: array of PlaceIds
+PlaceId *DvGetMoveHistory(DraculaView dv, Player player,
+                          int *numReturnedMoves, bool *canFree) {
+
+    // can't free as is returning directly from data struct
+    *canFree = false;
+    // pass number of moves
+    *numReturnedMoves = dv->allPlayers[player]->currentLocationIndex+1;
+    return dv->allPlayers[player]->moveHistory;
+}
+
+// GET MOVE HISTORY: Returns last n moves of a player in dynamically allocated
+// array, indicates the number of moves and that the return array can be freed
+// -- INPUT: dv, player, number of moves to return, pointer to an int storing
+// the number of returned moves, pointer to a bool canFree
+// -- OUTPUT: array of PlaceIds
+PlaceId *DvGetLastMoves(DraculaView dv, Player player, int numMoves,
+                        int *numReturnedMoves, bool *canFree) {
+
+    // unless asking for more locations than have happened, return numlocs
+    if (dv->allPlayers[player]->currentLocationIndex >= numMoves) {
+        // can free as returning a separate array
+        *canFree = true;
+        *numReturnedMoves = numMoves;
+        // allocate space for return array
+        PlaceId *lastNMoves = malloc(sizeof(PlaceId) *numMoves);
+        memoryError(lastNMoves);
+        // copy desired values from locationHistory to return array
+        for (int i = 0; i < numMoves; i++) {
+            lastNMoves[i] = dv->allPlayers[player]->moveHistory[dv->allPlayers[player]->currentLocationIndex - numMoves + i];
+        }
+        return lastNMoves;
+    }
+    // if asking for too many locations, only return all that exist
+    return DvGetLocationHistory(dv, player, numReturnedMoves, canFree);
+}
+
+// GET MOVE HISTORY: Returns complete location history of a player directly from
+// locationHistory, indicates the number of moves and that the array cannot be
+// freed. Returns UNKNOWN places where relevant for dracula.
+// -- INPUT: dv, player, pointer to an int storing the number of returned moves,
+// pointer to a bool canFree
+// -- OUTPUT: array of PlaceIds
+PlaceId *DvGetLocationHistory(DraculaView dv, Player player,
+                              int *numReturnedLocs, bool *canFree) {
+
+    // pass number of moves
+    int index = dv->allPlayers[player]->currentLocationIndex;
+    *numReturnedLocs = index + 1;
+    //if there are no moves in history, return NULL
+    if(index < 0) return NULL;
+    // can free as allocating new array
+    *canFree = true;
+    PlaceId *allLocs = malloc(sizeof(PlaceId) * *numReturnedLocs);
+    memoryError(allLocs);
+    if (player == PLAYER_DRACULA) {
+        for (int i = 0; i < *numReturnedLocs; i++) {
+            allLocs[i] = dv->allPlayers[player]->locationHistory[i];
+        }
+        return allLocs;
+    }
+    free(allLocs);
+    //location history == move history for hunters
+    return DvGetMoveHistory(dv, player, numReturnedLocs, canFree);
+}
+
+
+////////////////////////////////////////////////////////////////////////
+
 ////////////////////////////////////////////////////////////////////////
 // Your own interface functions
 
@@ -604,7 +682,7 @@ static void draculaMove(DraculaView dv, char *string) {
     // Compare and find city by abbreviation:
     // careful when doublebacks, this turns into a doubleback code
     PlaceId curr_place = placeAbbrevToId(city);
-    
+
     // if hiding, make currplace last city
     if (curr_place == HIDE) {
         curr_place = DRACULA->locationHistory[DRACULA->currentLocationIndex];
@@ -628,7 +706,7 @@ static void draculaMove(DraculaView dv, char *string) {
     }
     // Double back move
     else if (strcmp(city,"D1") == 0) {
-        draculaLocationHistoryAppend(dv, DRACULA->locationHistory[DRACULA->currentLocationIndex]);  
+        draculaLocationHistoryAppend(dv, DRACULA->locationHistory[DRACULA->currentLocationIndex]);
         DRACULA->lastDoubleback = dv->roundNumber;
     }
     // Double back move
