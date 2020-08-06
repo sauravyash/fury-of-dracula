@@ -31,7 +31,7 @@ void decideHunterMove(HunterView hv)
 	// (or if drac is unknown, then Lord G)
 	PlaceId Drac_Loc = HvGetLastKnownDraculaLocation;
 	Player Leader;
-	if (Drac_Loc == NOWHERE) Leader = PLAYER_LORD_GOLDAMING;
+	if (!placeIsReal(Drac_Loc)) Leader = PLAYER_LORD_GOLDAMING;
 	else {
 	// Find player closest to Drac.
 	Player temp_player = 0;
