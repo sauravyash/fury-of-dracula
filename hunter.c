@@ -25,6 +25,7 @@
 // FUNCTION DEC:
 PlaceId MapSleuth (HunterView hv);
 PlaceId DraculaHunt (HunterView hv, PlaceId bestMove, Player current_player);
+PlaceId VampHunt (HunterView hv, bool drac_found, Player current_player, PlaceId bestMove);
 
 
 void decideHunterMove(HunterView hv)
@@ -67,10 +68,32 @@ void decideHunterMove(HunterView hv)
         bestMove = CASTLE_DRACULA;
     }
     
-    // CHASING DRAC
+    // CHASING DRAC & VAMPS
     // So if any player is closest to drac make them hunt him and leave earlier
     // job, but don't make them leave their job just to follow the leader.
-    bestMove = DraculaHunt (hv, bestMove, current_player);
+    int path = 0;
+    PlaceId Drac_Loc = HvGetLastKnownDraculaLocation(hv, &path);
+    PlaceId Vamp_Loc = HvGetVampireLocation(hv);
+    bool drac_found = false;
+    bool vamp_found = false;
+    if (placeIsReal(Drac_Loc)) {
+        bestMove = DraculaHunt (hv, bestMove, current_player);
+        drac_found = true;
+    }
+    if (current_player == PLAYER_LORD_GODALMING || current_player == PLAYER_DR_SEWARD) {
+        if (placeIsReal(Vamp_Loc)) {
+            bestMove = VampHunt (hv, drac_found, current_player, bestMove);
+            vamp_found = true;
+        }
+        if (drac_found == false && vamp_found == false) {
+            // This is the rando bit:
+            int len = 0;
+		    PlaceId *possible_moves = HvWhereCanIGo(hv, &len);
+		    int r = (rand()%(len-1))+1;
+		    bestMove = possible_moves[r];
+        }
+    }
+    
 	
 	// Return that move...
 	registerBestPlay(placeIdToAbbrev(bestMove), "Lol we moving");
@@ -89,20 +112,17 @@ PlaceId DraculaHunt (HunterView hv, PlaceId bestMove, Player current_player) {
     // ie. aim for a location a few places away from his last known location
     // that is not water and is not in the direction of the hunters.
     Player Leader;
-    if (!placeIsReal(Drac_Loc)) Leader = PLAYER_LORD_GODALMING;
-    else {
     // Find player closest to Drac.
     int temp_player = 0;
     int length = NUM_REAL_PLACES;
     int new_length = NUM_REAL_PLACES;
-        while (temp_player < NUM_PLAYERS) {
-            HvGetShortestPathTo(hv, temp_player, Drac_Loc, &new_length);
-            if (new_length < length) {
-                new_length = length;
-                Leader = temp_player;
-            }
-            temp_player++;
+    while (temp_player < NUM_PLAYERS) {
+        HvGetShortestPathTo(hv, temp_player, Drac_Loc, &new_length);
+        if (new_length < length) {
+            new_length = length;
+            Leader = temp_player;
         }
+        temp_player++;
     }
     
     printf("Current leader is %d.\n", Leader);
@@ -112,20 +132,10 @@ PlaceId DraculaHunt (HunterView hv, PlaceId bestMove, Player current_player) {
     if (current_player == Leader) {
 		printf("I am the leader\n");
 		// Basically try and move closer to dracula.
-		if (placeIsReal(Drac_Loc)) {
 		int len = 0;
 		PlaceId *chaseDrac = HvGetShortestPathTo(hv, current_player, Drac_Loc, &len);
 		if (len > 0) bestMove = chaseDrac[0];
 		else bestMove = Leader_Loc;
-		
-		} else {
-		    // If drac has not been found!!!
-		    int len = 0;
-		    PlaceId *possible_moves = HvWhereCanIGo(hv, &len);
-		    int r = (rand()%(len-1))+1;
-		    bestMove = possible_moves[r];
-		    
-		}
 	
 	} else {
 		if (current_player == PLAYER_MINA_HARKER || current_player == PLAYER_VAN_HELSING) {
@@ -140,6 +150,28 @@ PlaceId DraculaHunt (HunterView hv, PlaceId bestMove, Player current_player) {
 		else bestMove = Leader_Loc;
 	}
 	
+	return bestMove;
+}
+
+PlaceId VampHunt (HunterView hv, bool drac_found, Player current_player, PlaceId bestMove) {
+    
+    PlaceId Vamp_Loc = HvGetVampireLocation(hv);
+	if (placeIsReal(Vamp_Loc)) {
+		//we know where the vamp is
+		int len = 0;
+		PlaceId *chaseVamp = HvGetShortestPathTo(hv, current_player, Vamp_Loc, &len);
+		if (len > 0 ) {
+		    // If drac has been found, let Lord G chase drac and let Dr S chase
+		    // the Vamp.
+		    if (drac_found == true && current_player == PLAYER_DR_SEWARD) {        
+			    return chaseVamp[0];
+			// If drac has not been found let both of them chase the vampire.
+			} else if (drac_found == false) {
+			    return chaseVamp[0];
+			}
+		} 
+
+	}
 	return bestMove;
 }
 
