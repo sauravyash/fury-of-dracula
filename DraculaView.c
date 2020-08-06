@@ -218,6 +218,7 @@ bool isInTrail(DraculaView dv, PlaceId location) {
     int max = (DRACULA->currentLocationIndex < 6 ? DRACULA->currentLocationIndex : 6);
     for (int i = max - 6; i < max; i++) {
         if (location == DRACULA->locationHistory[i]) return true;
+        printf("i: %d\nlocation: %s\nlocationhistory[i]: %s\n", i, placeIdToName(location), placeIdToName(DRACULA->locationHistory[i]));
     }
     return false;
 }
