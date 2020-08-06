@@ -151,7 +151,7 @@ void decideDraculaMove(DraculaView dv)
 
 
 // Returns the placeid of a random place reachable by drac this turn
-//discountinued
+//-------------------------------------------------------------------------------UNUSED
 PlaceId getRandomMove(DraculaView dv) {
 	//for ultimate randomness. comment out if you want repeateability
 	srand ( time(0) );
