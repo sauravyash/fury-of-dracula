@@ -160,6 +160,10 @@ void decideDraculaMove(DraculaView dv)
                 }
                 break;
             }
+            // if drac can't do the best move
+            else {
+                //bestMove = MvArray[i]->location
+            }
         }
     }
     if (canFree) free(trail);
