@@ -70,7 +70,12 @@ MoveWeight * MvArrayNew(int size) {
 PlaceId spawnDracula (DraculaView dv) {
 	srand (time(0));
 	PlaceId location = rand() % NUM_REAL_PLACES;
-	while(placeIdToType(location) == SEA) {
+	while(placeIdToType(location) == SEA || location == GALWAY || location == HOSPITAL_PLACE ||location == DUBLIN
+	|| location == SARAGOSSA || location == ALICANTE || location == BARCELONA || location == SANTANDER
+	|| location == MADRID || location == GRANADA || location == CADIZ || location == LISBON || location == CAGLIARI
+	|| location == DvGetPlayerLocation(dv, PLAYER_LORD_GODALMING) || location
+	== DvGetPlayerLocation(dv, PLAYER_DR_SEWARD) || location ==
+	DvGetPlayerLocation(dv, PLAYER_VAN_HELSING) || location == DvGetPlayerLocation(dv, PLAYER_MINA_HARKER) ){
 		location = rand() % NUM_REAL_PLACES;
 	}
 	return location;
@@ -90,7 +95,6 @@ void decideDraculaMove(DraculaView dv)
 		registerBestPlay(placeIdToAbbrev(spawnDracula(dv)), "Happy Birthday To Me!");
 		return;
 	}
-
 	int numPossibleMoves = -1;
 	PlaceId * possibleMoves = DvGetValidMoves(dv, &numPossibleMoves);
 
@@ -134,9 +138,9 @@ void decideDraculaMove(DraculaView dv)
 	printMW(MvArray, MvArraySize);
 
 	//make a hide move
-	//if(bestMove == DvGetPlayerLocation(dv,PLAYER_DRACULA)) {
-	//	registerBestPlay(placeIdToAbbrev(HIDE), "marco polo?");
-	//}
+	if(bestMove == DvGetPlayerLocation(dv,PLAYER_DRACULA)) {
+		registerBestPlay(placeIdToAbbrev(HIDE), "marco polo?");
+	}
 
 
 	registerBestPlay(placeIdToAbbrev(bestMove), "doing my best ");
@@ -161,15 +165,16 @@ PlaceId getRandomMove(DraculaView dv) {
 		//PlaceId *possibleMovesHunter;
 		//int numHunterLocations = -1;
 //drac doesnt like spain or ireland or on top of hunters or cagliarya
-		while(placeIdToType(location) == SEA || location == GALWAY || location == HOSPITAL_PLACE ||location == DUBLIN
+		 while(placeIdToType(location) == SEA || location == GALWAY || location == HOSPITAL_PLACE ||location == DUBLIN
 		 || location == SARAGOSSA || location == ALICANTE || location == BARCELONA || location == SANTANDER
 		 || location == MADRID || location == GRANADA || location == CADIZ || location == LISBON || location == CAGLIARI
 	 	 || location == DvGetPlayerLocation(dv, PLAYER_LORD_GODALMING) || location
 		 == DvGetPlayerLocation(dv, PLAYER_DR_SEWARD) || location ==
 		 DvGetPlayerLocation(dv, PLAYER_VAN_HELSING) || location == DvGetPlayerLocation(dv, PLAYER_MINA_HARKER)) {
-			location = rand() % NUM_REAL_PLACES;
+			 location = spawnDracula(dv);
 			//printf("attempting to spawn at %s\n", placeIdToName(location));
 		}
+
 		//printf("successfully spawned at %s\n", placeIdToName(location));
 		return location;
 	}

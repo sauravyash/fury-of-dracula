@@ -28,8 +28,8 @@ void decideHunterMove(HunterView hv)
 	Player hunter = HvGetPlayer(hv);
 	int health = HvGetHealth(hv, hunter);
 	PlaceId * bloodyBrickRoad;
-	if(health == 0) {
-		//hunter is in hospital!?? but should have healed up now
+	if(health <= 0) {
+		//hunter is gonna get tp'ed to hospital
 		bloodyBrickRoad =  HvWhereCanIGo(hv, &pathLength);
 		bestMove = bloodyBrickRoad[rand() % pathLength];
 		registerBestPlay(placeIdToAbbrev(bestMove), "+1HP");
@@ -87,6 +87,7 @@ PlaceId getRandomMove(HunterView hv) {
 		//int numHunterLocations = -1;
 //hunter cant be at castle drac
 		while( location == CASTLE_DRACULA) {
+			srand ( time(0) );
 					location = rand() % NUM_REAL_PLACES;
 			//printf("attempting to spawn at %s\n", placeIdToName(location));
 		}
