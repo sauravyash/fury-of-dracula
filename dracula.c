@@ -37,9 +37,9 @@
 
 typedef struct moveweight *MoveWeight;
 struct moveweight {
-	PlaceId location;
-	double weight;
-	PlaceId moveType;
+    PlaceId location;
+    double weight;
+    //PlaceId moveType;
 } ;
 
 static void memoryError (const void * input);
@@ -52,6 +52,8 @@ static int  MVWeightcompare(const void *p, const void *q);
 static int placeIdCmp(const void *p, const void *q);
 static void sortPlaces(PlaceId *places, int numPlaces);
 
+PlaceId convertBestLocToMove(DraculaView dv, MoveWeight *mvArray, int MvArraySize, PlaceId bestMove, int index);
+
 // Make new MoveWeight Struct item
 // INPUT: void
 // OUTPUT: Newly created item
@@ -60,8 +62,9 @@ MoveWeight MVNewNode(void){
 	memoryError(new);
 	new->location = NOWHERE;
 	new->weight = -1;
-	new->moveType = NOWHERE;
+	//new->moveType = NOWHERE;
 	return new;
+
 }
 
 //Free a given array of type MoveWeight *
@@ -153,64 +156,110 @@ void printMW (MoveWeight * mw, int size) {
 // Changes "register best play" output string
 void decideDraculaMove(DraculaView dv)
 {
-	if (DvGetRound(dv) == 0) {
-		registerBestPlay(placeIdToAbbrev(spawnDracula(dv)), "Happy Birthday To Me!");
-		return;
-	}
-	int numPossibleMoves = -1;
-	PlaceId * possibleMoves = DvGetValidMoves(dv, &numPossibleMoves);
+    if (DvGetRound(dv) == 0) {
+        registerBestPlay(placeIdToAbbrev(spawnDracula(dv)), "Happy Birthday To Me!");
+        return;
+    }
 
-	printf("\nPossible moves are:       ");
-	for (int i = 0; i < numPossibleMoves; i ++) {
-		printf("%s, ", placeIdToName(possibleMoves[i]));
-	}
+    int numPossibleMoves = -1;
+    PlaceId * possibleMoves = DvGetValidMoves(dv, &numPossibleMoves);
 
-	int numPossibleLocations;
-	PlaceId *possibleLocations =DvWhereCanIGo(dv, &numPossibleLocations);
-	printf("\nPossible locations are:   ");
-	for (int i = 0; i < numPossibleLocations; i ++) {
-		printf("%s, ", placeIdToName(possibleLocations[i]));
-	}
-	printf("\n");
-	//int numPossibleMoves = -1;
-	//PlaceId * possibleLocations = DvGetValidMoves(dv, &numPossibleMoves);
-	//either there are no valid moves besides teleport, or drac hasnt made a move yet
-	if (numPossibleLocations == 0) {
-		//If it is not round 0 (where drac hasnt made a move yet) and there are no possible moves, dracula must teleport
-		if (DvGetRound(dv) != 0) {
-			registerBestPlay(placeIdToAbbrev(TELEPORT), "You'll never expect this!");
-			return;
-		//This is first round, just spawn dracula
-		} else {
-			registerBestPlay(placeIdToAbbrev(spawnDracula(dv)), "Happy Birthday To Me!");
-			return;
-		}
-	}
-	//sorts array alphabethically
-	sortPlaces(possibleLocations,numPossibleLocations);
-	printf("Number of possible moves is %d\n",numPossibleLocations);
-	int MvArraySize = numPossibleLocations;
-	MoveWeight * MvArray = MvArrayNew(MvArraySize);
-	weightMovesByLocation(dv, MvArray, MvArraySize,possibleLocations);
-	//do Stuff
-	sortMVbyWeight(MvArray, MvArraySize);
-	//highest weighted location is best choice
-	PlaceId bestMove = MvArray[0]->location;
-	printf("best move is: %s\n", placeIdToName(bestMove));
-	printMW(MvArray, MvArraySize);
+    printf("\nPossible moves are:       ");
+    for (int i = 0; i < numPossibleMoves; i ++) {
+        printf("%s, ", placeIdToName(possibleMoves[i]));
+    }
 
-	//make a hide move
-	if(bestMove == DvGetPlayerLocation(dv,PLAYER_DRACULA)) {
-		registerBestPlay(placeIdToAbbrev(HIDE), "marco polo?");
-	}
+    int numPossibleLocations;
+    PlaceId *possibleLocations =DvWhereCanIGo(dv, &numPossibleLocations);
+    printf("\nPossible locations are:   ");
+    for (int i = 0; i < numPossibleLocations; i ++) {
+        printf("%s, ", placeIdToName(possibleLocations[i]));
+    }
+    printf("\n");
+    //int numPossibleMoves = -1;
+    //PlaceId * possibleLocations = DvGetValidMoves(dv, &numPossibleMoves);
+    //either there are no valid moves besides teleport, or drac hasnt made a move yet
+    if (numPossibleLocations == 0) {
+        //If it is not round 0 (where drac hasnt made a move yet) and there are no possible moves, dracula must teleport
+        if (DvGetRound(dv) != 0) {
+            registerBestPlay(placeIdToAbbrev(TELEPORT), "You'll never expect this!");
+            return;
+        //This is first round, just spawn dracula
+        } else {
+            registerBestPlay(placeIdToAbbrev(spawnDracula(dv)), "Happy Birthday To Me!");
+            return;
+        }
+    }
+    //sorts array alphabethically
+    sortPlaces(possibleLocations,numPossibleLocations);
+    printf("Number of possible moves is %d\n",numPossibleLocations);
+    int MvArraySize = numPossibleLocations;
+    MoveWeight * MvArray = MvArrayNew(MvArraySize);
+    weightMovesByLocation(dv, MvArray, MvArraySize,possibleLocations);
+    //do Stuff
+    sortMVbyWeight(MvArray, MvArraySize);
+    //highest weighted location is best choice
+    PlaceId bestMove = MvArray[0]->location;
+    printf("best loc is: %s\n", placeIdToName(bestMove));
+    printMW(MvArray, MvArraySize);
+
+    bestMove = convertBestLocToMove(dv, MvArray, MvArraySize, bestMove, 0);
+
+    printf("best move is: %s\n", placeIdToName(bestMove));
+    //make a hide move
+    //if(bestMove == DvGetPlayerLocation(dv,PLAYER_DRACULA)) {
+    //	registerBestPlay(placeIdToAbbrev(HIDE), "marco polo?");
+    //}
 
 
-	registerBestPlay(placeIdToAbbrev(bestMove), "doing my best ");
-	freeArray(MvArray,numPossibleLocations);
-	return;
+    registerBestPlay(placeIdToAbbrev(bestMove), "doing my best ");
+    freeArray(MvArray,numPossibleLocations);
+    return;
 }
 
 
+
+// convert hide/doubleback locations to moves: HIDE/DOUBLEBACK_N
+PlaceId convertBestLocToMove(DraculaView dv, MoveWeight *MvArray, int MvArraySize, PlaceId bestMove, int index) {
+    int trailSize;
+    bool canFree;
+    PlaceId *trail = DvGetLocationHistory(dv, PLAYER_DRACULA, &trailSize, &canFree);
+    for (int loc = trailSize; loc > trailSize - 5; loc--) {
+        // if the best move is in the trail
+        if (bestMove == trail[loc]) {
+            // if drac hasn't hidden in the last 5 turns and bestMove is his curr location
+            //printf("canhide: %d\ncandb: %d\nbest move: %s\ntrail loc: %s\n", canHide(dv), canDoubleBack(dv), placeIdToName(bestMove), placeIdToName(trail[loc]));
+            //printf("loc: %d\n trailsize: %d\n", loc, trailSize);
+            if (canHide(dv) && loc == trailSize - 1) {
+                bestMove = HIDE;
+                break;
+            }
+            // if drac hasn't dbed in the last 5 turns
+            if (canDoubleBack(dv)) {
+                // chooses right db based on index of matched move in trail
+                switch (trailSize - loc - 1)
+                {
+                case 0: bestMove = DOUBLE_BACK_1; break;
+                case 1: bestMove = DOUBLE_BACK_2; break;
+                case 2: bestMove = DOUBLE_BACK_3; break;
+                case 3: bestMove = DOUBLE_BACK_4; break;
+                case 4: bestMove = DOUBLE_BACK_5; break;
+                default:
+                    break;
+                }
+                break;
+            }
+            // if drac can't do the best move
+            else {
+                if (index < MvArraySize - 1) index++;
+                else return bestMove; // none of the mvarray moves can be done, this case shouldn't happen
+                return convertBestLocToMove(dv, MvArray, MvArraySize, MvArray[index-1]->location, index);
+            }
+        }
+    }
+    if (canFree) free(trail);
+    return bestMove;
+}
 
 // Returns the placeid of a random place reachable by drac this turn
 //-------------------------------------------------------------------------------UNUSED

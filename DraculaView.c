@@ -239,7 +239,7 @@ bool canHide(DraculaView dv) {
 bool canDoubleBack(DraculaView dv) {
     // checks that he hasn't doubled back in the last 5 turns
     if ((dv->roundNumber - DRACULA->lastDoubleback) > 5
-    || DRACULA->lastHidden < 0) return true;
+    || DRACULA->lastDoubleback < 0) return true;
     return false;
 }
 

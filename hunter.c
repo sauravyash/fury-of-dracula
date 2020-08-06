@@ -9,208 +9,180 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
+#include <string.h>
+#include <stdio.h>
+
 #include "Game.h"
 #include "hunter.h"
 #include "HunterView.h"
-#include <time.h>
-PlaceId getRandomMove(HunterView hv);
+#include "Places.h"
+
+
+#define PLAYER1_START_POS 22
+#define PLAYER2_START_POS 11
+#define PLAYER3_START_POS 17
+#define PLAYER4_START_POS 44
+
+// FUNCTION DEC:
+PlaceId MapSleuth (HunterView hv);
+PlaceId DraculaHunt (HunterView hv, PlaceId bestMove, Player current_player);
+PlaceId VampHunt (HunterView hv, bool drac_found, Player current_player, PlaceId bestMove);
+
+
 void decideHunterMove(HunterView hv)
 {
-	// TODO: Replace this with something better!
-	srand(time(NULL));
-	PlaceId bestMove;
-	int pathLength = -1;
-	if (HvGetRound(hv) == 0) {
-		bestMove = getRandomMove(hv);
-		registerBestPlay(placeIdToAbbrev(bestMove), "marco polo?");
-		return;
+	// First things first:
+	Round round = HvGetRound(hv);
+	//int current_score = HvGetScore(hv);
+	Player current_player = HvGetPlayer(hv);
+	PlaceId bestMove = NOWHERE;
+	
+	// Do we need to check if the hunter is dead lol??
+	
+	// If it is the first round, give everyone a position:
+	if (round == 0) {    
+	    if(current_player == PLAYER_LORD_GODALMING) bestMove = PARIS;
+		else if(current_player == PLAYER_DR_SEWARD) bestMove = BERLIN;
+		else if(current_player == PLAYER_VAN_HELSING) bestMove = MADRID;
+		else if(current_player == PLAYER_MINA_HARKER) bestMove = CASTLE_DRACULA;
+		
+		// Checking that the player has a place to move to...
+		if (bestMove == NOWHERE) printf("ERROR: No place allocated...\n");
+	    
+	    registerBestPlay(placeIdToAbbrev(bestMove), "Lol we moving");
+	    return;
 	}
-	Player hunter = HvGetPlayer(hv);
-	int health = HvGetHealth(hv, hunter);
-	PlaceId * bloodyBrickRoad;
-	if(health <= 0) {
-		//hunter is gonna get tp'ed to hospital
-		bloodyBrickRoad =  HvWhereCanIGo(hv, &pathLength);
-		bestMove = bloodyBrickRoad[rand() % pathLength];
-		registerBestPlay(placeIdToAbbrev(bestMove), "+1HP");
-		return;
-	}
+    
+    // SORT PLAYERS BY ROLE:
+    
+    // PATROL EDGES OF MAP
+    // Van Hell to patrol the edges of the map...
+    // Go to furthest location from hunters...
+    if (current_player == PLAYER_VAN_HELSING) {
+        bestMove = MapSleuth (hv);
+    }
+    
+    // GUARD CASTLE DRAC
+    // When we have getlastlocation function maybe rotate:
+    // Castle_Drac->Galatz->Klausenburg and then stay there if encounter Drac.
+    if (current_player == PLAYER_MINA_HARKER) {
+        bestMove = CASTLE_DRACULA;
+    }
+    
+    // CHASING DRAC & VAMPS
+    // So if any player is closest to drac make them hunt him and leave earlier
+    // job, but don't make them leave their job just to follow the leader.
+    int path = 0;
+    PlaceId Drac_Loc = HvGetLastKnownDraculaLocation(hv, &path);
+    PlaceId Vamp_Loc = HvGetVampireLocation(hv);
+    bool drac_found = false;
+    bool vamp_found = false;
+    if (placeIsReal(Drac_Loc)) {
+        bestMove = DraculaHunt (hv, bestMove, current_player);
+        drac_found = true;
+    }
+    if (current_player == PLAYER_LORD_GODALMING || current_player == PLAYER_DR_SEWARD) {
+        if (placeIsReal(Vamp_Loc)) {
+            bestMove = VampHunt (hv, drac_found, current_player, bestMove);
+            vamp_found = true;
+        }
+        if (drac_found == false && vamp_found == false) {
+            // This is the rando bit:
+            int len = 0;
+		    PlaceId *possible_moves = HvWhereCanIGo(hv, &len);
+		    int r = (rand()%(len-1))+1;
+		    bestMove = possible_moves[r];
+        }
+    }
+    
+	
+	// Return that move...
+	registerBestPlay(placeIdToAbbrev(bestMove), "Lol we moving");
+	return;
+	
+}
 
-	PlaceId vamp = HvGetVampireLocation(hv);
-	if (vamp != NOWHERE) {
+PlaceId DraculaHunt (HunterView hv, PlaceId bestMove, Player current_player) {
+    
+    // NOW FIND OUT WHERE DRAC IS FOR CHASING:
+    // Basically, whoever is closest to Drac becomes Leader...
+    // (or if drac is unknown, then Lord G)
+    Round drac_round = -1;
+    PlaceId Drac_Loc = HvGetLastKnownDraculaLocation(hv, &drac_round);
+    // If drac_round < round && drac_round != 1: Maybe estimate dracs moves
+    // ie. aim for a location a few places away from his last known location
+    // that is not water and is not in the direction of the hunters.
+    Player Leader;
+    // Find player closest to Drac.
+    int temp_player = 0;
+    int length = NUM_REAL_PLACES;
+    int new_length = NUM_REAL_PLACES;
+    while (temp_player < NUM_PLAYERS) {
+        HvGetShortestPathTo(hv, temp_player, Drac_Loc, &new_length);
+        if (new_length < length) {
+            new_length = length;
+            Leader = temp_player;
+        }
+        temp_player++;
+    }
+    
+    printf("Current leader is %d.\n", Leader);
+	PlaceId Leader_Loc = HvGetPlayerLocation(hv, Leader);
+	printf("All patrolling players move towards <%s>.\n", placeIdToName(Leader_Loc));
+    
+    if (current_player == Leader) {
+		printf("I am the leader\n");
+		// Basically try and move closer to dracula.
+		int len = 0;
+		PlaceId *chaseDrac = HvGetShortestPathTo(hv, current_player, Drac_Loc, &len);
+		if (len > 0) bestMove = chaseDrac[0];
+		else bestMove = Leader_Loc;
+	
+	} else {
+		if (current_player == PLAYER_MINA_HARKER || current_player == PLAYER_VAN_HELSING) {
+		    // Don't follow after drac... or should u hmm...
+		    return bestMove;
+		}
+		printf("I am a follower");
+		// Basically move closer to the leader...
+		int len = 0;
+		PlaceId *followLead = HvGetShortestPathTo(hv, current_player, Leader_Loc, &len);
+		if (len > 0) bestMove = followLead[0];
+		else bestMove = Leader_Loc;
+	}
+	
+	return bestMove;
+}
+
+PlaceId VampHunt (HunterView hv, bool drac_found, Player current_player, PlaceId bestMove) {
+    
+    PlaceId Vamp_Loc = HvGetVampireLocation(hv);
+	if (placeIsReal(Vamp_Loc)) {
 		//we know where the vamp is
-		bloodyBrickRoad = HvGetShortestPathTo(hv, hunter, vamp,
-		                             &pathLength);
-		if (pathLength != -1) {
-			bestMove = bloodyBrickRoad[0];
-			registerBestPlay(placeIdToAbbrev(bestMove), "its a stakeout");
-			return;
-		}
+		int len = 0;
+		PlaceId *chaseVamp = HvGetShortestPathTo(hv, current_player, Vamp_Loc, &len);
+		if (len > 0 ) {
+		    // If drac has been found, let Lord G chase drac and let Dr S chase
+		    // the Vamp.
+		    if (drac_found == true && current_player == PLAYER_DR_SEWARD) {        
+			    return chaseVamp[0];
+			// If drac has not been found let both of them chase the vampire.
+			} else if (drac_found == false) {
+			    return chaseVamp[0];
+			}
+		} 
 
 	}
-
-	Round sawDracRound = -1;
-	PlaceId lastSawDrac = HvGetLastKnownDraculaLocation(hv, &sawDracRound);
-	if(sawDracRound != -1) {
-		//have seen drac before
-		bloodyBrickRoad = HvGetShortestPathTo(hv, hunter, lastSawDrac,
-		                             &pathLength);
-		if (pathLength != -1) {
-			bestMove = bloodyBrickRoad[0];
-			registerBestPlay(placeIdToAbbrev(bestMove), "the game is on!");
-			return;
-		}
-
-	} else  {
-		//hunter is in hospital!?? but should have healed up now
-		bloodyBrickRoad =  HvWhereCanIGo(hv, &pathLength);
-		bestMove = bloodyBrickRoad[rand() % pathLength];
-		registerBestPlay(placeIdToAbbrev(bestMove), "~~~");
-		return;
-	}
-
-
+	return bestMove;
 }
 
-
-// Returns the placeid of a random place reachable by drac this turn
-//discountinued
-PlaceId getRandomMove(HunterView hv) {
-	//for ultimate randomness. comment out if you want repeateability
-	int r = rand();
-		//drac hasnt had a turn yet
-		//printf("RNGods: %d\n", r);
-		PlaceId location = r % NUM_REAL_PLACES;
-
-		//printf("attempting to spawn at %s\n", placeIdToName(location));
-		//PlaceId *possibleMovesHunter;
-		//int numHunterLocations = -1;
-//hunter cant be at castle drac
-		while( location == CASTLE_DRACULA) {
-			srand ( time(0) );
-					location = rand() % NUM_REAL_PLACES;
-			//printf("attempting to spawn at %s\n", placeIdToName(location));
-		}
-		//printf("successfully spawned at %s\n", placeIdToName(location));
-		return location;
+PlaceId MapSleuth (HunterView hv) {
+    
+    int poss_places = 0;
+    PlaceId *possible_places = HvWhereCanIGoByType(hv, true, false,
+                             true, &poss_places);
+    
+    // Select one for now... randomly:
+    if (poss_places > 1) return possible_places[1];
+    else return possible_places[0];
 }
-
-// Find places with weights
-//this is all for hunter.c?
-/*
-if (possibleMoves == NULL) {
-	// first move
-	// TODO
-} else if (numPossibleMoves < 1) {
-	// when no possible moves, only option: TP
-	// TODO
-} else {
-	// find distance to all positions
-	for (int i = 0; i < numPossibleMoves; i++) {
-		PlaceId dest = possibleMoves[i];
-		// Make a visited array
-		int visited[NUM_REAL_PLACES];
-		for (int i = 0; i < NUM_REAL_PLACES; i++) {
-			visited[i] = -1;
-		}
-
-		visited[0] = src;
-		bool found = false;
-
-		// Make Queue to travel breadth-first
-		Queue q = newQueue();
-		QueueJoin(q, src);
-
-		// bool pathFound = false;
-		// int temp_round = 0;
-		// PlaceId temp_place = NOWHERE;
-
-		// BFS
-		while (!found && !QueueIsEmpty(q)) {
-			int prev_place = QueueLeave(q);
-			// Checking the round:
-			// int path_count = 0;
-			// PlaceId prev = prev_place;
-			// while (prev != src) {
-			// 	path_count++;
-			// 	prev = visited[prev];
-			// }
-			// temp_round += path_count;
-
-			int numLocs = numPossibleMoves;
-			PlaceId *list = possibleMoves;
-
-			if (prev_place == dest) {
-				found = true;
-			} else for (int i = 0; i < numLocs; i++) {
-				int new_place = possibleMoves[i];
-				if (visited[new_place] == -1 && prev_place != new_place) {
-					visited[new_place] = prev_place;
-					QueueJoin(q, new_place);
-					// if (new_place == dest) {
-					// 	pathFound = true;
-					// }
-				}
-			}
-			free(list);
-		}
-		dropQueue(q);
-
-		// Reset values:
-		// temp_place = NOWHERE;
-		// temp_round = 0;
-
-		// if (!pathFound) return 0;
-		bool pathFound = false;
-		for (int i = 0; i < NUM_REAL_PLACES; i++) {
-			if (visited[i] == src) {
-				pathFound = true;
-				break;
-			}
-		}
-
-		if (!pathFound) {
-			// This should never occur (indicates problem in DvWhereCanIGo)
-
-			// TODO: create error handling in case this happens
-		} else {
-			int reversePath[NUM_REAL_PLACES];
-			reversePath[0] = dest;
-
-			int prev = visited[dest];
-			int len = 1;
-			while (visited[prev] != -1) {
-				reversePath[len] = prev;
-				len++;
-				prev = visited[prev];
-				if (prev == src) {
-					reversePath[len] = src;
-					break;
-				}
-			}
-
-			for (int i = 0; i < numPossibleMoves; i++) {
-				if (placeWeights[i]->location == reversePath[i]) {
-					// do stuff to weights here
-					placeWeights[i]->weight = 0.5;
-				}
-			}
-
-			// Code for finding path from src->dest
-			// PlaceId *path = malloc ((len + 1) * sizeof(PlaceId));
-			// memoryError(path);
-			// for (int i = 0, j = len; i <= len; i++, j--) {
-			// 	path[i] = reversePath[j];
-			// }
-			//free(path);
-		}
-	}
-	// Mind blank about shortening array from front, so...
-	PlaceId *path_without_src = malloc ((k) * sizeof(PlaceId));
-	memoryError(path_without_src);
-	for (int i = 0; i < k; i++) {
-		path_without_src[i] = path[i + 1];
-	}
-
-}
-*/
