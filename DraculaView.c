@@ -216,7 +216,7 @@ PlaceId *DvGetTrapLocations(DraculaView dv, int *numTraps)
 bool isInTrail(DraculaView dv, PlaceId location) {
     // only compare against as many moves as exist
     int max = (DRACULA->currentLocationIndex < 6 ? DRACULA->currentLocationIndex : 6);
-    for (int i = 0; i <= max; i++) {
+    for (int i = max - 6; i < max; i++) {
         if (location == DRACULA->locationHistory[i]) return true;
     }
     return false;
