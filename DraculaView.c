@@ -601,7 +601,13 @@ static void draculaMove(DraculaView dv, char *string) {
     city[2] = '\0';
 
     // Compare and find city by abbreviation:
+    // careful when doublebacks, this turns into a doubleback code
     PlaceId curr_place = placeAbbrevToId(city);
+    
+    // hide is last city
+    if (curr_place == HIDE) {
+        curr_place = DRACULA->locationHistory[DRACULA->currentLocationIndex];
+    }
 
     //Unknown city move
     if (strcmp(city, "C?") == 0) {
@@ -613,16 +619,39 @@ static void draculaMove(DraculaView dv, char *string) {
         draculaLocationHistoryAppend(dv, SEA_UNKNOWN);
     }
 
+    // all this assumes that the string is correct i.e. move is legal
     // Hide move ->stays in the city for another round
     else if (strcmp(city,"HI") == 0) {
         DRACULA->lastHidden = dv->roundNumber;
-        draculaLocationHistoryAppend(dv, curr_place);
+        draculaLocationHistoryAppend(dv, DRACULA->locationHistory[DRACULA->currentLocationIndex]);
     }
     // Double back move
-    else if (strncmp(city,"D",1) == 0) {
-        draculaLocationHistoryAppend(dv, curr_place);
+    else if (strcmp(city,"D1") == 0) {
+        draculaLocationHistoryAppend(dv, DRACULA->locationHistory[DRACULA->currentLocationIndex]);  
         DRACULA->lastDoubleback = dv->roundNumber;
     }
+    // Double back move
+    else if (strcmp(city,"D2") == 0) {
+        draculaLocationHistoryAppend(dv, DRACULA->locationHistory[DRACULA->currentLocationIndex - 1]);
+        DRACULA->lastDoubleback = dv->roundNumber;
+    }
+    // Double back move
+    else if (strcmp(city,"D3") == 0) {
+        draculaLocationHistoryAppend(dv, DRACULA->locationHistory[DRACULA->currentLocationIndex - 2]);
+        DRACULA->lastDoubleback = dv->roundNumber;
+    }
+    // Double back move
+    else if (strcmp(city,"D4") == 0) {
+        draculaLocationHistoryAppend(dv, DRACULA->locationHistory[DRACULA->currentLocationIndex - 3]);
+        DRACULA->lastDoubleback = dv->roundNumber;
+    }
+    // Double back move
+    else if (strcmp(city,"D5") == 0) {
+        draculaLocationHistoryAppend(dv, DRACULA->locationHistory[DRACULA->currentLocationIndex - 4]);
+        DRACULA->lastDoubleback = dv->roundNumber;
+    }
+
+
     //Location move that was revealed (ie all other cases)
     else {
         draculaLocationHistoryAppend(dv, curr_place);
@@ -667,7 +696,8 @@ static void draculaMove(DraculaView dv, char *string) {
             if (*c == ITS_A_TRAP) {
                 //PlaceId lastLoc = DRACULA->locationHistory[DRACULA->currentLocationIndex];
                 //trapLocationAppend(dv, lastLoc);
-                if(maxEncounters(dv, curr_place) == false)    trapLocationAppend(dv, curr_place);
+                if(maxEncounters(dv, curr_place) == false)
+                    trapLocationAppend(dv, DRACULA->locationHistory[DRACULA->currentLocationIndex]);
             }
         i++;
     }
