@@ -169,8 +169,8 @@ void decideDraculaMove(DraculaView dv)
     //    printf("%s, ", placeIdToName(possibleMoves[i]));
     //}
 
-    //int numPossibleLocations;
-    //PlaceId *possibleLocations =DvWhereCanIGo(dv, &numPossibleLocations);
+    int numPossibleLocations;
+    PlaceId *possibleLocations =DvWhereCanIGo(dv, &numPossibleLocations);
     //printf("\nPossible locations are:   ");
     //for (int i = 0; i < numPossibleLocations; i ++) {
     //    printf("%s, ", placeIdToName(possibleLocations[i]));
