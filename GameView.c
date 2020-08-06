@@ -833,11 +833,13 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
         switch(*c){
             // It's a trap!
             case ITS_A_TRAP:
+            printf("trap!\n");
                 gv->allPlayers[hunter]->health -= LIFE_LOSS_TRAP_ENCOUNTER;
                 checkHunterHealth(gv, hunter);
                 //remove trap
                 trapLocationRemove(gv, curr_place);
                 break;
+
 
             // Immature Vampire encounter
             case CLOSE_ENCOUNTERS_OF_THE_VTH_KIND:
@@ -846,6 +848,7 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
 
             // Dracula encounter
             case 'D':
+            printf("Dracula!\n");
                 gv->allPlayers[hunter]->health -= LIFE_LOSS_DRACULA_ENCOUNTER;
                 checkHunterHealth(gv, hunter);
                 DRACULA->health -= LIFE_LOSS_HUNTER_ENCOUNTER;
@@ -856,6 +859,7 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
         }
     }
     free(city);
+    printf("hunter %d health is %d\n", hunter, HUNTER->health);
     return;
 }
 
@@ -943,6 +947,7 @@ static void draculaMove(GameView gv, char *string) {
     // Game score decreases each time drac finishes turn
     gv->score -= SCORE_LOSS_DRACULA_TURN;
     free(city);
+    printf("drac health is %d\n", DRACULA->health);
     return;
 }
 
