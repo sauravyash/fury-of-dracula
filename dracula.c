@@ -24,6 +24,16 @@
 #include "Places.h"
 #include "Queue.h"
 
+#define SPAIN_MOVES BARCELONA,CADIZ,ALICANTE,GRANADA,SANTANDER,LISBON,MADRID,SARAGOSSA
+#define SPAIN_SIZE 8
+#define IRELAND_MOVES DUBLIN,GALWAY
+#define IRELAND_SIZE 2
+#define BRITAIN_MOVES EDINBURGH, LIVERPOOL, MANCHESTER, LONDON, SWANSEA, PLYMOUTH
+#define BRITAIN_SIZE 6
+#define ITALY_MOVES CAGLIARI,NAPLES,BARI,ROME,FLORENCE	//I know athens isnt in italy but theres only one way in/out thats not by sea so i dont want drac to spawn there
+#define ITALY_SIZE 5
+//PlaceId unwantedPlaces[] = {SPAIN_MOVES,IRELAND_MOVES,BRITAIN_MOVES,ITALY_MOVES};
+
 typedef struct moveweight *MoveWeight;
 struct moveweight {
 	PlaceId location;
@@ -79,16 +89,19 @@ MoveWeight * MvArrayNew(int size) {
 // INPUT: DraculaView
 // OUTPUT: non specific spawn location
 PlaceId spawnDracula (DraculaView dv) {
+	PlaceId unwantedPlaces[] = {SPAIN_MOVES,IRELAND_MOVES,BRITAIN_MOVES,ITALY_MOVES,ATHENS
+		DvGetPlayerLocation(dv, PLAYER_LORD_GODALMING),
+		DvGetPlayerLocation(dv, PLAYER_DR_SEWARD),
+		DvGetPlayerLocation(dv, PLAYER_VAN_HELSING),
+		DvGetPlayerLocation(dv, PLAYER_MINA_HARKER) };
+	sortPlaces(unwantedPlaces,SPAIN_SIZE+ITALY_SIZE+IRELAND_SIZE+BRITAIN_SIZE+1+(NUM_PLAYERS-1));
+	printf("Unwanted places are:\n");
+	for(int i = 0; i <SPAIN_SIZE+ITALY_SIZE+IRELAND_SIZE+BRITAIN_SIZE+1+(NUM_PLAYERS-1); i++ ){
+		printf("%s\n", placeIdToName(unwantedPlaces[i]));
+	}
 	srand (time(0));
 	PlaceId location = rand() % NUM_REAL_PLACES;
-	while(placeIdToType(location) == SEA || location == GALWAY || location == HOSPITAL_PLACE ||location == DUBLIN
-	|| location == SARAGOSSA || location == ALICANTE || location == BARCELONA || location == SANTANDER
-	|| location == MADRID || location == GRANADA || location == CADIZ || location == LISBON || location == CAGLIARI
-	|| location == DvGetPlayerLocation(dv, PLAYER_LORD_GODALMING) || location
-	== DvGetPlayerLocation(dv, PLAYER_DR_SEWARD) || location ==
-	DvGetPlayerLocation(dv, PLAYER_VAN_HELSING) || location == DvGetPlayerLocation(dv, PLAYER_MINA_HARKER) ){
-		location = rand() % NUM_REAL_PLACES;
-	}
+
 	return location;
 }
 
