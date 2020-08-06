@@ -17,12 +17,6 @@
 #include "HunterView.h"
 #include "Places.h"
 
-
-#define PLAYER1_START_POS 22
-#define PLAYER2_START_POS 11
-#define PLAYER3_START_POS 17
-#define PLAYER4_START_POS 44
-
 // FUNCTION DEC:
 PlaceId MapSleuth (HunterView hv);
 PlaceId DraculaHunt (HunterView hv, PlaceId bestMove, Player current_player);
