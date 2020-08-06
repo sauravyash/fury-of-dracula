@@ -17,12 +17,6 @@
 #include "HunterView.h"
 #include "Places.h"
 
-
-#define PLAYER1_START_POS 22
-#define PLAYER2_START_POS 11
-#define PLAYER3_START_POS 17
-#define PLAYER4_START_POS 44
-
 // FUNCTION DEC:
 PlaceId MapSleuth (HunterView hv);
 PlaceId DraculaHunt (HunterView hv, PlaceId bestMove, Player current_player);
@@ -87,14 +81,12 @@ void decideHunterMove(HunterView hv)
             vamp_found = true;
         }
         if (drac_found == false && vamp_found == false) {
-            // This is the rando bit:
+            // Select one for now... randomly:
             int len = 0;
 		    PlaceId *possible_moves = HvWhereCanIGo(hv, &len);
-		    int r = (rand()%(len-1))+1;
-		    bestMove = possible_moves[r];
+		    if (len > 0) bestMove = possible_moves[1];
         }
     }
-    
 	
 	// Return that move...
 	registerBestPlay(placeIdToAbbrev(bestMove), "Lol we moving");
@@ -156,23 +148,54 @@ PlaceId DraculaHunt (HunterView hv, PlaceId bestMove, Player current_player) {
 
 PlaceId VampHunt (HunterView hv, bool drac_found, Player current_player, PlaceId bestMove) {
     
+    // NOW FIND OUT WHERE VAMP IS FOR CHASING:
+    // Basically, whoever is closest to Vamp becomes Leader...
+    // (or if vamp is unknown, then Lord G)
+    //Round vamp_round = -1;
     PlaceId Vamp_Loc = HvGetVampireLocation(hv);
-	if (placeIsReal(Vamp_Loc)) {
-		//we know where the vamp is
+    Player Leader;
+    // Find player closest to Vamp.
+    int temp_player = 0;
+    int length = NUM_REAL_PLACES;
+    int new_length = NUM_REAL_PLACES;
+    int hunters_chasing = 0;
+    if (drac_found == true) hunters_chasing = 1;
+    else hunters_chasing = 2;
+    temp_player = hunters_chasing - 1;
+    while (temp_player >= 0) {
+        HvGetShortestPathTo(hv, temp_player, Vamp_Loc, &new_length);
+        if (new_length < length) {
+            new_length = length;
+            Leader = temp_player;
+        }
+        temp_player--;
+    }
+    
+    printf("Current leader is %d.\n", Leader);
+	PlaceId Leader_Loc = HvGetPlayerLocation(hv, Leader);
+	printf("All patrolling players move towards <%s>.\n", placeIdToName(Leader_Loc));
+    
+    if (current_player == Leader) {
+		printf("I am the leader\n");
+		// Basically try and move closer to dracula.
 		int len = 0;
-		PlaceId *chaseVamp = HvGetShortestPathTo(hv, current_player, Vamp_Loc, &len);
-		if (len > 0 ) {
-		    // If drac has been found, let Lord G chase drac and let Dr S chase
-		    // the Vamp.
-		    if (drac_found == true && current_player == PLAYER_DR_SEWARD) {        
-			    return chaseVamp[0];
-			// If drac has not been found let both of them chase the vampire.
-			} else if (drac_found == false) {
-			    return chaseVamp[0];
-			}
-		} 
-
+		PlaceId *chaseDrac = HvGetShortestPathTo(hv, current_player, Vamp_Loc, &len);
+		if (len > 0) bestMove = chaseDrac[0];
+		else bestMove = Leader_Loc;
+	
+	} else {
+		if (current_player == PLAYER_LORD_GODALMING && drac_found == true) {
+		    // Don't follow after vamp..
+		    return bestMove;
+		}
+		printf("I am a follower");
+		// Basically move closer to the leader...
+		int len = 0;
+		PlaceId *followLead = HvGetShortestPathTo(hv, current_player, Leader_Loc, &len);
+		if (len > 0) bestMove = followLead[0];
+		else bestMove = Leader_Loc;
 	}
+	
 	return bestMove;
 }
 
