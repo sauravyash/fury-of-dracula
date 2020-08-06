@@ -127,10 +127,14 @@ PlaceId spawnDracula (DraculaView dv) {
 		printf("cant' be %s\n", placeIdToName(location));
 		//char input [10];
 		//scanf("%s",input);
-		i+=MAGIC_NUMBER_SEED;
+		i++;
 		srand (time(0));
 		location = (rand() + i )% NUM_REAL_PLACES;
 		printf("trying %s\n",placeIdToName(location));
+		if(i == NUM_REAL_PLACES) {
+			//make it a sea move perhaps?
+			break;
+		}
 	}
 	return location;
 }
