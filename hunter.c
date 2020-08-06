@@ -55,8 +55,12 @@ void decideHunterMove(HunterView hv)
 	Player current_player = HvGetPlayer(hv);
 	PlaceId bestMove = NOWHERE;
 	
-	// Do we need to check if the hunter is dead lol??
-	
+	// We need to check if the hunter is dead
+    if (HvGetHealth(hv, current_player) < 1) {
+        registerBestPlay(placeIdToAbbrev(ST_JOSEPH_AND_ST_MARY), "rip i died");
+        return;
+    }
+
 	// If it is the first round, give everyone a position:
 	if (round == 0) {    
 	    if(current_player == PLAYER_LORD_GODALMING) bestMove = PARIS;
@@ -70,23 +74,7 @@ void decideHunterMove(HunterView hv)
 	    registerBestPlay(placeIdToAbbrev(bestMove), "Lol we moving");
 	    return;
 	}
-    
-    // SORT PLAYERS BY ROLE:
-    
-    // PATROL EDGES OF MAP
-    // Van Hell to patrol the edges of the map...
-    // Go to furthest location from hunters...
-/*    if (current_player == PLAYER_VAN_HELSING) {
-        bestMove = MapSleuth(hv);
-    }
-    
-    // GUARD CASTLE DRAC
-    // When we have getlastlocation function maybe rotate:
-    // Castle_Drac->Galatz->Klausenburg and then stay there if encounter Drac.
-    if (current_player == PLAYER_MINA_HARKER) {
-        bestMove = CASTLE_DRACULA;
-    }
- */   
+     
     // CHASING DRAC
     // So if any player is closest to drac make them hunt him and leave earlier
     // job, but don't make them leave their job just to follow the leader.
@@ -98,8 +86,7 @@ void decideHunterMove(HunterView hv)
 	
 }
 
-PlaceId DraculaHunt (HunterView hv, PlaceId bestMove, Player current_player) {
-    
+PlaceId DraculaHunt (HunterView hv, PlaceId bestMove, Player current_player) { 
     // NOW FIND OUT WHERE DRAC IS FOR CHASING:
     // Basically, whoever is closest to Drac becomes Leader...
     // (or if drac is unknown, then Lord G)
@@ -216,7 +203,6 @@ void weightMovesByLocation(HunterView hv, MoveWeight *mw, int mwSize, PlaceId *p
         mw[currPlayerPlaceIndex]->weight *= (HvGetRound(hv) - rounds) / 3;
         mw[currPlayerPlaceIndex]->weight *= notOptimal > 1 ? 1.75 :
             notOptimal > 0 ? 1.25 : 0.9;
-
     }
 
 
