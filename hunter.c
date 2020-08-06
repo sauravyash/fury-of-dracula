@@ -10,6 +10,8 @@
 ////////////////////////////////////////////////////////////////////////
 #include <string.h>
 #include <stdio.h>
+#include <stdbool.h>
+#include <assert.h>
 
 #include "Game.h"
 #include "hunter.h"
@@ -22,11 +24,26 @@
 #define PLAYER3_START_POS 17
 #define PLAYER4_START_POS 44
 
+// Moveweight Struct
+typedef struct moveweight *MoveWeight;
+
+struct moveweight {
+    PlaceId location;
+    double weight;
+    PlaceId moveType;
+};
+
 // FUNCTION DEC:
 PlaceId MapSleuth (HunterView hv);
 PlaceId DraculaHunt (HunterView hv, PlaceId bestMove, Player current_player);
-PlaceId VampHunt (HunterView hv, bool drac_found, Player current_player, PlaceId bestMove);
 
+int findMoveWeightIndex(MoveWeight *mw, int mwSize, PlaceId pID);
+static void sortMVbyWeight(MoveWeight *array, int arraySize);
+static int MVWeightcompare(const void *p, const void *q);
+void weightMovesByLocation(HunterView hv, MoveWeight *mw, int mwSize, PlaceId *possibleLocations, bool isLeader);
+MoveWeight MVNewNode(void);
+MoveWeight *MvArrayNew(int size);
+static void memoryError (const void *input);
 
 void decideHunterMove(HunterView hv)
 {
@@ -58,7 +75,7 @@ void decideHunterMove(HunterView hv)
     // Van Hell to patrol the edges of the map...
     // Go to furthest location from hunters...
     if (current_player == PLAYER_VAN_HELSING) {
-        bestMove = MapSleuth (hv);
+        bestMove = MapSleuth(hv);
     }
     
     // GUARD CASTLE DRAC
@@ -68,32 +85,10 @@ void decideHunterMove(HunterView hv)
         bestMove = CASTLE_DRACULA;
     }
     
-    // CHASING DRAC & VAMPS
+    // CHASING DRAC
     // So if any player is closest to drac make them hunt him and leave earlier
     // job, but don't make them leave their job just to follow the leader.
-    int path = 0;
-    PlaceId Drac_Loc = HvGetLastKnownDraculaLocation(hv, &path);
-    PlaceId Vamp_Loc = HvGetVampireLocation(hv);
-    bool drac_found = false;
-    bool vamp_found = false;
-    if (placeIsReal(Drac_Loc)) {
-        bestMove = DraculaHunt (hv, bestMove, current_player);
-        drac_found = true;
-    }
-    if (current_player == PLAYER_LORD_GODALMING || current_player == PLAYER_DR_SEWARD) {
-        if (placeIsReal(Vamp_Loc)) {
-            bestMove = VampHunt (hv, drac_found, current_player, bestMove);
-            vamp_found = true;
-        }
-        if (drac_found == false && vamp_found == false) {
-            // This is the rando bit:
-            int len = 0;
-		    PlaceId *possible_moves = HvWhereCanIGo(hv, &len);
-		    int r = (rand()%(len-1))+1;
-		    bestMove = possible_moves[r];
-        }
-    }
-    
+    bestMove = DraculaHunt (hv, bestMove, current_player);
 	
 	// Return that move...
 	registerBestPlay(placeIdToAbbrev(bestMove), "Lol we moving");
@@ -112,30 +107,54 @@ PlaceId DraculaHunt (HunterView hv, PlaceId bestMove, Player current_player) {
     // ie. aim for a location a few places away from his last known location
     // that is not water and is not in the direction of the hunters.
     Player Leader;
-    // Find player closest to Drac.
-    int temp_player = 0;
-    int length = NUM_REAL_PLACES;
-    int new_length = NUM_REAL_PLACES;
-    while (temp_player < NUM_PLAYERS) {
-        HvGetShortestPathTo(hv, temp_player, Drac_Loc, &new_length);
-        if (new_length < length) {
-            new_length = length;
-            Leader = temp_player;
+    if (!placeIsReal(Drac_Loc)) Leader = PLAYER_LORD_GODALMING;
+    else {
+        // Find player closest to Drac.
+        int temp_player = 0;
+        int length = NUM_REAL_PLACES;
+        int new_length = NUM_REAL_PLACES;
+        while (temp_player < NUM_PLAYERS) {
+            HvGetShortestPathTo(hv, temp_player, Drac_Loc, &new_length);
+            if (new_length < length) {
+                new_length = length;
+                Leader = temp_player;
+            }
+            temp_player++;
         }
-        temp_player++;
     }
     
     printf("Current leader is %d.\n", Leader);
 	PlaceId Leader_Loc = HvGetPlayerLocation(hv, Leader);
 	printf("All patrolling players move towards <%s>.\n", placeIdToName(Leader_Loc));
     
+    int numPossibleLocations = 0;
+    PlaceId *possible_places = HvWhereCanIGoByType(hv, true, false,
+                             true, &numPossibleLocations);
+    MoveWeight *MvArray = MvArrayNew(numPossibleLocations);
+    bool isLeader = HvGetPlayer(hv) == Leader;
+    weightMovesByLocation(hv, MvArray, numPossibleLocations, possible_places, isLeader);
+    
+    // sort by weight
+    sortMVbyWeight(MvArray, numPossibleLocations);
+    
+    return MvArray[0]->location;
+
+    /* using moveweights instead [delete once mw is working]
     if (current_player == Leader) {
 		printf("I am the leader\n");
 		// Basically try and move closer to dracula.
-		int len = 0;
-		PlaceId *chaseDrac = HvGetShortestPathTo(hv, current_player, Drac_Loc, &len);
-		if (len > 0) bestMove = chaseDrac[0];
-		else bestMove = Leader_Loc;
+		if (placeIsReal(Drac_Loc)) {
+		    int len = 0;
+		    PlaceId *chaseDrac = HvGetShortestPathTo(hv, current_player, Drac_Loc, &len);
+		    if (len > 0) bestMove = chaseDrac[0];
+		    else bestMove = Leader_Loc;
+		} else {
+		    // If drac has not been found!!!
+		    int len = 0;
+		    PlaceId *possible_moves = HvWhereCanIGo(hv, &len);
+		    int r = (rand()%(len-1))+1;
+		    bestMove = possible_moves[r];
+		}
 	
 	} else {
 		if (current_player == PLAYER_MINA_HARKER || current_player == PLAYER_VAN_HELSING) {
@@ -149,39 +168,143 @@ PlaceId DraculaHunt (HunterView hv, PlaceId bestMove, Player current_player) {
 		if (len > 0) bestMove = followLead[0];
 		else bestMove = Leader_Loc;
 	}
-	
-	return bestMove;
-}
 
-PlaceId VampHunt (HunterView hv, bool drac_found, Player current_player, PlaceId bestMove) {
-    
-    PlaceId Vamp_Loc = HvGetVampireLocation(hv);
-	if (placeIsReal(Vamp_Loc)) {
-		//we know where the vamp is
-		int len = 0;
-		PlaceId *chaseVamp = HvGetShortestPathTo(hv, current_player, Vamp_Loc, &len);
-		if (len > 0 ) {
-		    // If drac has been found, let Lord G chase drac and let Dr S chase
-		    // the Vamp.
-		    if (drac_found == true && current_player == PLAYER_DR_SEWARD) {        
-			    return chaseVamp[0];
-			// If drac has not been found let both of them chase the vampire.
-			} else if (drac_found == false) {
-			    return chaseVamp[0];
-			}
-		} 
-
-	}
 	return bestMove;
+    */
 }
 
 PlaceId MapSleuth (HunterView hv) {
-    
-    int poss_places = 0;
+    int numPossibleLocations = 0;
     PlaceId *possible_places = HvWhereCanIGoByType(hv, true, false,
-                             true, &poss_places);
+                             true, &numPossibleLocations);
+    
+    /*MoveWeight *MvArray = MvArrayNew(MvArraySize);
+    weightMovesByLocation(dv, MvArray, numPossibleLocations, possible_places);
+    
+    // sort by weight
+    sortMVbyWeight(MvArray, numPossibleLocations);
+    */
     
     // Select one for now... randomly:
-    if (poss_places > 1) return possible_places[1];
+    if (numPossibleLocations > 1) return possible_places[1];
     else return possible_places[0];
+}
+
+// weight dracula's possible moves based on if dracula is currently there or reachable
+// Usage: 
+/* */
+void weightMovesByLocation(HunterView hv, MoveWeight *mw, int mwSize, PlaceId *possibleLocations, 
+        bool isLeader) {
+    
+    assert(mwSize > 0);
+
+    Player currentPlayer = HvGetPlayer(hv);
+    //associate a certain weight to each location
+    for (int i = 0; i < mwSize; i++) {
+        mw[i]->location = possibleLocations[i];
+        mw[i]->weight = 10;
+        
+        // if dracula is already at location, increase weight
+        int *round = malloc(sizeof(int));
+        PlaceId LastKnownDracLoc = HvGetLastKnownDraculaLocation(hv, round);
+        
+        // Leader Chases if last known loc is within 10 moves
+        if (LastKnownDracLoc == possibleLocations[i] && (HvGetRound(hv) - *round) < 10 && isLeader) {
+            if (placeIdToType(possibleLocations[i]) == SEA) {
+                mw[i]->weight *= 2;
+            }
+            mw[i]->weight *= 5 - (HvGetRound(hv) - *round);
+        }
+
+        free(round);
+    }
+
+    int currPlayerPlaceIndex = findMoveWeightIndex(mw, mwSize, HvGetPlayerLocation(hv,currentPlayer));
+    //leader moves
+    if (isLeader) {
+        if (currPlayerPlaceIndex == -1) {
+            fprintf(stderr, "couldn't find hunter's location in moveweights\n");
+        } else if (HvGetHealth(hv, currentPlayer) < 4) {
+            // Should hunter heal?
+            mw[currPlayerPlaceIndex]->weight *= 4;
+        } else if (HvGetHealth(hv, currentPlayer) < 7) {
+            mw[currPlayerPlaceIndex]->weight *= 1.5;
+        } else {
+            mw[currPlayerPlaceIndex]->weight *= 0.5;
+        }
+    } else {
+        if (HvGetHealth(hv, currentPlayer) < 7) {
+            // Should hunter heal?
+            mw[currPlayerPlaceIndex]->weight *= 4;
+        } 
+        
+        /*int pathLen;
+        PlaceId *shortestPath = HvGetShortestPathTo(hv, currentPlayer, ,&pathLen);
+        if (*/
+    }
+    
+    // research
+    // int healthArray[4] = {0};
+
+
+    return;
+}
+
+
+// ALL FUNCTIONS BELOW COPIED FROM dracula.c
+MoveWeight *MvArrayNew(int size) {
+    MoveWeight *arrayWeightedMoves = malloc(size * sizeof(MoveWeight));
+    for (int i = 0; i < size; i++){
+        arrayWeightedMoves[i] = MVNewNode();
+    }
+    return arrayWeightedMoves;
+}
+
+MoveWeight MVNewNode(void){
+    MoveWeight new = malloc(sizeof(*new));
+    memoryError(new);
+    new->location = NOWHERE;
+    new->weight = -1;
+    new->moveType = NOWHERE;
+    return new;
+}
+
+// COMPARATOR: Compare the order of the elements pointed to by *p and *q.
+// -- INPUT: two pointers, *p and *q
+// -- OUTPUT:
+//    <0 If the element pointed by p goes before the element pointed by q,
+//    0  If the element pointed by p is equivalent to the element pointed by q,
+//    >0 If the element pointed by p goes after the element pointed by q.
+static int MVWeightcompare(const void *p, const void *q) {
+    MoveWeight p1 = *(MoveWeight *)p;
+    MoveWeight p2 = *(MoveWeight *)q;
+    return p2->weight - p1->weight;
+}
+
+//SORT PLACES: Sorts an array of PlaceId's from largest value to smallest
+// -- INPUT: Array of PlaceId's, number of items in array to be sorted
+// -- OUTPUT: void
+//Author: testUtils.c; Edited: Cindy
+static void sortMVbyWeight(MoveWeight *array, int arraySize) {
+    qsort(array, (size_t)arraySize, sizeof(MoveWeight), MVWeightcompare);
+    return;
+}
+
+int findMoveWeightIndex(MoveWeight *mw, int mwSize, PlaceId pID) {
+    for (int i = 0; i < mwSize; i++) {
+        if (mw[i]->location == pID) return i; 
+    }
+    return -1;
+}
+
+// MEMORY ERROR: Helper function to check correct memory allocation. Exits if
+// memory was not correctly allocated
+// -- INPUT: pointer to a malloced object
+// -- OUTPUT: void, but prints error message and exits code 1
+static void memoryError (const void *input) {
+    if (input == NULL) {
+        fprintf(stderr, "Couldn't Allocate Memory!\n");
+        exit(EXIT_FAILURE);
+    }
+    return;
 }
