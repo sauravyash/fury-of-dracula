@@ -28,7 +28,7 @@ typedef struct moveweight *MoveWeight;
 struct moveweight {
     PlaceId location;
     double weight;
-    PlaceId moveType;
+    //PlaceId moveType;
 } ;
 
 static void memoryError (const void * input);
@@ -40,14 +40,14 @@ static void sortMVbyWeight(MoveWeight *array, int arraySize);
 static int  MVWeightcompare(const void *p, const void *q);
 static int placeIdCmp(const void *p, const void *q);
 static void sortPlaces(PlaceId *places, int numPlaces);
-
+PlaceId convertBestLocToMove(DraculaView dv, MoveWeight *mvArray, int MvArraySize, PlaceId bestMove, int index);
 
 MoveWeight MVNewNode(void){
     MoveWeight new = malloc(sizeof(*new));
     memoryError(new);
     new->location = NOWHERE;
     new->weight = -1;
-    new->moveType = NOWHERE;
+    //new->moveType = NOWHERE;
     return new;
 }
 
@@ -130,43 +130,11 @@ void decideDraculaMove(DraculaView dv)
     sortMVbyWeight(MvArray, MvArraySize);
     //highest weighted location is best choice
     PlaceId bestMove = MvArray[0]->location;
-    printf("best move is: %s\n", placeIdToName(bestMove));
+    printf("best loc is: %s\n", placeIdToName(bestMove));
     printMW(MvArray, MvArraySize);
 
-    // convert hide/doubleback locations to moves: HIDE/DOUBLEBACK_N
-    int trailSize;
-    bool canFree;
-    PlaceId *trail = DvGetLastLocations(dv, PLAYER_DRACULA, 5, &trailSize, &canFree);
-    for (int loc = trailSize; loc > 0; loc--) {
-        // if the best move is in the trail
-        if (bestMove == trail[loc]) {
-            // if drac hasn't hidden in the last 5 turns and bestMove is his curr location
-            if (canHide(dv) && loc == trailSize) {
-                bestMove = HIDE;
-                break;
-            }
-            // if drac hasn't dbed in the last 5 turns
-            if (canDoubleBack(dv)) {
-                // chooses right db based on index of matched move in trail
-                switch (loc)
-                {
-                case 1: bestMove = DOUBLE_BACK_1; break;
-                case 2: bestMove = DOUBLE_BACK_2; break;
-                case 3: bestMove = DOUBLE_BACK_3; break;
-                case 4: bestMove = DOUBLE_BACK_4; break;
-                case 5: bestMove = DOUBLE_BACK_5; break;
-                default:
-                    break;
-                }
-                break;
-            }
-            // if drac can't do the best move
-            else {
-                //bestMove = MvArray[i]->location
-            }
-        }
-    }
-    if (canFree) free(trail);
+    bestMove = convertBestLocToMove(dv, MvArray, MvArraySize, bestMove, 0);
+
     printf("best move is: %s\n", placeIdToName(bestMove));
     //make a hide move
     //if(bestMove == DvGetPlayerLocation(dv,PLAYER_DRACULA)) {
@@ -180,6 +148,46 @@ void decideDraculaMove(DraculaView dv)
 }
 
 
+
+// convert hide/doubleback locations to moves: HIDE/DOUBLEBACK_N
+PlaceId convertBestLocToMove(DraculaView dv, MoveWeight *MvArray, int MvArraySize, PlaceId bestMove, int index) {
+    int trailSize;
+    bool canFree;
+    PlaceId *trail = DvGetLocationHistory(dv, PLAYER_DRACULA, &trailSize, &canFree);
+    for (int loc = trailSize; loc > trailSize - 5; loc--) {
+        // if the best move is in the trail
+        if (bestMove == trail[loc]) {
+            // if drac hasn't hidden in the last 5 turns and bestMove is his curr location
+            if (canHide(dv) && loc == trailSize) {
+                bestMove = HIDE;
+                break;
+            }
+            // if drac hasn't dbed in the last 5 turns
+            if (canDoubleBack(dv)) {
+                // chooses right db based on index of matched move in trail
+                switch (trailSize - loc)
+                {
+                case 0: bestMove = DOUBLE_BACK_1; break;
+                case 1: bestMove = DOUBLE_BACK_2; break;
+                case 2: bestMove = DOUBLE_BACK_3; break;
+                case 3: bestMove = DOUBLE_BACK_4; break;
+                case 4: bestMove = DOUBLE_BACK_5; break;
+                default:
+                    break;
+                }
+                break;
+            }
+            // if drac can't do the best move
+            else {
+                if (index < MvArraySize - 1) index++;
+                else return bestMove; // none of the mvarray moves can be done, this case shouldn't happen
+                return convertBestLocToMove(dv, MvArray, MvArraySize, MvArray[index-1]->location, index);
+            }
+        }
+    }
+    if (canFree) free(trail);
+    return bestMove;
+}
 
 // Returns the placeid of a random place reachable by drac this turn
 //discountinued
