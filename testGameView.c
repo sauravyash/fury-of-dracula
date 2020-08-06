@@ -765,5 +765,25 @@ int main(void)
 
     printf("ALL PROVIDED TESTS PASSED!!!\n");
 
+
+
+
+
+{///////////////////////////////////////////////////////////////////
+
+	printf("testing a round \n");
+
+	char *trail =
+		"GNU.... SNU.... HNU.... MNU.... DCD.V.. GPR.... SPR.... HPR.... MPR.... DKLT... GBD.... SBD.... HVI.... MVI.... DGAT... GKLT... SKL.... HBD.... MBD.... DD3T... GCDTVD. SCDD... HKL.... MKL.... DHIT... GCDT... SCDD... HCDD... MCDD... DTPT... ";
+
+	Message messages[6] = {};
+	GameView gv = GvNew(trail, messages);
+
+	printf("G health is %d\n", GvGetHealth(gv, PLAYER_LORD_GODALMING) );
+	printf("G  is  at %s\n", placeIdToName(GvGetPlayerLocation(gv, PLAYER_LORD_GODALMING) ));
+
+	GvFree(gv);
+	printf("Test passed!\n");
 	return EXIT_SUCCESS;
+}
 }

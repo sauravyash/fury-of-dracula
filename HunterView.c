@@ -109,7 +109,7 @@ static void trapLocationAppend(HunterView hv, PlaceId location);
 // Remove a trap location:
 static void trapLocationRemove(HunterView hv, PlaceId location);
 // Check the health of a hunter, sends them to hospital if needed:
-static void checkHunterHealth(HunterView hv,Player hunter);
+static bool isHunterAlive(HunterView hv, Player hunter);
 // Checks if maximum encounters for a location have already been placed
 static bool maxEncounters(HunterView hv, PlaceId location);
 
@@ -581,16 +581,18 @@ static void draculaLocationHistoryAppend(HunterView hv, PlaceId location) {
 
 
 // CHECK HUNTER HEALTH: Checks if a hunter has died, if so, moves them to hospital
-// -- INPUT: HunterView, Player
+// -- INPUT: DraculaView, Player
 // -- OUTPUT: void
-static void checkHunterHealth(HunterView hv,Player hunter){
+static bool isHunterAlive(HunterView hv, Player hunter) {
     if(hv->allPlayers[hunter]->health <= 0) {
         hv->allPlayers[hunter]->health = 0;
         hv->score -= SCORE_LOSS_HUNTER_HOSPITAL;
         HUNTER->currentLocation = HOSPITAL_PLACE;
+        return false;
         //hunterLocationHistoryAppend(gv, hunter, HOSPITAL_PLACE);
+
     }
-    return;
+    return true;
 }
 
 // INITIALISE PLAYER: Initialises a player to defaults, assigns memory
@@ -715,7 +717,9 @@ static void hunterMove(HunterView hv, char *string, Player hunter) {
             // It's a trap!
             case ITS_A_TRAP:
                 hv->allPlayers[hunter]->health -= LIFE_LOSS_TRAP_ENCOUNTER;
-                checkHunterHealth(hv, hunter);
+                if (isHunterAlive(hv, hunter) == false){
+                    break;
+                }
                 // Remove trap
                 trapLocationRemove(hv, curr_place);
                 break;
@@ -728,7 +732,9 @@ static void hunterMove(HunterView hv, char *string, Player hunter) {
             // Dracula encounter
             case 'D':
                 hv->allPlayers[hunter]->health -= LIFE_LOSS_DRACULA_ENCOUNTER;
-                checkHunterHealth(hv, hunter);
+                if (isHunterAlive(hv, hunter) == false){
+                    break;
+                }
                 DRACULA->health -= LIFE_LOSS_HUNTER_ENCOUNTER;
                 break;
 
