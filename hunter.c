@@ -24,35 +24,35 @@ void decideHunterMove(HunterView hv)
 	Round round = HvGetRound(hv);
 	int current_score = HvGetScore(hv);
 	Player current_player = HvGetPlayer(hv);
-	
+
 	srand(time(NULL));
     
-    // Basically, whoever is closest to Drac becomes Leader...
-    // (or if drac is unknown, then Lord G)
-    PlaceId Drac_Loc = HvGetLastKnownDraculaLocation;
-    Player Leader;
-    if (Drac_Loc == NOWHERE) Leader = PLAYER_LORD_GOLDAMING;
-    else {
-    // Find player closest to Drac.
-    Player temp_player = 0;
-    int length = NUM_REAL_PLACES;
-    int new_length = NUM_REAL_PLACES;
-        while (temp_player < NUM_PLAYERS) {
-            HvGetShortestPathTo(hv, temp_player, Drac_Loc, &new_length);
-            if (new_length < length) {
-                new_length = length;
-                Leader = temp_player;
-            }
-            temp_player++;
-        }
-    }
-    
-    printf("Current leader is %d.\n", Leader);
+	// Basically, whoever is closest to Drac becomes Leader...
+	// (or if drac is unknown, then Lord G)
+	PlaceId Drac_Loc = HvGetLastKnownDraculaLocation;
+	Player Leader;
+	if (Drac_Loc == NOWHERE) Leader = PLAYER_LORD_GOLDAMING;
+	else {
+	// Find player closest to Drac.
+	Player temp_player = 0;
+	int length = NUM_REAL_PLACES;
+	int new_length = NUM_REAL_PLACES;
+	while (temp_player < NUM_PLAYERS) {
+	    HvGetShortestPathTo(hv, temp_player, Drac_Loc, &new_length);
+	    if (new_length < length) {
+		new_length = length;
+		Leader = temp_player;
+	    }
+	    temp_player++;
+	}
+	}
+
+	printf("Current leader is %d.\n", Leader);
 	PlaceId Leader_Loc = HvGetPlayerLocation(hv, Leader);
 	printf("All patrolling players move towards <%s>.\n", placeIdToName(Leader_Loc));
 
 	PlaceId move = NOWHERE;
-	
+
 	if (current_round == 0) {
 		if(current_player == PLAYER_LORD_GODALMING) move = PLAYER1_START_POS;
 		else if(current_player == PLAYER_DR_SEWARD) move = PLAYER2_START_POS;
@@ -74,7 +74,7 @@ void decideHunterMove(HunterView hv)
 		if (len > 0) move = followLead[0];
 		else move = Leader_Loc;
 	}
-	
+
 	printf("Next move is to <%s>.\n",placeIdToName(move));
 	char *moveTo = malloc(2 * sizeof(char));
 	strcpy(moveTo, idToAbbrev(move));
