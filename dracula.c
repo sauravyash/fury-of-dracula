@@ -158,8 +158,8 @@ PlaceId convertBestLocToMove(DraculaView dv, MoveWeight *MvArray, int MvArraySiz
         // if the best move is in the trail
         if (bestMove == trail[loc]) {
             // if drac hasn't hidden in the last 5 turns and bestMove is his curr location
-            printf("canhide: %d\ncandb: %d\nbest move: %s\ntrail loc: %s\n", canHide(dv), canDoubleBack(dv), placeIdToName(bestMove), placeIdToName(trail[loc]));
-            printf("loc: %d\n trailsize: %d\n", loc, trailSize);
+            //printf("canhide: %d\ncandb: %d\nbest move: %s\ntrail loc: %s\n", canHide(dv), canDoubleBack(dv), placeIdToName(bestMove), placeIdToName(trail[loc]));
+            //printf("loc: %d\n trailsize: %d\n", loc, trailSize);
             if (canHide(dv) && loc == trailSize - 1) {
                 bestMove = HIDE;
                 break;
@@ -167,7 +167,7 @@ PlaceId convertBestLocToMove(DraculaView dv, MoveWeight *MvArray, int MvArraySiz
             // if drac hasn't dbed in the last 5 turns
             if (canDoubleBack(dv)) {
                 // chooses right db based on index of matched move in trail
-                switch (trailSize - loc)
+                switch (trailSize - loc - 1)
                 {
                 case 0: bestMove = DOUBLE_BACK_1; break;
                 case 1: bestMove = DOUBLE_BACK_2; break;
