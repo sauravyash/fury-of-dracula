@@ -698,14 +698,14 @@ static void hunterMove(HunterView hv, char *string, Player hunter) {
     city[0] = string[1];
     city[1] = string[2];
     city[2] = '\0';
-
+    //If hunter was in hospital, restore health points
+    if(HUNTER->currentLocation == HOSPITAL_PLACE) HUNTER->health = GAME_START_HUNTER_LIFE_POINTS;
     // Compare and find city by abbreviation:
     PlaceId curr_place = placeAbbrevToId(city);
 
      if (curr_place == NOWHERE) printf("Error: Place not found...\n");
 
-    // Append history and current location:
-    hunterLocationHistoryAppend(hv, hunter, curr_place);
+
 
     // Parsing through characters after location iD
     char *c;
@@ -718,7 +718,7 @@ static void hunterMove(HunterView hv, char *string, Player hunter) {
                 hv->allPlayers[hunter]->health -= LIFE_LOSS_TRAP_ENCOUNTER;
                 trapLocationRemove(hv, curr_place);
                 if (isHunterAlive(hv, hunter) == false){
-                    break;
+                    curr_place = HOSPITAL_PLACE;
                 }
                 // Remove trap
 
@@ -734,7 +734,7 @@ static void hunterMove(HunterView hv, char *string, Player hunter) {
                 hv->allPlayers[hunter]->health -= LIFE_LOSS_DRACULA_ENCOUNTER;
                 DRACULA->health -= LIFE_LOSS_HUNTER_ENCOUNTER;
                 if (isHunterAlive(hv, hunter) == false){
-                    break;
+                    curr_place = HOSPITAL_PLACE;
                 }
 
                 break;
@@ -745,10 +745,11 @@ static void hunterMove(HunterView hv, char *string, Player hunter) {
         }
     }
     free(city);
-    //If hunter was in hospital, restore health points
-    if(HUNTER->currentLocation == HOSPITAL_PLACE) HUNTER->health = GAME_START_HUNTER_LIFE_POINTS;
+    // Append history and current location:
+    hunterLocationHistoryAppend(hv, hunter, curr_place);
     return;
 }
+
 
 // DRACULA MOVE: Reads through drac's string to determine actions taken
 // -- Input: GameView, pastPlays string

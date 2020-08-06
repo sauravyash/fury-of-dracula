@@ -824,8 +824,7 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
 
      if (curr_place == NOWHERE) printf("Error: Place not found...\n");
 
-    // Append history and current location:
-    hunterLocationHistoryAppend(gv, hunter, curr_place);
+
 
     // Parsing through characters after location to determine actions
     char *c;
@@ -837,7 +836,7 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
             printf("trap!\n");
                 gv->allPlayers[hunter]->health -= LIFE_LOSS_TRAP_ENCOUNTER;
                 if ( isHunterAlive(gv, hunter) == false){
-                    break;
+                    curr_place = HOSPITAL_PLACE;
                 }
                 //remove trap
                 trapLocationRemove(gv, curr_place);
@@ -854,7 +853,7 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
             printf("Dracula!\n");
                 gv->allPlayers[hunter]->health -= LIFE_LOSS_DRACULA_ENCOUNTER;
                 if ( isHunterAlive(gv, hunter) == false){
-                    break;
+                    curr_place = HOSPITAL_PLACE;
                 }
                 DRACULA->health -= LIFE_LOSS_HUNTER_ENCOUNTER;
                 break;
@@ -864,6 +863,8 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
         }
     }
     free(city);
+    // Append history and current location:
+    hunterLocationHistoryAppend(gv, hunter, curr_place);
     printf("hunter %d health is %d\n", hunter, HUNTER->health);
     return;
 }
