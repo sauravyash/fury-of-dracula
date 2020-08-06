@@ -112,10 +112,20 @@ PlaceId DraculaHunt (HunterView hv, PlaceId bestMove, Player current_player) {
     if (current_player == Leader) {
 		printf("I am the leader\n");
 		// Basically try and move closer to dracula.
+		if (placeIsReal(Drac_Loc)) {
 		int len = 0;
 		PlaceId *chaseDrac = HvGetShortestPathTo(hv, current_player, Drac_Loc, &len);
 		if (len > 0) bestMove = chaseDrac[0];
 		else bestMove = Leader_Loc;
+		
+		} else {
+		    // If drac has not been found!!!
+		    int len = 0;
+		    PlaceId *possible_moves = HvWhereCanIGo(hv, &len);
+		    int r = (rand()%(len-1))+1;
+		    bestMove = possible_moves[r];
+		    
+		}
 	
 	} else {
 		if (current_player == PLAYER_MINA_HARKER || current_player == PLAYER_VAN_HELSING) {
@@ -135,7 +145,7 @@ PlaceId DraculaHunt (HunterView hv, PlaceId bestMove, Player current_player) {
 
 PlaceId MapSleuth (HunterView hv) {
     
-    int poss_places;
+    int poss_places = 0;
     PlaceId *possible_places = HvWhereCanIGoByType(hv, true, false,
                              true, &poss_places);
     
