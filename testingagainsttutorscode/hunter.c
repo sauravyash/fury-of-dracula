@@ -85,7 +85,6 @@ void decideHunterMove(HunterView hv)
             int len = 0;
 		    PlaceId *possible_moves = HvWhereCanIGo(hv, &len);
 		    if (len > 0) bestMove = possible_moves[1];
-			free(possible_moves);
         }
     }
 
@@ -111,13 +110,12 @@ PlaceId DraculaHunt (HunterView hv, PlaceId bestMove, Player current_player) {
     int length = NUM_REAL_PLACES;
     int new_length = NUM_REAL_PLACES;
     while (temp_player < NUM_PLAYERS - 1) {
-        PlaceId * path = HvGetShortestPathTo(hv, temp_player, Drac_Loc, &new_length);
+        HvGetShortestPathTo(hv, temp_player, Drac_Loc, &new_length);
         if (new_length < length) {
             new_length = length;
             Leader = temp_player;
         }
         temp_player++;
-		free(path);
     }
 
     printf("Current leader is %d.\n", Leader);
@@ -131,7 +129,6 @@ PlaceId DraculaHunt (HunterView hv, PlaceId bestMove, Player current_player) {
 		PlaceId *chaseDrac = HvGetShortestPathTo(hv, current_player, Drac_Loc, &len);
 		if (len > 0) bestMove = chaseDrac[0];
 		else bestMove = Leader_Loc;
-		free(chaseDrac);
 
 	} else {
 		if (current_player == PLAYER_MINA_HARKER || current_player == PLAYER_VAN_HELSING) {
@@ -144,7 +141,6 @@ PlaceId DraculaHunt (HunterView hv, PlaceId bestMove, Player current_player) {
 		PlaceId *followLead = HvGetShortestPathTo(hv, current_player, Leader_Loc, &len);
 		if (len > 0) bestMove = followLead[0];
 		else bestMove = Leader_Loc;
-		free(followLead);
 	}
 
 	return bestMove;
@@ -167,13 +163,12 @@ PlaceId VampHunt (HunterView hv, bool drac_found, Player current_player, PlaceId
     else hunters_chasing = 2;
     temp_player = hunters_chasing - 1;
     while (temp_player >= 0) {
-        PlaceId * path = HvGetShortestPathTo(hv, temp_player, Vamp_Loc, &new_length);
+        HvGetShortestPathTo(hv, temp_player, Vamp_Loc, &new_length);
         if (new_length < length && new_length > 0) {
             new_length = length;
             Leader = temp_player;
         }
         temp_player--;
-		free(path);
     }
 
     printf("Current leader is %d.\n", Leader);
@@ -187,7 +182,6 @@ PlaceId VampHunt (HunterView hv, bool drac_found, Player current_player, PlaceId
 		PlaceId *chaseDrac = HvGetShortestPathTo(hv, current_player, Vamp_Loc, &len);
 		if (len > 0) bestMove = chaseDrac[0];
 		else bestMove = Leader_Loc;
-		free(chaseDrac);
 
 	} else {
 		if (current_player == PLAYER_LORD_GODALMING && drac_found == true) {
@@ -200,7 +194,6 @@ PlaceId VampHunt (HunterView hv, bool drac_found, Player current_player, PlaceId
 		PlaceId *followLead = HvGetShortestPathTo(hv, current_player, Leader_Loc, &len);
 		if (len > 0) bestMove = followLead[0];
 		else bestMove = Leader_Loc;
-		free(followLead);
 	}
 
 	return bestMove;
@@ -209,16 +202,10 @@ PlaceId VampHunt (HunterView hv, bool drac_found, Player current_player, PlaceId
 PlaceId MapSleuth (HunterView hv) {
 
     int poss_places = 0;
-	PlaceId returnValue;
     PlaceId *possible_places = HvWhereCanIGoByType(hv, true, false,
                              true, &poss_places);
 
     // Select one for now... randomly:
-    if (poss_places > 1) {
-		returnValue= possible_places[1];
-    } else {
-		returnValue = possible_places[0];
-	}
-	free(possible_places);
-	return returnValue;
+    if (poss_places > 1) return possible_places[1];
+    else return possible_places[0];
 }

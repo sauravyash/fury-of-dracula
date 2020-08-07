@@ -161,21 +161,21 @@ void decideDraculaMove(DraculaView dv)
         return;
     }
 
-    int numPossibleMoves = -1;
-    PlaceId * possibleMoves = DvGetValidMoves(dv, &numPossibleMoves);
+    //int numPossibleMoves = -1;
+    //PlaceId * possibleMoves = DvGetValidMoves(dv, &numPossibleMoves);
 
-    printf("\nPossible moves are:       ");
-    for (int i = 0; i < numPossibleMoves; i ++) {
-        printf("%s, ", placeIdToName(possibleMoves[i]));
-    }
+    //printf("\nPossible moves are:       ");
+    //for (int i = 0; i < numPossibleMoves; i ++) {
+    //    printf("%s, ", placeIdToName(possibleMoves[i]));
+    //}
 
     int numPossibleLocations;
     PlaceId *possibleLocations =DvWhereCanIGo(dv, &numPossibleLocations);
-    printf("\nPossible locations are:   ");
-    for (int i = 0; i < numPossibleLocations; i ++) {
-        printf("%s, ", placeIdToName(possibleLocations[i]));
-    }
-    printf("\n");
+    //printf("\nPossible locations are:   ");
+    //for (int i = 0; i < numPossibleLocations; i ++) {
+    //    printf("%s, ", placeIdToName(possibleLocations[i]));
+    //}
+    //printf("\n");
     //int numPossibleMoves = -1;
     //PlaceId * possibleLocations = DvGetValidMoves(dv, &numPossibleMoves);
     //either there are no valid moves besides teleport, or drac hasnt made a move yet
@@ -192,7 +192,7 @@ void decideDraculaMove(DraculaView dv)
     }
     //sorts array alphabethically
     sortPlaces(possibleLocations,numPossibleLocations);
-    printf("Number of possible moves is %d\n",numPossibleLocations);
+    //printf("Number of possible moves is %d\n",numPossibleLocations);
     int MvArraySize = numPossibleLocations;
     MoveWeight * MvArray = MvArrayNew(MvArraySize);
     weightMovesByLocation(dv, MvArray, MvArraySize,possibleLocations);
@@ -200,12 +200,12 @@ void decideDraculaMove(DraculaView dv)
     sortMVbyWeight(MvArray, MvArraySize);
     //highest weighted location is best choice
     PlaceId bestMove = MvArray[0]->location;
-    printf("best loc is: %s\n", placeIdToName(bestMove));
+    //printf("best loc is: %s\n", placeIdToName(bestMove));
     printMW(MvArray, MvArraySize);
 
     bestMove = convertBestLocToMove(dv, MvArray, MvArraySize, bestMove, 0);
 
-    printf("best move is: %s\n", placeIdToName(bestMove));
+    //printf("best move is: %s\n", placeIdToName(bestMove));
     //make a hide move
     //if(bestMove == DvGetPlayerLocation(dv,PLAYER_DRACULA)) {
     //	registerBestPlay(placeIdToAbbrev(HIDE), "marco polo?");
@@ -213,6 +213,7 @@ void decideDraculaMove(DraculaView dv)
 
 
     registerBestPlay(placeIdToAbbrev(bestMove), "doing my best ");
+    //printf("best move is %s\n", placeIdToName(bestMove));
     freeArray(MvArray,numPossibleLocations);
     return;
 }

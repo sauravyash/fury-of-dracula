@@ -504,6 +504,7 @@ static void hunterLocationHistoryAppend(HunterView hv, Player hunter, PlaceId lo
         //Hunters gain health when resting at city
         PlaceId previousLocation =HUNTER->locationHistory[index];
         if (previousLocation == location) HUNTER->health += LIFE_GAIN_REST;
+        printf("after rest hunter %d health is %d\n", hunter, HUNTER->health);
         HUNTER->currentLocation = location;
         HUNTER->currentLocationIndex++;
         //Ensure hunter health is capped
@@ -528,7 +529,7 @@ static void draculaLocationHistoryAppend(HunterView hv, PlaceId location) {
 
     int index = DRACULA->currentLocationIndex;
     PlaceId actualLocation = NOWHERE;
-    int numReturnedLocs = 0;
+    int numReturnedLocs = -1;
     bool canFree = false;
     //Get Dracula's trail (last 6 moves)
     PlaceId *trail = HvGetLastLocations(hv, PLAYER_DRACULA , TRAIL_SIZE,
@@ -539,14 +540,14 @@ static void draculaLocationHistoryAppend(HunterView hv, PlaceId location) {
         DRACULA->moveHistory[index + 1] = location;
 
         // Dracula's location is the same as previous
-        if (location == HIDE && trail != NULL){
+        if (location == HIDE && numReturnedLocs > 0 && trail != NULL){
             actualLocation = trail[numReturnedLocs - 1];
             DRACULA->locationHistory[index + 1] = actualLocation;
             DRACULA->currentLocation = actualLocation;
         }
 
         // Go back to x previous locations
-        else if (trail != NULL && location >= DOUBLE_BACK_1 && location <=DOUBLE_BACK_5){
+        else if ( numReturnedLocs > 0 && trail != NULL && location >= DOUBLE_BACK_1 && location <=DOUBLE_BACK_5){
             actualLocation = trail[numReturnedLocs - PlaceIdToAsciiDoubleBack(location)];
             DRACULA->locationHistory[index + 1] = actualLocation;
             DRACULA->currentLocation = actualLocation;
@@ -715,7 +716,8 @@ static void hunterMove(HunterView hv, char *string, Player hunter) {
         switch(*c){
             // It's a trap!
             case ITS_A_TRAP:
-                hv->allPlayers[hunter]->health -= LIFE_LOSS_TRAP_ENCOUNTER;
+                HUNTER->health -= LIFE_LOSS_TRAP_ENCOUNTER;
+                printf("after trap hunter %d health is %d\n", hunter, HUNTER->health);
                 trapLocationRemove(hv, curr_place);
                 if (isHunterAlive(hv, hunter) == false){
                     curr_place = HOSPITAL_PLACE;
@@ -731,8 +733,9 @@ static void hunterMove(HunterView hv, char *string, Player hunter) {
 
             // Dracula encounter
             case 'D':
-                hv->allPlayers[hunter]->health -= LIFE_LOSS_DRACULA_ENCOUNTER;
+                HUNTER->health -= LIFE_LOSS_DRACULA_ENCOUNTER;
                 DRACULA->health -= LIFE_LOSS_HUNTER_ENCOUNTER;
+                printf("after drac hunter %d health is %d\n", hunter, HUNTER->health);
                 if (isHunterAlive(hv, hunter) == false){
                     curr_place = HOSPITAL_PLACE;
                 }
@@ -804,13 +807,15 @@ static void draculaMove(HunterView hv, char *string) {
         // If there are extra characters indicating trap or immature vampire
             // Trap left the trail due to age
             if (*c == MALFUNCTIONING_MACHIAVELLIAN_MACHINATIONS) {
-                int numReturnedLocs = 0;
+                int numReturnedLocs = -1;
                 bool canFree = false;
                 PlaceId *trail = HvGetLastLocations(hv, PLAYER_DRACULA , TRAIL_SIZE,
                                             &numReturnedLocs, &canFree);
                 //remove the oldest trap in trail from trapLocations
-                PlaceId brokenTrap = trail[0];
-                trapLocationRemove(hv, brokenTrap);
+                if (numReturnedLocs > 0) {
+                    PlaceId brokenTrap = trail[0];
+                    trapLocationRemove(hv, brokenTrap);
+                }
                 free(trail);
             }
 
@@ -993,7 +998,7 @@ static PlaceId *HvGetReachable(HunterView hv, Player player, Round round,
     visited[loc_num] = from;
     loc_num = 1;
 
-    while (loc_num < NUM_REAL_PLACES && rail_num < NUM_REAL_PLACES) {
+    while (list != NULL && loc_num < NUM_REAL_PLACES && rail_num < NUM_REAL_PLACES) {
 
         // Extra conditions for drac:
         if (player == PLAYER_DRACULA) {
