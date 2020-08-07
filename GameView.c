@@ -83,7 +83,7 @@ static int placeIdCmp(const void *ptr1, const void *ptr2);          // Qsort com
 static void memoryError (const void * input);                       // Checks if memory was allocated properly
 static void sortPlaces(PlaceId *places, int numPlaces);             // Sorts an array of PlaceIds
 static int PlaceIdToAsciiDoubleBack (PlaceId place);                // Convert a doubleback placeid to doubleback value
-static void checkHunterHealth(GameView gv,Player hunter);           // Check the health of a hunter, sends them to hospital if needed
+static bool isHunterAlive(GameView gv,Player hunter);           // Check the health of a hunter, sends them to hospital if needed
 static bool maxEncounters(GameView gv, PlaceId location);           // Check if maximum encounters at a particular place has been reached
 //------------- Parsing Player Moves -------------
 static Player parseMove (GameView gv, char *string);                // Parse the move string
@@ -630,7 +630,7 @@ static void hunterLocationHistoryAppend(GameView gv, Player hunter, PlaceId loca
         HUNTER->locationHistory[index + 1] = location;
         HUNTER->moveHistory[index + 1] = location;
         //Hunters gain health when resting at city
-        PlaceId previousLocation = HUNTER->currentLocation;
+        PlaceId previousLocation =HUNTER->locationHistory[index];
         if (previousLocation == location) HUNTER->health += LIFE_GAIN_REST;
         HUNTER->currentLocation = location;
         HUNTER->currentLocationIndex++;
@@ -706,15 +706,16 @@ static void draculaLocationHistoryAppend(GameView gv, PlaceId location) {
 // CHECK HUNTER HEALTH: Checks if a hunter has died, if so, moves them to hospital
 // -- INPUT: GameView, Player
 // -- OUTPUT: void
-static void checkHunterHealth(GameView gv,Player hunter){
+static bool isHunterAlive(GameView gv,Player hunter){
     if(gv->allPlayers[hunter]->health <= 0) {
         gv->allPlayers[hunter]->health = 0;
         gv->score -= SCORE_LOSS_HUNTER_HOSPITAL;
         HUNTER->currentLocation = HOSPITAL_PLACE;
+        return false;
         //hunterLocationHistoryAppend(gv, hunter, HOSPITAL_PLACE);
 
     }
-    return;
+    return true;
 }
 
 // INITIALISE PLAYER: Initialises a player to defaults, assigns memory
@@ -823,8 +824,7 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
 
      if (curr_place == NOWHERE) printf("Error: Place not found...\n");
 
-    // Append history and current location:
-    hunterLocationHistoryAppend(gv, hunter, curr_place);
+
 
     // Parsing through characters after location to determine actions
     char *c;
@@ -833,11 +833,15 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
         switch(*c){
             // It's a trap!
             case ITS_A_TRAP:
+            printf("trap!\n");
                 gv->allPlayers[hunter]->health -= LIFE_LOSS_TRAP_ENCOUNTER;
-                checkHunterHealth(gv, hunter);
+                if ( isHunterAlive(gv, hunter) == false){
+                    curr_place = HOSPITAL_PLACE;
+                }
                 //remove trap
                 trapLocationRemove(gv, curr_place);
                 break;
+
 
             // Immature Vampire encounter
             case CLOSE_ENCOUNTERS_OF_THE_VTH_KIND:
@@ -846,8 +850,11 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
 
             // Dracula encounter
             case 'D':
+            printf("Dracula!\n");
                 gv->allPlayers[hunter]->health -= LIFE_LOSS_DRACULA_ENCOUNTER;
-                checkHunterHealth(gv, hunter);
+                if ( isHunterAlive(gv, hunter) == false){
+                    curr_place = HOSPITAL_PLACE;
+                }
                 DRACULA->health -= LIFE_LOSS_HUNTER_ENCOUNTER;
                 break;
             // other characters include trailing '.'
@@ -856,6 +863,11 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
         }
     }
     free(city);
+    printf("hunter %d health is %d\n", hunter, HUNTER->health);
+    printf("curr place is %s\n", placeIdToName(curr_place));
+    // Append history and current location:
+    hunterLocationHistoryAppend(gv, hunter, curr_place);
+    printf("hunter %d health is %d\n", hunter, HUNTER->health);
     return;
 }
 
@@ -943,6 +955,7 @@ static void draculaMove(GameView gv, char *string) {
     // Game score decreases each time drac finishes turn
     gv->score -= SCORE_LOSS_DRACULA_TURN;
     free(city);
+    printf("drac health is %d\n", DRACULA->health);
     return;
 }
 

@@ -109,7 +109,7 @@ static void trapLocationAppend(HunterView hv, PlaceId location);
 // Remove a trap location:
 static void trapLocationRemove(HunterView hv, PlaceId location);
 // Check the health of a hunter, sends them to hospital if needed:
-static void checkHunterHealth(HunterView hv,Player hunter);
+static bool isHunterAlive(HunterView hv, Player hunter);
 // Checks if maximum encounters for a location have already been placed
 static bool maxEncounters(HunterView hv, PlaceId location);
 
@@ -502,7 +502,7 @@ static void hunterLocationHistoryAppend(HunterView hv, Player hunter, PlaceId lo
         HUNTER->locationHistory[index + 1] = location;
         HUNTER->moveHistory[index + 1] = location;
         //Hunters gain health when resting at city
-        PlaceId previousLocation = HUNTER->currentLocation;
+        PlaceId previousLocation =HUNTER->locationHistory[index];
         if (previousLocation == location) HUNTER->health += LIFE_GAIN_REST;
         HUNTER->currentLocation = location;
         HUNTER->currentLocationIndex++;
@@ -581,16 +581,18 @@ static void draculaLocationHistoryAppend(HunterView hv, PlaceId location) {
 
 
 // CHECK HUNTER HEALTH: Checks if a hunter has died, if so, moves them to hospital
-// -- INPUT: HunterView, Player
+// -- INPUT: DraculaView, Player
 // -- OUTPUT: void
-static void checkHunterHealth(HunterView hv,Player hunter){
+static bool isHunterAlive(HunterView hv, Player hunter) {
     if(hv->allPlayers[hunter]->health <= 0) {
         hv->allPlayers[hunter]->health = 0;
         hv->score -= SCORE_LOSS_HUNTER_HOSPITAL;
         HUNTER->currentLocation = HOSPITAL_PLACE;
+        return false;
         //hunterLocationHistoryAppend(gv, hunter, HOSPITAL_PLACE);
+
     }
-    return;
+    return true;
 }
 
 // INITIALISE PLAYER: Initialises a player to defaults, assigns memory
@@ -703,8 +705,7 @@ static void hunterMove(HunterView hv, char *string, Player hunter) {
 
      if (curr_place == NOWHERE) printf("Error: Place not found...\n");
 
-    // Append history and current location:
-    hunterLocationHistoryAppend(hv, hunter, curr_place);
+
 
     // Parsing through characters after location iD
     char *c;
@@ -715,9 +716,12 @@ static void hunterMove(HunterView hv, char *string, Player hunter) {
             // It's a trap!
             case ITS_A_TRAP:
                 hv->allPlayers[hunter]->health -= LIFE_LOSS_TRAP_ENCOUNTER;
-                checkHunterHealth(hv, hunter);
-                // Remove trap
                 trapLocationRemove(hv, curr_place);
+                if (isHunterAlive(hv, hunter) == false){
+                    curr_place = HOSPITAL_PLACE;
+                }
+                // Remove trap
+
                 break;
 
             // Immature Vampire encounter
@@ -728,8 +732,11 @@ static void hunterMove(HunterView hv, char *string, Player hunter) {
             // Dracula encounter
             case 'D':
                 hv->allPlayers[hunter]->health -= LIFE_LOSS_DRACULA_ENCOUNTER;
-                checkHunterHealth(hv, hunter);
                 DRACULA->health -= LIFE_LOSS_HUNTER_ENCOUNTER;
+                if (isHunterAlive(hv, hunter) == false){
+                    curr_place = HOSPITAL_PLACE;
+                }
+
                 break;
 
             // other characters include trailing '.'
@@ -738,8 +745,11 @@ static void hunterMove(HunterView hv, char *string, Player hunter) {
         }
     }
     free(city);
+    // Append history and current location:
+    hunterLocationHistoryAppend(hv, hunter, curr_place);
     return;
 }
+
 
 // DRACULA MOVE: Reads through drac's string to determine actions taken
 // -- Input: GameView, pastPlays string
