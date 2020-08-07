@@ -774,7 +774,7 @@ int main(void)
 	printf("testing a round \n");
 
 	char *trail =
-		"GPA.... SBR.... HMA.... MCD.... DZU.V.. GST.... SPR.... HSR.... MCD.... DMUT... GZUV... SBD.... HTO.... MKL.... DC?T... GMUT... SKL.... HSR.... MSZ.... DC?T... GZA.... SSZ.... HTO.... MZA.... DD2T... GZA.... SZA.... HSR.... MMU.... DC?T... GMU.... SMU.... HTO.... MMU.... DC?T... GMU.... SMU.... HSR.... MMU.... DMRT... GMU.... SMU.... HTO.... MMU.... DTOT.M. GMU.... SMU.... HSR.... MZU.... DHIT.M. GZU.... SZU.... HTOTTD. MMRT... DC?T.M. GMR.... SMR.... HSR.... MMR.... DSRT.M. GMR.... SMR.... HTO.... MSRTD.. DD1T.M. GTO.... STO.... HSRT... MSRD...";
+		"GED.... SMA.... HRO.... MGA.... DMU.V.. GMN.... SBO.... HMI.... MCD....";
 
 	Message messages[20] = {};
 	GameView gv = GvNew(trail, messages);
