@@ -1,0 +1,2 @@
+#!/bin/sh
+give cs2521 ass2hunt Makefile dracula.c hunter.c DraculaView.c DraculaView.h HunterView.c HunterView.h GameView.c GameView.h Queue.c Queue.h testGameView.c testDraculaView.c testHunterView.c testMap.c testUtils.c testUtils.h 
