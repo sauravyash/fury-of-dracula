@@ -213,6 +213,7 @@ void decideDraculaMove(DraculaView dv)
 
 
     registerBestPlay(placeIdToAbbrev(bestMove), "doing my best ");
+    printf("best move is %s\n", placeIdToName(bestMove));
     freeArray(MvArray,numPossibleLocations);
     return;
 }

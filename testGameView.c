@@ -774,13 +774,13 @@ int main(void)
 	printf("testing a round \n");
 
 	char *trail =
-		"GNU.... SNU.... HNU.... MNU.... DCD.V.. GPR.... SPR.... HPR.... MPR.... DKLT... GBD.... SBD.... HVI.... MVI.... DGAT... GKLT... SKL.... HBD.... MBD.... DD3T... GCDTVD. SCDD... HKL.... MKL.... DHIT... GCDT... SCDD... HCDD... MCDD... DTPT... ";
+		"GPA.... SBR.... HMA.... MKL.... DCD.V.. GST.... SPR.... HSR.... MCDVD.. DD1T... GZU.... SVI.... HTO.... MCDTD.. DHIT... GST.... SZA.... HSR....";
 
-	Message messages[6] = {};
+	Message messages[20] = {};
 	GameView gv = GvNew(trail, messages);
 
-	printf("G health is %d\n", GvGetHealth(gv, PLAYER_LORD_GODALMING) );
-	printf("G  is  at %s\n", placeIdToName(GvGetPlayerLocation(gv, PLAYER_LORD_GODALMING) ));
+	printf("M health is %d\n", GvGetHealth(gv, PLAYER_MINA_HARKER) );
+	printf("M  is  at %s\n", placeIdToName(GvGetPlayerLocation(gv, PLAYER_MINA_HARKER) ));
 
 	GvFree(gv);
 	printf("Test passed!\n");
