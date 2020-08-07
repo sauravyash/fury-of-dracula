@@ -1,0 +1,11 @@
+#!/bin/sh
+rm output.txt
+max=20
+for x in `seq 1 $max`;
+do
+    /web/cs2521/20T2/ass/ass2/hunt/dryrun/rungame.sh  Makefile dracula.c \
+    hunter.c DraculaView.c DraculaView.h HunterView.c HunterView.h GameView.c \
+    GameView.h Queue.c Queue.h testGameView.c testDraculaView.c \
+    testHunterView.c testMap.c testUtils.c testUtils.h | tail -n -10 >> output.txt
+    #echo "scale=2 ; $x / $max" | bc
+done
