@@ -146,11 +146,11 @@ void weightMovesByLocation(HunterView hv, MoveWeight *mw, int mwSize, PlaceId *p
         PlaceId LastKnownDracLoc = HvGetLastKnownDraculaLocation(hv, &round);
         
         // Leader Chases if last known loc is within 10 moves
-        if (LastKnownDracLoc == possibleLocations[i] && (HvGetRound(hv) - round) < 10 && isLeader) {
+        if (LastKnownDracLoc == possibleLocations[i] && (HvGetRound(hv) - round) < 5 && isLeader) {
             if (placeIdToType(possibleLocations[i]) == SEA) {
                 mw[i]->weight *= 2;
             }
-            mw[i]->weight *= 5 - (HvGetRound(hv) - round);
+            mw[i]->weight *= (5 - (HvGetRound(hv) - round)) * 2;
         }
     }
 
@@ -180,8 +180,8 @@ void weightMovesByLocation(HunterView hv, MoveWeight *mw, int mwSize, PlaceId *p
     
     // kill immature vampire
     PlaceId immatureVamp = HvGetVampireLocation(hv);
-    if (placeIsReal(immatureVamp)) {
-        Player closestPlayer = findClosestPlayer(hv, immatureVamp);
+    if (placeIsReal(immatureVamp) && !isLeader) {
+        Player closestPlayer = findClosestPlayer(hv, immatureVamp); // TODO: fix
         if (currentPlayer == closestPlayer) {
             int len;
             PlaceId *path = HvGetShortestPathTo(hv, currentPlayer, immatureVamp, &len);
@@ -189,7 +189,11 @@ void weightMovesByLocation(HunterView hv, MoveWeight *mw, int mwSize, PlaceId *p
             int index = findMoveWeightIndex(mw, mwSize, path[0]);
             if (index != -1) mw[index]->weight *= 5;
         }
-    }    
+    } 
+
+    if (HvGetPlayer(hv) == PLAYER_MINA_HARKER) {
+
+    }  
     
     // research if last known drac move was before 7 moves dynamically
     int rounds;
@@ -206,6 +210,7 @@ void weightMovesByLocation(HunterView hv, MoveWeight *mw, int mwSize, PlaceId *p
         mw[currPlayerPlaceIndex]->weight *= notOptimal > 1 ? 1.75 :
             notOptimal > 0 ? 1.25 : 0.9;
     }
+    
 
 
     
