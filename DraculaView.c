@@ -217,11 +217,14 @@ PlaceId *DvGetTrapLocations(DraculaView dv, int *numTraps)
 bool isInTrail(DraculaView dv, PlaceId location) {
     // only compare against as many moves as exist
     int max = DRACULA->currentLocationIndex;
+
+    for (int i = max - 5; i <= max; i++) {
+        if (location == DRACULA->locationHistory[i]) return true;
     //printf("%d is max\n", max);
     //printf("locationHisotr for %d\n",dv->currentRound);
     //for (int i = 0; i <= max; i++){
     //    printf("%d: %s\n", i,placeIdToName(DRACULA->locationHistory[i]));
-    //}
+    }
     for (int i = max - 4; i <= max; i++) {
         //printf("%d::   ",i);
         //printf("checling %s\n", placeIdToName(DRACULA->locationHistory[i]));
@@ -464,6 +467,7 @@ PlaceId *DvWhereCanTheyGo(DraculaView dv, Player player,
     locs = DvGetReachable(dv, player, round, from, &numLocs);
     //printf("\nLocations returned in DvWhereCanTheyGo:       ");
 	//for (int i = 0; i < numLocs; i ++) {
+
 	//	printf("%s, \n", placeIdToName(locs[i]));
 	//}
     //printf("\n");
@@ -831,18 +835,25 @@ static void draculaMove(DraculaView dv, char *string) {
 // -- OUTPUT: void
 static void trapLocationRemove(DraculaView dv, PlaceId location) {
     int i = 0;
+    int locationFound = 0;
     //find index of trap location (sorted largest to smallest PlaceId value)
     while (i <= dv->trapLocationsIndex) {
-        if(dv->trapLocations[i] == location) break;
+        if(dv->trapLocations[i] == location) {
+            locationFound++;
+            break;
+        }
         i++;
     }
-    //remove from location by setting to nowhere
-    dv->trapLocations[i] = NOWHERE;
+    
+    if (locationFound == 1) {
+        //remove from location by setting to nowhere
+        dv->trapLocations[i] = NOWHERE;
 
-    //shuffle array so smallest numbers are at end (NOWHERE is smallest PlaceId value)
-    //index has shrunk so NOWHERE will fall off end of array
-    sortPlaces(dv->trapLocations, dv->trapLocationsIndex+1);
-    dv->trapLocationsIndex--;
+        //shuffle array so smallest numbers are at end (NOWHERE is smallest PlaceId value)
+        //index has shrunk so NOWHERE will fall off end of array
+        if (dv->trapLocationsIndex > 0) sortPlaces(dv->trapLocations, dv->trapLocationsIndex+1);
+        dv->trapLocationsIndex--;
+    }
     return;
 }
 
@@ -1068,8 +1079,8 @@ static void trapLocationAppend(DraculaView dv, PlaceId location) {
     if (index < MAX_LOC_HISTORY_SIZE) {
         dv->trapLocations[index + 1] = location;
         dv->trapLocationsIndex++;
+        sortPlaces(dv->trapLocations, dv->trapLocationsIndex);
     }
-    sortPlaces(dv->trapLocations, dv->trapLocationsIndex);
     return;
 }
 
