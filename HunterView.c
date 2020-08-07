@@ -476,18 +476,24 @@ static int PlaceIdToAsciiDoubleBack (PlaceId place) {
 // -- OUTPUT: void
 static void trapLocationRemove(HunterView hv, PlaceId location) {
     int i = 0;
+    int locationFound = 0;
     //find index of trap location (sorted largest to smallest PlaceId value)
     while (i <= hv->trapLocationsIndex) {
-        if(hv->trapLocations[i] == location) break;
+        if (hv->trapLocations[i] == location) {
+            locationFound++;
+            break;
+        }
         i++;
     }
-    //remove from location by setting to nowhere
-    hv->trapLocations[i] = NOWHERE;
-
-    //shuffle array so smallest numbers are at end (NOWHERE is smallest PlaceId value)
-    //index has shrunk so NOWHERE will fall off end of array
-    sortPlaces(hv->trapLocations, hv->trapLocationsIndex+1);
-    hv->trapLocationsIndex--;
+    if (locationFound == 1) { 
+        //remove from location by setting to nowhere
+        hv->trapLocations[i] = NOWHERE;
+        printf("about to trapLocationsIndex--. trapLocationsIndex--:%d\n", hv->trapLocationsIndex);
+        //shuffle array so smallest numbers are at end (NOWHERE is smallest PlaceId value)
+        //index has shrunk so NOWHERE will fall off end of array
+        if (hv->trapLocationsIndex > 0) sortPlaces(hv->trapLocations, hv->trapLocationsIndex+1);
+        hv->trapLocationsIndex--;
+    }
     return;
 }
 

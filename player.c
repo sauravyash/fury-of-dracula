@@ -91,9 +91,42 @@ typedef HunterView View;
     "GST.... SVI.... HTO.... MVI.... DC?T.V. GZU.... SVI.... HTO.... MVI.... DS?..M. "\
     "GST.... SVI.... HTO.... MVI.... DC?T.M. GST.... SZA.... HSR.... MZA.... DMNT.M. " \
     "GZU.... SVI.... HTO.... MVI.... DC?T.M. GST.... SZA.... HSR.... MZA.... DC?T.M. " \
-    "GZU.... SZA.... HSR.... MZA.... DC?T.M. GST.... SZA.... HSR.... MZA.... DC?.V.. GZU.... SZA.... HSR.... MZA.... DEC..M. GZU.... SVI.... HTO.... MVI.... DC?T.M. GST.... SZA.... HSR.... MZA.... DC?T.M. GZU.... SVI.... HTO.... MVI.... DC?T.M. GZU.... SVI.... HTO.... MZA.... DC?T.M. GST.... SVI.... HTO.... MZA.... DAMT.V. GST.... SZA.... HSR.... MVI.... DS?.... GZU.... SVI.... HTO.... MZA.... DC?T.M. GST.... SZA.... HSR.... MVI.... DC?T.M. GST.... SZA.... HTO.... MVI.... DC?T.M. GZU.... SZA.... HTO.... MVI.... DC?T.M. GZU.... SVI.... HSR.... MZA.... DPRT.M. GST.... SZA.... HTO.... MVI.... DC?.V.. GZU.... SVI.... HSR.... MZA.... DC?T.M. GST.... SVI.... HSR.... MZA.... DC?T.M. GZU.... SVI.... HSR.... MZA.... DC?T.M. GST.... SVI.... HSR.... MZA.... DC?T.M. GST.... SZA.... HTO.... MVI.... DC?T.M. GZU.... SVI.... HSR.... MZA.... DC?T.V. GST.... SZA.... HTO.... MVI.... DC?T.M. GST.... SZA.... HTO.... MZA.... DZUT.M. GZUTD.. SVI.... HSR.... MVI.... DSTT.M. GZU.... SZA.... HTO.... MZA.... DC?T.M. GZU.... SVI.... HSR.... MVI.... DC?T.M. GSTT... SZA.... HTO.... MZA.... DC?T.M. GZU.... SVI.... HSR.... MVI.... DC?.VM. GMU.... SZA.... HTO.... MZA.... DC?T... GZU.... SVI.... HSR.... MVI.... DC?T... GMU.... SZA.... HTO.... MZA.... DC?T.M. GZU.... SVI.... HSR.... MVI.... DSTT.M. GMU.... SVI.... HSR.... MVI.... DC?T.M. GZU.... SVI.... HSR.... MVI.... DC?T.V. GSTT... SZA.... HTO.... MZA.... DC?T.M. GST.... SVI.... HSR.... MVI.... DC?T.M. GZU.... SZA.... HTO.... MZA.... DC?T.M. GMU.... SVI.... HSR.... MVI.... DC?T... GZU.... SZA.... HTO.... MZA.... DSTT.M. GMU.... SVI.... HSR.... MVI.... DC?T.M. GZU.... SVI.... HSR.... MVI.... DC?.VM. GSTT... SZA.... HTO.... MZA.... DC?T.M. GST.... SVI.... HSR.... MVI.... DC?T.M. GZU.... SZA.... HTO.... MZA.... DC?T.M. GMU.... SVI.... HSR.... MVI.... DCOT... GZU.... SZA.... HTO.... MZA.... DC?T.M. GMU.... SVI.... HSR.... MVI.... DC?T.V. GZU.... SVI.... HSR.... MVI.... DS?..M. GST.... SVI.... HSR.... MVI.... DC?T.M. GZU.... SVI.... HSR.... MVI.... DC?T.M. GZU.... SZA.... HTO.... MZA.... DLVT.M. GST.... SVI.... HSR.... MVI.... DC?T.M. GZU.... SZA.... HTO.... MZA.... DC?T.M. GST.... SZA.... HTO.... MZA.... DC?.V.. GZU.... SZA.... HTO.... MZA.... DS?..M. GST.... SZA.... HTO.... MZA.... DC?T.M. GST.... SVI.... HSR.... MVI.... DC?T.M. GZU.... SZA.... HTO.... MZA.... DC?T.M. GST.... SVI.... HSR.... MVI.... DC?T.M. GST.... SVI.... HTO.... MVI.... DC?T.V. GST.... SZA.... HTO.... MVI.... DZUT... GZUTD.. SVI.... HSR.... MZA.... DC?T.M. GZU.... SZA.... HTO.... MVI.... DC?T.M. GZU.... SVI.... HSR.... MZA.... DC?T.M. GST.... SZA.... HTO.... MVI.... DC?T.M. GPA.... SVI.... HSR.... MZA.... DC?T.M. GST.... SZA.... HTO.... MVI.... DC?.V.. GPA.... SVI.... HSR.... MZA.... DS?..M. GST.... SZA.... HTO.... MVI.... DC?T.M. GPA.... SZA.... HTO.... MVI.... DS?..M. GST.... SZA.... HTO.... MVI.... DC?T.M."
-
-
+    "GZU.... SZA.... HSR.... MZA.... DC?T.M. GST.... SZA.... HSR.... MZA.... DC?.V.. " \
+    "GZU.... SZA.... HSR.... MZA.... DEC..M. GZU.... SVI.... HTO.... MVI.... DC?T.M. "\
+    "GST.... SZA.... HSR.... MZA.... DC?T.M. GZU.... SVI.... HTO.... MVI.... DC?T.M. " \
+    "GZU.... SVI.... HTO.... MZA.... DC?T.M. GST.... SVI.... HTO.... MZA.... DAMT.V. "\
+    "GST.... SZA.... HSR.... MVI.... DS?.... GZU.... SVI.... HTO.... MZA.... DC?T.M. "\
+    "GST.... SZA.... HSR.... MVI.... DC?T.M. GST.... SZA.... HTO.... MVI.... DC?T.M. "\
+    "GZU.... SZA.... HTO.... MVI.... DC?T.M. GZU.... SVI.... HSR.... MZA.... DPRT.M. "\
+    "GST.... SZA.... HTO.... MVI.... DC?.V.. GZU.... SVI.... HSR.... MZA.... DC?T.M. "\
+    "GST.... SVI.... HSR.... MZA.... DC?T.M. GZU.... SVI.... HSR.... MZA.... DC?T.M. "\
+    "GST.... SVI.... HSR.... MZA.... DC?T.M. GST.... SZA.... HTO.... MVI.... DC?T.M. "\
+    "GZU.... SVI.... HSR.... MZA.... DC?T.V. GST.... SZA.... HTO.... MVI.... DC?T.M. "\
+    "GST.... SZA.... HTO.... MZA.... DZUT.M. GZUTD.. SVI.... HSR.... MVI.... DSTT.M. "\
+    "GZU.... SZA.... HTO.... MZA.... DC?T.M. GZU.... SVI.... HSR.... MVI.... DC?T.M. "\
+    "GSTT... SZA.... HTO.... MZA.... DC?T.M. GZU.... SVI.... HSR.... MVI.... DC?.VM. "\
+    "GMU.... SZA.... HTO.... MZA.... DC?T... GZU.... SVI.... HSR.... MVI.... DC?T... "\
+    "GMU.... SZA.... HTO.... MZA.... DC?T.M. GZU.... SVI.... HSR.... MVI.... DSTT.M. "\
+    "GMU.... SVI.... HSR.... MVI.... DC?T.M. GZU.... SVI.... HSR.... MVI.... DC?T.V. "\
+    "GSTT... SZA.... HTO.... MZA.... DC?T.M. GST.... SVI.... HSR.... MVI.... DC?T.M. "\
+    "GZU.... SZA.... HTO.... MZA.... DC?T.M. GMU.... SVI.... HSR.... MVI.... DC?T... "\
+    "GZU.... SZA.... HTO.... MZA.... DSTT.M. GMU.... SVI.... HSR.... MVI.... DC?T.M. "\
+    "GZU.... SVI.... HSR.... MVI.... DC?.VM. GSTT... SZA.... HTO.... MZA.... DC?T.M. "\
+    "GST.... SVI.... HSR.... MVI.... DC?T.M. GZU.... SZA.... HTO.... MZA.... DC?T.M. "\
+    "GMU.... SVI.... HSR.... MVI.... DCOT... GZU.... SZA.... HTO.... MZA.... DC?T.M. "\
+    "GMU.... SVI.... HSR.... MVI.... DC?T.V. GZU.... SVI.... HSR.... MVI.... DS?..M. "\
+    "GST.... SVI.... HSR.... MVI.... DC?T.M. GZU.... SVI.... HSR.... MVI.... DC?T.M. "\
+    "GZU.... SZA.... HTO.... MZA.... DLVT.M. GST.... SVI.... HSR.... MVI.... DC?T.M. "\
+    "GZU.... SZA.... HTO.... MZA.... DC?T.M. GST.... SZA.... HTO.... MZA.... DC?.V.. "\
+    "GZU.... SZA.... HTO.... MZA.... DS?..M. GST.... SZA.... HTO.... MZA.... DC?T.M. "\
+    "GST.... SVI.... HSR.... MVI.... DC?T.M. GZU.... SZA.... HTO.... MZA.... DC?T.M. "\
+    "GST.... SVI.... HSR.... MVI.... DC?T.M. GST.... SVI.... HTO.... MVI.... DC?T.V. "\
+    "GST.... SZA.... HTO.... MVI.... DZUT... GZUTD.. SVI.... HSR.... MZA.... DC?T.M. "\
+    "GZU.... SZA.... HTO.... MVI.... DC?T.M. GZU.... SVI.... HSR.... MZA.... DC?T.M. "\
+    "GST.... SZA.... HTO.... MVI.... DC?T.M. GPA.... SVI.... HSR.... MZA.... DC?T.M. "\
+    "GST.... SZA.... HTO.... MVI.... DC?.V.. GPA.... SVI.... HSR.... MZA.... DS?..M. "\
+    "GST.... SZA.... HTO.... MVI.... DC?T.M. GPA.... SZA.... HTO.... MVI.... DS?..M. "\
+    "GST.... SZA.... HTO.... MVI.... DC?T.M."
 
 # define xMsgs {\
     "", "", "", "", "","", "", "","", "", "","", "", "","", "", "","", "", "", \
@@ -121,7 +154,13 @@ typedef HunterView View;
     "", "", "", "", "","", "", "","", "", "","", "", "","", "", "","", "", "", \
     \
     "", "", "", "", "","", "", "","", "", "","", "", "","", "", "","", "", "", \
-    "", "", "", "", "","", "", "","", "", "","" \
+    "", "", "", "", "","", "", "","", "", "","", "", "","", "", "","", "", "", \
+    "", "", "", "", "","", "", "","", "", "","", "", "","", "", "","", "", "", \
+    "", "", "", "", "","", "", "","", "", "","", "", "","", "", "","", "", "", \
+    "", "", "", "", "","", "", "","", "", "","", "", "","", "", "","", "", "", \
+    \
+    "", "", "", "", "","", "", "","", "", "","", "", "","", "", "","", "", "", \
+    "", "", "", "", "","", "", "","", "", "","","","","" \
 }
 
 #endif
