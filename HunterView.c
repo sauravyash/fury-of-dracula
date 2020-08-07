@@ -812,8 +812,10 @@ static void draculaMove(HunterView hv, char *string) {
                 PlaceId *trail = HvGetLastLocations(hv, PLAYER_DRACULA , TRAIL_SIZE,
                                             &numReturnedLocs, &canFree);
                 //remove the oldest trap in trail from trapLocations
-                if (numReturnedLocs > 0) PlaceId brokenTrap = trail[0];
-                trapLocationRemove(hv, brokenTrap);
+                if (numReturnedLocs > 0) {
+                    PlaceId brokenTrap = trail[0];
+                    trapLocationRemove(hv, brokenTrap);
+                }
                 free(trail);
             }
 
