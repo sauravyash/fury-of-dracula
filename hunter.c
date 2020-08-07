@@ -56,7 +56,9 @@ void decideHunterMove(HunterView hv)
 	PlaceId bestMove = NOWHERE;
 	
 	// We need to check if the hunter is dead
-    if (HvGetHealth(hv, current_player) < 1) {
+    int health = HvGetHealth(hv, current_player); 
+    printf("health: %d, score: %d\n", health, HvGetScore(hv));
+    if (health < 1) {
         registerBestPlay(placeIdToAbbrev(ST_JOSEPH_AND_ST_MARY), "rip i died");
         return;
     }

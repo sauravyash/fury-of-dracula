@@ -72,19 +72,21 @@ typedef HunterView View;
 # define ViewFree HvFree
 
 # define xPastPlays \
-    "GPA.... SBR.... HMA.... MKL.... DCD.V.. GST.... SPR.... HSR.... MCDVD.. DC?T... "\
+    "GPA.... SBR.... HMA.... MKL.... DCD.V.. GST.... SPR.... HSR.... MCDVD.. DD1T... "\
+    "GZU.... SVI.... HTO.... MCDTD.. DHIT... GST.... SZA.... HSR...."
+   /* "GPA.... SBR.... HMA.... MKL.... DCD.V.. GST.... SPR.... HSR.... MCDVD.. DC?T... "\
     "GZU.... SVI.... HTO.... MCD.... DHIT... GST.... SZA.... HSR.... MKL.... DC?T... "\
     "GZU.... SVI.... HTO.... MSZ.... DD2T... GST.... SZA.... HSR.... MZA.... DC?T... "\
     "GZU.... SVI.... HTO.... MVI.... DBS.... GST.... SZA.... HSR.... MZA.... DC?T.M. "\
     "GZU.... SVI.... HTO.... MVI.... DHIT.M. GZU.... SZA.... HTO.... MVI.... DC?T.M. "\
     "GZU.... SVI.... HTO.... MVI.... DD2T.M. GZU.... SZA.... HTO.... MVI.... DC?T.M. "\
-    "GZU.... SZA.... HSR.... MZA.... DC?T... GST.... SVI.... HTO.... MVI.... DC?.VM."
-# define xMsgs { \
-    "", "", "", "", "", "","", "", "","", "", "","", "", "","", "", "","", "", \
+    "GZU.... SZA.... HSR.... MZA.... DC?T... GST.... SVI.... HTO.... MVI.... DC?.VM."*/
+# define xMsgs {"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""}
+    /*, "","", "", \
     "", "", "", "", "","", "", "","", "", "","", "", "","", "", "","", "", "", \
     "", "", "", "", "","", "", "","", "", "","", "", "","", "", "","", "", "", \
     "", "", "", "", "","", "", "","", ""}
-
+*/
 #endif
 
 int main(void)
