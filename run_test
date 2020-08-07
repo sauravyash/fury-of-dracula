@@ -1,5 +1,9 @@
 #!/bin/sh
 rm output.txt
+echo ---------------WARNING THIS IS 150 TESTS WILL TAKE A WHILE!!!-----OTHERWISE CHANGE IT-----
+echo ---------------WARNING THIS IS 150 TESTS WILL TAKE A WHILE!!!-----OTHERWISE CHANGE IT-----
+echo ---------------WARNING THIS IS 150 TESTS WILL TAKE A WHILE!!!-----OTHERWISE CHANGE IT-----
+echo ---------------WARNING THIS IS 150 TESTS WILL TAKE A WHILE!!!-----OTHERWISE CHANGE IT-----
 for x in {1..150}
 do
 /web/cs2521/20T2/ass/ass2/hunt/dryrun/rungame.sh  Makefile dracula.c hunter.c DraculaView.c DraculaView.h HunterView.c HunterView.h GameView.c GameView.h Queue.c Queue.h testGameView.c testDraculaView.c testHunterView.c testMap.c testUtils.c testUtils.h | tail -n -3 >> output.txt
