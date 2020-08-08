@@ -672,11 +672,11 @@ static void draculaLocationHistoryAppend(GameView gv, PlaceId location) {
     //Get Dracula's trail (last 6 moves)
     PlaceId *trail = GvGetLastLocations(gv, PLAYER_DRACULA , TRAIL_SIZE,
                                 &numReturnedLocs, &canFree);
-                                printf("dracs trail is : \n");
-    for (int i = 0; i < numReturnedLocs; i++) printf("in trail: %s\n", placeIdToName(trail[i]));
+                                //printf("dracs trail is : \n");
+    //for (int i = 0; i < numReturnedLocs; i++) printf("in trail: %s\n", placeIdToName(trail[i]));
     // ensure the array is large enough, then append
     if (index < MAX_LOC_HISTORY_SIZE) {
-        printf("appending %s\n", placeIdToName(location));
+        //printf("appending %s\n", placeIdToName(location));
         DRACULA->moveHistory[index + 1] = location;
         //HIDE: dracula's location is the same as previous
         if(location == HIDE && trail != NULL){
@@ -970,7 +970,7 @@ static void draculaMove(GameView gv, char *string) {
     // Game score decreases each time drac finishes turn
     gv->score -= SCORE_LOSS_DRACULA_TURN;
     free(city);
-    printf("drac health is %d\n", DRACULA->health);
+    //printf("drac health is %d\n", DRACULA->health);
     return;
 }
 
