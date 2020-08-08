@@ -29,16 +29,20 @@ int main(void)
 
 		printf("Basic initialisation\n");
 
-		char *trail = "";
-		Message messages[] = {};
+		char *trail =
+		"GNU.... SAO.... HZU.... MBB.... DC?.V.. "
+		"GST.... SAO.... HZU.... MBB.... DC?.V.. "
+		"GST.... SAO.... HZU.... MBB.... DD2.V.. "
+		"GST.... SAO.... HZU.... MBB.... DC?.V.. "
+		"GST.... SAO.... HZU.... MBB.... DC?.V.. "
+		"GST.... SAO.... HZU.... MBB.... DD3.V.. "
+		"GST.... SAO.... HZU.... MBB.... DD1.V.. "
+		"GST.... SAO.... HZU.... MBB.... DD5.V.. "
+		"GGE..D. ";
+		Message messages[100] = {};
 		HunterView hv = HvNew(trail, messages);
 
-		assert(HvGetRound(hv) == 0);
-		assert(HvGetPlayer(hv) == PLAYER_LORD_GODALMING);
-		assert(HvGetScore(hv) == GAME_START_SCORE);
-		assert(HvGetHealth(hv, PLAYER_LORD_GODALMING) == GAME_START_HUNTER_LIFE_POINTS);
-		assert(HvGetHealth(hv, PLAYER_DRACULA) == GAME_START_BLOOD_POINTS);
-		assert(HvGetVampireLocation(hv) == NOWHERE);
+
 
 		HvFree(hv);
 		printf("Test passed\n");
