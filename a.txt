@@ -1,0 +1,4 @@
+[0;36mCreated a temp directory '/tmp/tmp.EJHevwmnaq' for checking your submission[0m
+[0;36mCopying your files into '/tmp/tmp.EJHevwmnaq'[0m
+[0;31mError: file 'hunter.c' doesn't exist[0m
+[0;31mDryrun failed - can't proceed.[0m
