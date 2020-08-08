@@ -73,6 +73,7 @@ struct hunterView {
 
 // PRIVATE FUNCTION DECLARATIONS
 // ****************************************
+void foundDraculaHimself(HunterView hv, PlaceId location);
 // Store's players messages into player data. MESSAGE STRING MUST HAVE SAME SIZE AS # PLAYS
 static void initialiseMessageMemory(HunterView hv,Message messageString[]);
 //------------- MAKING A MOVE -------------
@@ -485,7 +486,7 @@ static void trapLocationRemove(HunterView hv, PlaceId location) {
         }
         i++;
     }
-    if (locationFound == 1) { 
+    if (locationFound == 1) {
         //remove from location by setting to nowhere
         hv->trapLocations[i] = NOWHERE;
         printf("about to trapLocationsIndex--. trapLocationsIndex--:%d\n", hv->trapLocationsIndex);
@@ -510,11 +511,12 @@ static void hunterLocationHistoryAppend(HunterView hv, Player hunter, PlaceId lo
         //Hunters gain health when resting at city
         PlaceId previousLocation =HUNTER->locationHistory[index];
         if (previousLocation == location) HUNTER->health += LIFE_GAIN_REST;
-        printf("after rest hunter %d health is %d\n", hunter, HUNTER->health);
+
         HUNTER->currentLocation = location;
         HUNTER->currentLocationIndex++;
         //Ensure hunter health is capped
         if(HUNTER->health > GAME_START_HUNTER_LIFE_POINTS) HUNTER->health = GAME_START_HUNTER_LIFE_POINTS;
+        //printf("after rest hunter %d health is %d\n", hunter, HUNTER->health);
     }
     // otherwise print error and exit
     else {
@@ -656,7 +658,6 @@ static void initialiseGame (HunterView hv) {
 // -- Input: HunterView, move string
 // -- Output: current Player
 static Player parseMove (HunterView hv, char *string){
-
     char *c = string;
     Player curr_player;
 
@@ -705,6 +706,7 @@ static void hunterMove(HunterView hv, char *string, Player hunter) {
     city[0] = string[1];
     city[1] = string[2];
     city[2] = '\0';
+    //printf("%s is where %d is\n", city, hunter);
     //If hunter was in hospital, restore health points
     if(HUNTER->currentLocation == HOSPITAL_PLACE) HUNTER->health = GAME_START_HUNTER_LIFE_POINTS;
     // Compare and find city by abbreviation:
@@ -742,6 +744,7 @@ static void hunterMove(HunterView hv, char *string, Player hunter) {
                 HUNTER->health -= LIFE_LOSS_DRACULA_ENCOUNTER;
                 DRACULA->health -= LIFE_LOSS_HUNTER_ENCOUNTER;
                 printf("after drac hunter %d health is %d\n", hunter, HUNTER->health);
+                foundDraculaHimself( hv, curr_place);
                 if (isHunterAlive(hv, hunter) == false){
                     curr_place = HOSPITAL_PLACE;
                 }
@@ -749,8 +752,8 @@ static void hunterMove(HunterView hv, char *string, Player hunter) {
                 break;
 
             // other characters include trailing '.'
-            case '.':
-                break;
+            //case '.':
+            //    break;
         }
     }
     free(city);
@@ -1330,3 +1333,56 @@ static void initialiseMessageMemory(HunterView hv,Message messageString[]){
     }
     return;
 }
+
+void foundDraculaHimself(HunterView hv, PlaceId location) {
+    printf("we saw dracula!\n");
+
+	//hunter encountered dracula (not his trail!)
+	int arraySize = DRACULA->currentLocationIndex;
+    int max = arraySize;
+    printf("what location looked like:\n");
+    for (int i = 0; i <= arraySize; i ++) printf ("%s->", placeIdToName(DRACULA->locationHistory[i]));
+    printf("\n");
+    printf("what move looked like:\n");
+    for (int i = 0; i <= arraySize; i ++) printf ("%s->", placeIdToName(DRACULA->moveHistory[i]));
+    printf("\n");
+	//update current location data
+	DRACULA->currentLocation = location;
+    //update most recent location in locationhist array
+	//DRACULA->locationHistory[currentLocationIndex] = location;
+	//if the place found used to be a double back / hide, go find other occurances
+	//if he hid or used doubleback 1, then previous location was exactly the same
+    PlaceId pastMove = DRACULA->moveHistory[max];
+    //int i = arraySize;
+    int doubleBackTo;
+    //loop this retroactively until we reach like end of array
+    while(max >= 0) {
+
+	    if(pastMove == HIDE || pastMove == DOUBLE_BACK_1) {
+		    //can never be a double back or hide move on the first round
+		    assert(max - 1 > 0);
+            //update the previous double back or hide move
+		    DRACULA->locationHistory[max] = location;
+            pastMove = DRACULA->moveHistory[max-1];
+            max = max - 1;
+
+	    //otherwise if the move was a double back call from 2 - 5
+        } else if ( pastMove <= DOUBLE_BACK_5 && pastMove >= DOUBLE_BACK_2){
+		    doubleBackTo = DRACULA->moveHistory[max] - DOUBLE_BACK_1 + 1;
+		    DRACULA->locationHistory[max] = location;
+            pastMove = DRACULA->moveHistory[max-doubleBackTo];
+            max = max - doubleBackTo;
+            //i = max;
+	    } else {
+            DRACULA->locationHistory[max] = location;
+            break;
+        }
+
+    }
+    printf("what location now looks like:\n");
+    for (int i = 0; i <= arraySize; i ++) printf ("%s->", placeIdToName(DRACULA->locationHistory[i]));
+    printf("\n");
+    return;
+}
+
+//foundDraculaTrail
