@@ -71,7 +71,8 @@ typedef HunterView View;
 # define decideMove decideHunterMove
 # define ViewFree HvFree
 
-# define xPastPlays \
+# define xPastPlays "GPA.... SBR.... HMA.... MKL.... DC?.V.."
+/*
     "GPA.... SBR.... HMA.... MKL.... DC?.V.. GST.... SPR.... HSR.... MSZ.... DC?T... " \
     "GZU.... SVI.... HTO.... MZA.... DC?T... GST.... SZA.... HSR.... MVI.... DC?T... " \
     "GZU.... SVI.... HTO.... MZA.... DC?T... GST.... SZA.... HSR.... MVI.... DEC.... " \
@@ -127,9 +128,9 @@ typedef HunterView View;
     "GST.... SZA.... HTO.... MVI.... DC?.V.. GPA.... SVI.... HSR.... MZA.... DS?..M. "\
     "GST.... SZA.... HTO.... MVI.... DC?T.M. GPA.... SZA.... HTO.... MVI.... DS?..M. "\
     "GST.... SZA.... HTO.... MVI.... DC?T.M."
-
+*/
 # define xMsgs {\
-    "", "", "", "", "","", "", "","", "", "","", "", "","", "", "","", "", "", \
+    "", "", "", "", ""}/*,"", "", "","", "", "","", "", "","", "", "","", "", "", \
     "", "", "", "", "","", "", "","", "", "","", "", "","", "", "","", "", "", \
     "", "", "", "", "","", "", "","", "", "","", "", "","", "", "","", "", "", \
     "", "", "", "", "","", "", "","", "", "","", "", "","", "", "","", "", "", \
@@ -161,7 +162,7 @@ typedef HunterView View;
     \
     "", "", "", "", "","", "", "","", "", "","", "", "","", "", "","", "", "", \
     "", "", "", "", "","", "", "","", "", "","","","","" \
-}
+}*/
 
 #endif
 

@@ -39,6 +39,7 @@ PlaceId DraculaHunt (HunterView hv, PlaceId bestMove, Player current_player);
 
 void printMwArray(MoveWeight *mw, int size);
 Player findClosestPlayer(HunterView hv, PlaceId pID);
+Player *findClosestPlayers(HunterView hv, PlaceId pID);
 int findMoveWeightIndex(MoveWeight *mw, int mwSize, PlaceId pID);
 static void sortMVbyWeight(MoveWeight *array, int arraySize);
 static int MVWeightcompare(const void *p, const void *q);
@@ -146,7 +147,7 @@ void weightMovesByLocation(HunterView hv, MoveWeight *mw, int mwSize, PlaceId *p
         PlaceId LastKnownDracLoc = HvGetLastKnownDraculaLocation(hv, &round);
 
         // Leader Chases if last known loc is within 10 moves
-        if (LastKnownDracLoc == possibleLocations[i] && (HvGetRound(hv) - round) < 5 && isLeader) {
+        if (LastKnownDracLoc == possibleLocations[i] && (HvGetRound(hv) - round) < 4 && isLeader) {
             if (placeIdToType(possibleLocations[i]) == SEA) {
                 mw[i]->weight *= 2;
             }
@@ -154,8 +155,10 @@ void weightMovesByLocation(HunterView hv, MoveWeight *mw, int mwSize, PlaceId *p
         }
     }
 
-    int currPlayerPlaceIndex = findMoveWeightIndex(mw, mwSize, HvGetPlayerLocation(hv,currentPlayer));
-    //leader moves
+    int currPlayerPlaceIndex = 
+        findMoveWeightIndex(mw, mwSize, HvGetPlayerLocation(hv,currentPlayer));
+    
+    // leader moves
     if (isLeader) {
         if (currPlayerPlaceIndex == -1) {
             fprintf(stderr, "couldn't find hunter's location in moveweights\n");
@@ -181,19 +184,21 @@ void weightMovesByLocation(HunterView hv, MoveWeight *mw, int mwSize, PlaceId *p
     // kill immature vampire
     PlaceId immatureVamp = HvGetVampireLocation(hv);
     if (placeIsReal(immatureVamp) && !isLeader) {
-        Player closestPlayer = findClosestPlayer(hv, immatureVamp); // TODO: fix
-        if (currentPlayer == closestPlayer) {
+        Player *closestPlayers = findClosestPlayers(hv, immatureVamp);
+        Player closestNonLeader = 
+            (closestPlayers[0] == leader) ? closestPlayers[0] : closestPlayers[1];
+        free(closestPlayers);
+        if (currentPlayer == closestNonLeader) {
             int len;
             PlaceId *path = HvGetShortestPathTo(hv, currentPlayer, immatureVamp, &len);
             printf("Path pos 0: %s", placeIdToName(path[0]));
             int index = findMoveWeightIndex(mw, mwSize, path[0]);
             if (index != -1) mw[index]->weight *= 5;
         }
-
-    } 
+    }
 
     if (HvGetPlayer(hv) == PLAYER_MINA_HARKER) {
-
+        
     }  
     
     // research if last known drac move was before 7 moves dynamically
@@ -223,40 +228,40 @@ void printMwArray(MoveWeight *mw, int size) {
     }
 }
 
-// finds closest hunter to a place
 Player findClosestPlayer(HunterView hv, PlaceId pID) {
-    Player leader = PLAYER_LORD_GODALMING;
-    int leaderMoves = -1;
-
-    if (placeIsReal(pID)) {
-
-        // PLAYER_LORD_GODALMING
-        int lenShortest;
-        HvGetShortestPathTo(hv, leader, pID, &lenShortest);
-        leaderMoves = lenShortest;
-
-        // PLAYER_VAN_HELSING
-        HvGetShortestPathTo(hv, PLAYER_VAN_HELSING, pID, &lenShortest);
-        if (leaderMoves > lenShortest){
-            leaderMoves = lenShortest;
-            leader = PLAYER_VAN_HELSING;
-        }
-
-        // PLAYER_DR_SEWARD
-        HvGetShortestPathTo(hv, PLAYER_DR_SEWARD, pID, &lenShortest);
-        if (leaderMoves > lenShortest){
-            leaderMoves = lenShortest;
-            leader = PLAYER_DR_SEWARD;
-        }
-
-        // PLAYER_MINA_HARKER
-        HvGetShortestPathTo(hv, PLAYER_MINA_HARKER, pID, &lenShortest);
-        if (leaderMoves > lenShortest){
-            leaderMoves = lenShortest;
-            leader = PLAYER_MINA_HARKER;
-        }
-    }
+    if (!placeIsReal(pID)) return PLAYER_LORD_GODALMING; 
+    Player *list = findClosestPlayers(hv, pID);
+    Player leader = list[0];
+    free(list);
     return leader;
+}
+
+// returns a list of the closest players
+// return MUST BE FREED
+Player *findClosestPlayers(HunterView hv, PlaceId pID) {
+    Player *closest = malloc(sizeof(Player) * (NUM_PLAYERS - 1));
+    int playerMoveLen[NUM_PLAYERS - 1] = {0,1,2,3};
+    
+    if (!placeIsReal(pID)) return NULL;
+    
+    int lenShortest;
+    for (int i = 0; i < NUM_PLAYERS - 1; i++) {
+        PlaceId *p = HvGetShortestPathTo(hv, i, pID, &lenShortest);
+        playerMoveLen[i] = lenShortest;
+        free(p);
+    }
+    
+    for (int i = 0; i < NUM_PLAYERS - 1; i++) {
+        bool used[4] = { false };
+        int highestIndex = 0;
+        for (int player = 0; player < NUM_PLAYERS - 1; player++) {
+            if (playerMoveLen[player] > playerMoveLen[highestIndex] && !used[player]) {
+                highestIndex = player;
+            }
+        }
+        closest[i] = highestIndex;
+    }
+    return closest;
 }
 
 // ALL FUNCTIONS BELOW COPIED FROM dracula.c
