@@ -36,11 +36,11 @@
 #ifdef I_AM_DRACULA
 # include "dracula.h"
 # include "DraculaView.h"
-# include "DraculaTest.c"
+
 #else
 # include "hunter.h"
 # include "HunterView.h"
-# include "HunterTest.c"
+
 #endif
 
 // Moves given by registerBestPlay are this long (including terminator)
