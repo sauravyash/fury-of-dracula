@@ -604,18 +604,26 @@ static int PlaceIdToAsciiDoubleBack (PlaceId place) {
 // -- OUTPUT: void
 static void trapLocationRemove(GameView gv, PlaceId location) {
     int i = 0;
+    
+    int locationFound = 0;
     //find index of trap location (sorted largest to smallest PlaceId value)
     while (i <= gv->trapLocationsIndex) {
-        if(gv->trapLocations[i] == location) break;
+        if(gv->trapLocations[i] == location) {
+            locationFound++;
+            break;
+        }
         i++;
     }
-    //remove from location by setting to nowhere
-    gv->trapLocations[i] = NOWHERE;
 
-    //shuffle array so smallest numbers are at end (NOWHERE is smallest PlaceId value)
-    //index has shrunk so NOWHERE will fall off end of array
-    sortPlaces(gv->trapLocations, gv->trapLocationsIndex+1);
-    gv->trapLocationsIndex--;
+    if (locationFound == 1) { 
+        //remove from location by setting to nowhere
+        gv->trapLocations[i] = NOWHERE;
+
+        //shuffle array so smallest numbers are at end (NOWHERE is smallest PlaceId value)
+        //index has shrunk so NOWHERE will fall off end of array
+        if (gv->trapLocationsIndex > 0) sortPlaces(gv->trapLocations, gv->trapLocationsIndex+1);
+        gv->trapLocationsIndex--;
+    }
     return;
 }
 
@@ -812,10 +820,10 @@ static Player parseMove (GameView gv, char *string){
 // -- Input: GameView, pastPlays string, hunter in play
 // -- Output: void
 static void hunterMove(GameView gv, char *string, Player hunter) {
-
+//    printf("assert: %s\n (%ld) == %d\n", string, strlen(string), LOCATION_ID_SIZE);
     // String must be of valid size
     assert (strlen(string) > LOCATION_ID_SIZE);
-
+    
     // Store locationID into city[]:
     char *city = malloc((LOCATION_ID_SIZE + 1)*sizeof(char));
     memoryError(city);

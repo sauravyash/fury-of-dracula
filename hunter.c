@@ -135,9 +135,9 @@ void weightMovesByLocation(HunterView hv, MoveWeight *mw, int mwSize, PlaceId *p
 
     // associate a certain weight to each location
     for (int i = 0; i < mwSize; i++) {
-        srand(time(NULL));
+        //srand(time(NULL));
         mw[i]->location = possibleLocations[i];
-        mw[i]->weight = 10 * ((rand() % 50) / 10);
+        mw[i]->weight = 10; //* ((rand() % 50) / 10);
 
         // if dracula is already at location, increase weight
         int round;
@@ -224,8 +224,24 @@ void weightMovesByLocation(HunterView hv, MoveWeight *mw, int mwSize, PlaceId *p
             notOptimal > 0 ? 1.25 : 0.5;
     }
 
+    // avoid traps
+    /*
+    int numTraps;
+    PlaceId *traps = HvGetTrapLocations(hv->gv, numTraps);
+    for (int i = 0; i < numTraps; i++) {
+        int mwIndex = findMoveWeightIndex(mw, mwSize, traps[i]);
+        if (mwIndex != -1) mw[i]->weight *= 0.01;
+    }
+    */
+
     // discourage retracing previous steps
-    // PlaceId *lastMoves =
+    int num;
+    bool free;
+    PlaceId *lastMoves = HvGetMoveHistory(hv, currentPlayer, &num, &free);
+    int i = findMoveWeightIndex(mw, mwSize, lastMoves[num - 1]);
+    if (i != -1) mw[i]->weight *= 0.1;
+    
+
     return;
 }
 

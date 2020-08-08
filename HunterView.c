@@ -234,5 +234,6 @@ static Round playerNextRound(HunterView hv, Player player) {
 
 ////////////////////////////////////////////////////////////////////////
 // Your own interface functions
-
-// TODO
+PlaceId *HvGetMoveHistory(HunterView hv, Player player, int *numReturnedMoves, bool *canFree) {
+    return GvGetMoveHistory(hv->gv, player, numReturnedMoves, canFree);
+}

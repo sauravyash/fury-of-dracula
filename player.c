@@ -73,7 +73,7 @@ typedef HunterView View;
 # define decideMove decideHunterMove
 # define ViewFree HvFree
 
-# define xPastPlays "GPA.... SBR.... HMA.... MKL.... DC?.V.."
+# define xPastPlays "GPA.... SBR.... HMA.... MKL.... DC?.V.. GST.... SPR.... HSR.... MCD.... DC?T... GZU.... SVI.... HTO.... MKL.... DC?T... GST.... SZA.... HSR.... MCD.... DC?T... GZU.... SVI.... HTO.... MKL.... DC?T... GST.... SZA.... HSR.... MCD.... DC?T... GZU.... SVI.... HTO.... MKL.... DC?T.V. GST.... SZA.... HSR.... MCD.... DHIT.M. GZU.... SVI.... HTO.... MKL.... DD1T.M. GST.... SZA.... HSR.... MCD.... DS?..M. GZU.... SVI.... HTO.... MKL.... DC?T.M. GST.... SZA.... HSR.... MCD.... DS?..M. GZU.... SVI.... HTO.... MKL.... DC?T.M. GST.... SZA.... HSR.... MCD.... DC?.VM. GZU.... SVI.... HTO.... MKL.... DC?T.M."
 /*
     "GPA.... SBR.... HMA.... MKL.... DC?.V.. GST.... SPR.... HSR.... MSZ.... DC?T... " \
     "GZU.... SVI.... HTO.... MZA.... DC?T... GST.... SZA.... HSR.... MVI.... DC?T... " \
@@ -171,7 +171,16 @@ typedef HunterView View;
 int main(void)
 {
 	char *pastPlays = xPastPlays;
-	Message msgs[] = xMsgs;
+    
+    int c = 0;
+    for (int i = 0; i < strlen(pastPlays); i++) {
+        if (pastPlays[i] == ' ') c++;
+    }
+
+	Message msgs[c+1];
+    for (int i = 0; i <= c; i++) {
+        strcpy(msgs[c], "");
+    }
 
 	View state = ViewNew(pastPlays, msgs);
 	decideMove(state);
