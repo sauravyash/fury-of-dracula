@@ -853,7 +853,7 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
             case 'D':
             printf("Dracula!\n");
                 HUNTER->health -= LIFE_LOSS_DRACULA_ENCOUNTER;
-                foundDraculaHimself( hv, curr_place);
+                foundDraculaHimself( gv, curr_place);
                 if ( isHunterAlive(gv, hunter) == false){
                     curr_place = HOSPITAL_PLACE;
                 }
