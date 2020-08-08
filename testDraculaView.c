@@ -30,7 +30,16 @@ int main(void)
 		printf("Testing\n");
 
 		char *trail =
-			"GED.... SMA.... HRO.... MGA.... DMU.V.. GMN.... SBO.... HMI.... MCD....";
+			"GAO.... SBC.... HFR.... MMA.... DVA.V.. "
+			"GAO.... SBC.... HFR.... MMA.... DATT... "
+			"GAO.... SBC.... HFR.... MMA.... DHIT... "
+			"GAO.... SBC.... HFR.... MMA.... DD1T... "
+			"GAO.... SBC.... HFR.... MMA.... DIO.... "
+			"GAO.... SBC.... HFR.... MMA.... DSAT... "
+			"GAO.... SBC.... HFR.... MMA.... DSOT.V. "
+			"GAO.... SBC.... HFR.... MMA.... DSJT.M. "
+			"GAO.... SBC.... HFR.... MMA.... DVAT.M. "
+			"GAO.... SBC.... HFR.... MMA....";
 
 		Message messages[24] = {};
 		DraculaView dv = DvNew(trail, messages);
@@ -38,11 +47,10 @@ int main(void)
 		int numLocs = -1;
 		PlaceId *locs = DvWhereCanIGo(dv, &numLocs);
 		printf("%d\n", numLocs);
-		printf("==============================legal moves moves\n");
+		printf("possible moves\n");
 		for (int i = 0; i < numLocs; i++) {
 			printf("%s\n", placeIdToName(locs[i]));
 		}
-		printf("===============\n");
 		bool canFree = false;
 		int number = -1;
 		printf("past locs:\n");

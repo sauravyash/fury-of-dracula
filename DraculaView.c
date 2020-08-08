@@ -217,29 +217,22 @@ PlaceId *DvGetTrapLocations(DraculaView dv, int *numTraps)
 bool isInTrail(DraculaView dv, PlaceId location) {
     // only compare against as many moves as exist
     int max = DRACULA->currentLocationIndex;
-    printf("------------------------------------------------------------location is %s----\n", placeIdToName(location));
-    int trailSize = (max > 5 ? DOUBLE_BACK_5 - DOUBLE_BACK_1  : max);
-    for (int i = max - trailSize; i <= max; i++) {
 
+    for (int i = max - 5; i <= max; i++) {
         if (location == DRACULA->locationHistory[i]) return true;
-    printf("%d is max\n", max);
-    printf("locationHisotr for %d\n",dv->currentRound);
-    for (int i = 0; i <= max; i++){
-        printf("%d: %s\n", i,placeIdToName(DRACULA->locationHistory[i]));
+    //printf("%d is max\n", max);
+    //printf("locationHisotr for %d\n",dv->currentRound);
+    //for (int i = 0; i <= max; i++){
+    //    printf("%d: %s\n", i,placeIdToName(DRACULA->locationHistory[i]));
     }
-    }
-    if (max > 0 ) {
-    if (max - 4 < 0) trailSize = max-1;
-
-    for (int i = max - trailSize; i <= max; i++) {
-        printf("%d::   ",i);
-        printf("checling %s\n", placeIdToName(DRACULA->locationHistory[i]));
+    for (int i = max - 4; i <= max; i++) {
+        //printf("%d::   ",i);
+        //printf("checling %s\n", placeIdToName(DRACULA->locationHistory[i]));
         if (location == DRACULA->locationHistory[i]) {
-            printf("%s is in trail\n",placeIdToName(location));
+        //    printf("%s is in trail\n",placeIdToName(location));
             return true;
         }
-        printf("i: %d\nlocation: %s\nlocationhistory[i]: %s\n", i, placeIdToName(location), placeIdToName(DRACULA->locationHistory[i]));
-    }
+        //printf("i: %d\nlocation: %s\nlocationhistory[i]: %s\n", i, placeIdToName(location), placeIdToName(DRACULA->locationHistory[i]));
     }
     return false;
 }
@@ -260,8 +253,8 @@ bool canHide(DraculaView dv) {
 // -- OUTPUT: Bool
 bool canDoubleBack(DraculaView dv) {
     // checks that he hasn't doubled back in the last 5 turns
-    printf("last double back was %d\n", DRACULA->lastDoubleback);
-    printf("result is %d\n",(dv->roundNumber - DRACULA->lastDoubleback));
+    //printf("last double back was %d\n", DRACULA->lastDoubleback);
+    //printf("result is %d\n",(dv->roundNumber - DRACULA->lastDoubleback));
     if ((dv->roundNumber - DRACULA->lastDoubleback) > 5
     || DRACULA->lastDoubleback < 0) return true;
     return false;
@@ -286,19 +279,16 @@ PlaceId *DvGetValidMoves(DraculaView dv, int *numReturnedMoves) {
 
     while (list != NULL && moveIndex < NUM_REAL_PLACES) {
         // exclude locations in his trail
-        printf(" having a look at %s\n", placeIdToName(list->p));
-        if (list->p == HOSPITAL_PLACE) {
-            list = list->next;
-            continue;
-        }
-        if (list->type == RAIL) {
-            list = list->next;
-            continue;
-        }
-        
         if (!isInTrail(dv, list->p)) {
             // Extra conditions for drac:
-
+            if (list->p == HOSPITAL_PLACE) {
+                list = list->next;
+                continue;
+            }
+            if (list->type == RAIL) {
+                list = list->next;
+                continue;
+            }
 
             // If it is a road type.
             if (list->type == ROAD) {
@@ -318,11 +308,10 @@ PlaceId *DvGetValidMoves(DraculaView dv, int *numReturnedMoves) {
         }
         // check whether he can doubleback to places further back than his last turn
         else if (canDoubleBack(dv)) {
-            printf("can double back\n");
+            //printf("can double back\n");
             // checks location against trail
             int max = (DRACULA->currentLocationIndex < 6 ? DRACULA->currentLocationIndex : 6);
             for (int i = 1; i < max; i++) {
-                printf("comparing %s with %s\n",placeIdToName(list->p), placeIdToName(DRACULA->locationHistory[DRACULA->currentLocationIndex - i]));
                 if (list->p == DRACULA->locationHistory[DRACULA->currentLocationIndex - i]) {
                     // add appropriate doubleback move to list
                     possibleMoves[moveIndex] = DOUBLE_BACK_1 + i;
@@ -349,7 +338,7 @@ PlaceId *DvGetValidMoves(DraculaView dv, int *numReturnedMoves) {
 
     // check if he can doubleback to his last location (i.e. stay where he is)
     if (canDoubleBack(dv)) {
-        printf("can double back!\n");
+        //printf("can double back!\n");
         possibleMoves[moveIndex] = DOUBLE_BACK_1;
         moveIndex++;
         possibleMoves = realloc(possibleMoves, (moveIndex + 1) * sizeof(PlaceId));
@@ -379,10 +368,10 @@ PlaceId *DvWhereCanIGoByType(DraculaView dv, bool road, bool boat,
                              int *numReturnedLocs) {
     int numReturnedMoves = 0;
     PlaceId *moves = DvGetValidMoves(dv, &numReturnedMoves);
-    printf("valid moves\n");
-    for (int i = 0; i < numReturnedMoves; i++){
-        printf("%s\n",placeIdToName(moves[i]));
-    }
+    //printf("valid moves\n");
+    //for (int i = 0; i < numReturnedMoves; i++){
+    //    printf("%s\n",placeIdToName(moves[i]));
+    //}
     PlaceId *locs = malloc(sizeof(PlaceId));
     memoryError(locs);
     int locsIndex = 0;
@@ -855,7 +844,7 @@ static void trapLocationRemove(DraculaView dv, PlaceId location) {
         }
         i++;
     }
-
+    
     if (locationFound == 1) {
         //remove from location by setting to nowhere
         dv->trapLocations[i] = NOWHERE;
