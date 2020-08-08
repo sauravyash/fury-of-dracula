@@ -917,11 +917,14 @@ static void draculaLocationHistoryAppend(DraculaView dv, PlaceId location) {
 
     int index = DRACULA->currentLocationIndex;
     PlaceId actualLocation = NOWHERE;
-    int numReturnedLocs = 0;
+    int numReturnedLocs = -1;
     bool canFree = false;
+    DRACULA->currentLocationIndex++;
     //Get Dracula's trail (last 6 moves)
     PlaceId *trail = DvGetLastLocations(dv, PLAYER_DRACULA , TRAIL_SIZE,
                                 &numReturnedLocs, &canFree);
+                                printf("dracs trail is : \n");
+    for (int i = 0; i < numReturnedLocs; i++) printf("in trail: %s\n", placeIdToName(trail[i]));
     // ensure the array is large enough, then append
     if (index < MAX_LOC_HISTORY_SIZE) {
         printf("appending %s\n", placeIdToName(location));
@@ -950,7 +953,7 @@ static void draculaLocationHistoryAppend(DraculaView dv, PlaceId location) {
         if(location == TELEPORT || location == CASTLE_DRACULA || actualLocation == CASTLE_DRACULA)         {
             DRACULA->health += LIFE_GAIN_CASTLE_DRACULA;
         }
-        DRACULA->currentLocationIndex++;
+        //
     }
     // otherwise print error and exit
     else {
@@ -1040,7 +1043,7 @@ PlaceId *dvGetLocationHistory(DraculaView dv, Player player,
     // pass number of moves
 
     int index = dv->allPlayers[player]->currentLocationIndex;
-    *numReturnedLocs = index + 1;
+    *numReturnedLocs = index;
     //if there are no moves in history, return NULL
     if(index < 0) return NULL;
     *canFree = true;
