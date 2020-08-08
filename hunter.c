@@ -236,11 +236,18 @@ void weightMovesByLocation(HunterView hv, MoveWeight *mw, int mwSize, PlaceId *p
 
     // discourage retracing previous steps
     int num;
-    bool free;
-    PlaceId *lastMoves = HvGetMoveHistory(hv, currentPlayer, &num, &free);
-    int i = findMoveWeightIndex(mw, mwSize, lastMoves[num - 1]);
-    if (i != -1) mw[i]->weight *= 0.1;
+    bool isFree;
+    PlaceId *lastMoves = HvGetMoveHistory(hv, currentPlayer, &num, &isFree);
+    for (int i = 0; i < num; i++) {
+        float factor = 0.05 * (num - i);
+        factor = factor > 1 ? 1 : factor;
+
+        printf("lastmove: %s, factor: %f\n", placeIdToName(lastMoves[i]), factor);
+        int index = findMoveWeightIndex(mw, mwSize, lastMoves[i]);
+        if (index != -1) mw[index]->weight *= factor;
+    } 
     
+    if (isFree) free(lastMoves);
 
     return;
 }

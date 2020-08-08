@@ -923,11 +923,11 @@ static void draculaLocationHistoryAppend(DraculaView dv, PlaceId location) {
     //Get Dracula's trail (last 6 moves)
     PlaceId *trail = DvGetLastLocations(dv, PLAYER_DRACULA , TRAIL_SIZE,
                                 &numReturnedLocs, &canFree);
-                                printf("dracs trail is : \n");
+                               // printf("dracs trail is : \n");
     //for (int i = 0; i < numReturnedLocs; i++) printf("in trail: %s\n", placeIdToName(trail[i]));
     // ensure the array is large enough, then append
     if (index < MAX_LOC_HISTORY_SIZE) {
-        printf("appending %s\n", placeIdToName(location));
+        //printf("appending %s\n", placeIdToName(location));
         DRACULA->moveHistory[index + 1] = location;
         //HIDE: dracula's location is the same as previous
         if(location == HIDE && trail != NULL){
