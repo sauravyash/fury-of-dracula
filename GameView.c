@@ -73,6 +73,7 @@ struct gameView {
 
 // PRIVATE FUNCTION DECLARATIONS
 // ****************************************
+
 // Store's players messages into player data. MESSAGE STRING MUST HAVE SAME SIZE AS # PLAYS
 static void initialiseMessageMemory(GameView gv,Message messageString[]);
 //------------- MAKING A MOVE -------------
@@ -657,13 +658,17 @@ static void draculaLocationHistoryAppend(GameView gv, PlaceId location) {
 
     int index = DRACULA->currentLocationIndex;
     PlaceId actualLocation = NOWHERE;
-    int numReturnedLocs = 0;
+    int numReturnedLocs = -1;
     bool canFree = false;
+    DRACULA->currentLocationIndex++;
     //Get Dracula's trail (last 6 moves)
     PlaceId *trail = GvGetLastLocations(gv, PLAYER_DRACULA , TRAIL_SIZE,
                                 &numReturnedLocs, &canFree);
-    // ensure the array is large enough, then append to move history
+                                printf("dracs trail is : \n");
+    for (int i = 0; i < numReturnedLocs; i++) printf("in trail: %s\n", placeIdToName(trail[i]));
+    // ensure the array is large enough, then append
     if (index < MAX_LOC_HISTORY_SIZE) {
+        printf("appending %s\n", placeIdToName(location));
         DRACULA->moveHistory[index + 1] = location;
         //HIDE: dracula's location is the same as previous
         if(location == HIDE && trail != NULL){
@@ -671,7 +676,7 @@ static void draculaLocationHistoryAppend(GameView gv, PlaceId location) {
             DRACULA->locationHistory[index + 1] = actualLocation;
             DRACULA->currentLocation = actualLocation;
         }
-        //DOUBLE_BACK_X: dracula is now at city he was in x moves ago
+        //go back to x previous locations
         else if (trail != NULL && location >= DOUBLE_BACK_1 && location <=DOUBLE_BACK_5){
             actualLocation = trail[numReturnedLocs-PlaceIdToAsciiDoubleBack(location)];
             DRACULA->locationHistory[index + 1] = actualLocation;
@@ -682,15 +687,14 @@ static void draculaLocationHistoryAppend(GameView gv, PlaceId location) {
             DRACULA->locationHistory[index + 1] = location;
             DRACULA->currentLocation = location;
         }
-        //Dracula loses health when at sea
+
         if(placeIdToType(location) == SEA || placeIdToType(actualLocation) == SEA) {
             DRACULA->health -= (LIFE_LOSS_SEA);
         }
-        //Dracula gains health when he teleports home to CASTLE_DRACULA
-        if(location == TELEPORT || location == CASTLE_DRACULA || actualLocation == CASTLE_DRACULA) {
+        if(location == TELEPORT || location == CASTLE_DRACULA || actualLocation == CASTLE_DRACULA)         {
             DRACULA->health += LIFE_GAIN_CASTLE_DRACULA;
         }
-        DRACULA->currentLocationIndex++;
+        //
     }
     // otherwise print error and exit
     else {
@@ -700,6 +704,7 @@ static void draculaLocationHistoryAppend(GameView gv, PlaceId location) {
     free(trail);
     return;
 }
+
 
 
 
@@ -834,7 +839,7 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
             // It's a trap!
             case ITS_A_TRAP:
             printf("trap!\n");
-                gv->allPlayers[hunter]->health -= LIFE_LOSS_TRAP_ENCOUNTER;
+                HUNTER->health -= LIFE_LOSS_TRAP_ENCOUNTER;
                 if ( isHunterAlive(gv, hunter) == false){
                     curr_place = HOSPITAL_PLACE;
                 }
@@ -851,10 +856,12 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
             // Dracula encounter
             case 'D':
             printf("Dracula!\n");
-                gv->allPlayers[hunter]->health -= LIFE_LOSS_DRACULA_ENCOUNTER;
+                HUNTER->health -= LIFE_LOSS_DRACULA_ENCOUNTER;
+
                 if ( isHunterAlive(gv, hunter) == false){
                     curr_place = HOSPITAL_PLACE;
                 }
+
                 DRACULA->health -= LIFE_LOSS_HUNTER_ENCOUNTER;
                 break;
             // other characters include trailing '.'
@@ -863,11 +870,11 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
         }
     }
     free(city);
-    printf("hunter %d health is %d\n", hunter, HUNTER->health);
-    printf("curr place is %s\n", placeIdToName(curr_place));
+    //printf("hunter %d health is %d\n", hunter, HUNTER->health);
+    //printf("curr place is %s\n", placeIdToName(curr_place));
     // Append history and current location:
     hunterLocationHistoryAppend(gv, hunter, curr_place);
-    printf("hunter %d health is %d\n", hunter, HUNTER->health);
+    //printf("hunter %d health is %d\n", hunter, HUNTER->health);
     return;
 }
 
@@ -1052,7 +1059,7 @@ static void initialiseMessageMemory(GameView gv,Message messageString[]){
             if(valid == true) {
 
                 PLAYER->messageBank[round] = strdup(string);
-                printf("Player %d said: %s\n",player, PLAYER->messageBank[round]);
+                //printf("Player %d said: %s\n",player, PLAYER->messageBank[round]);
             } else {
                 PLAYER->messageBank[round] = '\0';
             }

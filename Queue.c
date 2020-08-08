@@ -1,89 +1,125 @@
-// Queue.c ... implementation of Queue ADT
-// Written by John Shepherd, March 2013
+// Queue.c
 
 #include <assert.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "Queue.h"
 
-typedef struct QueueNode {
-	int value;
-	struct QueueNode *next;
-} QueueNode;
+struct node {
+	int         item;
+	struct node *next;
+};
 
-typedef struct QueueRep {
-	QueueNode *head; // ptr to first node
-	QueueNode *tail; // ptr to last node
-} QueueRep;
+struct queue {
+	struct node *front;
+	struct node *back;
+	int          size;
+};
 
-// create new empty Queue
-Queue newQueue (void)
-{
-	QueueRep *new = malloc (sizeof *new);
-	*new = (QueueRep){ .head = NULL, .tail = NULL };
+static struct node *createNode(int item);
+
+// Create a new queue
+Queue QueueNew(void) {
+	Queue new = malloc(sizeof(*new));
+	if (new == NULL) {
+		fprintf(stderr, "QueueNew: Insufficient memory!\n");
+		exit(EXIT_FAILURE);
+	}
+	
+	new->front = NULL;
+	new->back = NULL;
+	new->size = 0;
 	return new;
 }
 
-// free memory used by Queue
-void dropQueue (Queue Q)
-{
-	assert (Q != NULL);
-	for (QueueNode *curr = Q->head, *next; curr != NULL; curr = next) {
-		next = curr->next;
-		free (curr);
-	}
-	free (Q);
-}
-
-// display as 3 > 5 > 4 > ...
-void showQueue (Queue Q)
-{
-	assert (Q != NULL);
-
-	for (QueueNode *curr = Q->head; curr != NULL; curr = curr->next) {
-		printf("%d", curr->value);
-		if (curr->next != NULL)
-			printf (">");
-	}
-	printf ("\n");
-}
-
-// add item at end of Queue
-void QueueJoin (Queue Q, int it)
-{
-	assert (Q != NULL);
-
-	QueueNode *new = malloc (sizeof *new);
-	assert (new != NULL);
+// Free all resources allocated for the queue
+void QueueDrop(Queue q) {
+	assert(q != NULL);
 	
-	new->value = it;
+	struct node *curr = q->front;
+	while (curr != NULL) {
+		struct node *temp = curr;
+		curr = curr->next;
+		free(temp);
+	}
+	free(q);
+}
+
+// Add an item to the end of the queue
+void QueueEnqueue(Queue q, int item) {
+	struct node *new = createNode(item);
+	if (q->size == 0) {
+		q->front = new;
+	} else {
+		q->back->next = new;
+	}
+	q->back = new;
+	q->size++;
+}
+
+static struct node *createNode(int item) {
+	struct node *new = malloc(sizeof(*new));
+	if (new == NULL) {
+		fprintf(stderr, "QueueEnqueue: Insufficient memory!\n");
+		exit(EXIT_FAILURE);
+	}
+	new->item = item;
 	new->next = NULL;
-
-	if (Q->head == NULL)
-		Q->head = new;
-	if (Q->tail != NULL)
-		Q->tail->next = new;
-	Q->tail = new;
+	return new;
 }
 
-// remove item from front of Queue
-int QueueLeave (Queue Q)
-{
-	assert (Q != NULL);
-	assert (Q->head != NULL);
+// Remove an element from the front of the queue and return it
+int QueueDequeue(Queue q) {
+	assert(q != NULL);
+	assert(QueueSize(q) > 0);
 	
-	int it = Q->head->value;
-	QueueNode *old = Q->head;
-	Q->head = old->next;
-	if (Q->head == NULL)
-		Q->tail = NULL;
-	free (old);
-	return it;
+	int item = q->front->item;
+	struct node *newFront = q->front->next;
+	free(q->front);
+	q->front = newFront;
+	q->size--;
+	
+	if (q->size == 0) {
+		q->back = NULL;
+	}
+	return item;
 }
 
-// check for no items
-int QueueIsEmpty (Queue Q)
-{
-	return (Q->head == NULL);
+// Get the element at the front of the queue (without removing it)
+int QueuePeek(Queue q) {
+	assert(q != NULL);
+	assert(QueueSize(q) > 0);
+	
+	return q->front->item;
+}
+
+// Get the number of elements in the queue
+int QueueSize(Queue q) {
+	assert(q != NULL);
+	
+	return q->size;
+}
+
+// Check if the queue is empty
+bool QueueIsEmpty(Queue q) {
+	assert(q != NULL);
+	
+	return (QueueSize(q) == 0);
+}
+
+// Print the queue to an open file (for debugging)
+void QueueDump(Queue q, FILE *fp) {
+	assert(q != NULL);
+
+	struct node *curr = q->front;
+	while (curr != NULL) {
+		if (curr != q->front) {
+			fprintf(fp, " ");
+		}
+		fprintf(fp, "%d", curr->item);
+		curr = curr->next;
+	}
+	fprintf(fp, "\n");
 }
