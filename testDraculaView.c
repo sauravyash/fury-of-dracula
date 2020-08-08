@@ -30,27 +30,20 @@ int main(void)
 		printf("Testing\n");
 
 		char *trail =
-			"GAO.... SBC.... HFR.... MMA.... DVA.V.. "
-			"GAO.... SBC.... HFR.... MMA.... DATT... "
-			"GAO.... SBC.... HFR.... MMA.... DHIT... "
-			"GAO.... SBC.... HFR.... MMA.... DD1T... "
-			"GAO.... SBC.... HFR.... MMA.... DIO.... "
-			"GAO.... SBC.... HFR.... MMA.... DSAT... "
-			"GAO.... SBC.... HFR.... MMA.... DSOT.V. "
-			"GAO.... SBC.... HFR.... MMA.... DSJT.M. "
-			"GAO.... SBC.... HFR.... MMA.... DVAT.M. "
-			"GAO.... SBC.... HFR.... MMA....";
+			"GPA.... SBR.... HMA.... MKL.... DVE.V.. GST.... SPR.... HSR.... MSZ.... DFLT... GZU.... SVI.... HTO.... MZA.... DGOT... GST.... SZA.... HSR.... MVI.... DMRT... GZU.... SVI.... HTO.... MZA.... DHIT... GST.... SZA.... HSR.... MVI.... DCFT... GZU.... SVI.... HTO.... MZA.... DNAT.V. GST.... SZA.... HSR.... MVI.... DLET.M. GZU.... SVI.... HTO.... MZA.... DBUT.M. GST.... SZA.... HSR.... MVI.... DAMT.M. GZU.... SVI.... HTO.... MZA.... DHIT.M. GST.... SZA.... HSR.... MVI.... DD1T.M. GZU.... SVI.... HTO.... MZA.... DCOT.M. GST.... SZA.... HSR.... MVI.... DHA.VM. GZU.... SVI.... HTO.... MZA.... DBRT.M. GST.... SZA.... HSR.... MVI.... DLIT.M. GZU.... SVI.... HTO.... MZA.... DFRT.M. GST.... SZA.... HSR.... MVI.... DHIT.M. GZU.... SVI.... HTO.... MZA.... DNUT.M. GST.... SZA.... HSR.... MVI.... DD1T.V. GZU.... SVI.... HTO.... MZA....";
 
 		Message messages[24] = {};
 		DraculaView dv = DvNew(trail, messages);
 		printf("drac location is %s\n", placeIdToName(DvGetPlayerLocation(dv,PLAYER_DRACULA)));
 		int numLocs = -1;
+		printf("=====================================================\n");
 		PlaceId *locs = DvWhereCanIGo(dv, &numLocs);
 		printf("%d\n", numLocs);
-		printf("possible moves\n");
+		printf("==============================legal moves moves\n");
 		for (int i = 0; i < numLocs; i++) {
 			printf("%s\n", placeIdToName(locs[i]));
 		}
+		printf("===============\n");
 		bool canFree = false;
 		int number = -1;
 		printf("past locs:\n");

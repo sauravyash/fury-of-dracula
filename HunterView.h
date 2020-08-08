@@ -215,7 +215,6 @@ PlaceId *HvWhereCanTheyGoByType(HunterView hv, Player player,
 
 ////////////////////////////////////////////////////////////////////////
 // Your own interface functions
-
-// TODO
+PlaceId *HvGetMoveHistory(HunterView hv, Player player, int *numReturnedMoves, bool *canFree);
 
 #endif // !defined (FOD__HUNTER_VIEW_H_)
