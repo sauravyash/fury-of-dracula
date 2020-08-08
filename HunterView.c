@@ -546,6 +546,7 @@ static void draculaLocationHistoryAppend(HunterView hv, PlaceId location) {
     // Ensure the array is large enough, then append
     if (index < MAX_LOC_HISTORY_SIZE) {
         DRACULA->moveHistory[index + 1] = location;
+        printf("added %s to drac\n", placeIdToName(location));
 
         // Dracula's location is the same as previous
         if (location == HIDE && numReturnedLocs > 0 && trail != NULL){
@@ -563,6 +564,7 @@ static void draculaLocationHistoryAppend(HunterView hv, PlaceId location) {
 
         //Draculas location was not hidden/double back
         else {
+        PlaceIdToAsciiDoubleBack(location);
             DRACULA->locationHistory[index + 1] = location;
             DRACULA->currentLocation = location;
         }
@@ -570,12 +572,13 @@ static void draculaLocationHistoryAppend(HunterView hv, PlaceId location) {
         if (placeIdToType(location) == SEA || placeIdToType(actualLocation) == SEA) {
             DRACULA->health -= (LIFE_LOSS_SEA);
         }
-        if (location == TELEPORT || location == CASTLE_DRACULA ||
-            actualLocation == CASTLE_DRACULA)
+        if (location == TELEPORT || location == CASTLE_DRACULA || actualLocation == CASTLE_DRACULA)
         {
             DRACULA->health += LIFE_GAIN_CASTLE_DRACULA;
         }
+        printf("index was %d\n",DRACULA->currentLocationIndex );
         DRACULA->currentLocationIndex++;
+        printf("index now %d\n",DRACULA->currentLocationIndex );
     }
 
     // Otherwise print error and exit
@@ -584,6 +587,10 @@ static void draculaLocationHistoryAppend(HunterView hv, PlaceId location) {
         exit(EXIT_FAILURE);
     }
     free(trail);
+
+    printf("psot append:\n");
+    for (int i = 0; i <= DRACULA->currentLocationIndex; i ++) printf ("%s->", placeIdToName(DRACULA->locationHistory[i]));
+    printf("\n");
     return;
 }
 
@@ -777,13 +784,14 @@ static void draculaMove(HunterView hv, char *string) {
     city[0] = string[1];
     city[1] = string[2];
     city[2] = '\0';
-
+    printf("%s is where drac is\n", city);
     // Compare and find city by abbreviation:
     PlaceId curr_place = placeAbbrevToId(city);
 
     //Unknown city move
     if (strcmp(city, "C?") == 0) {
         draculaLocationHistoryAppend(hv, CITY_UNKNOWN);
+        printf("added CITY_UNKOWN---\n");
     }
 
     // Unknown sea move
@@ -1336,8 +1344,7 @@ static void initialiseMessageMemory(HunterView hv,Message messageString[]){
 
 void foundDraculaHimself(HunterView hv, PlaceId location) {
     printf("we saw dracula!\n");
-
-	//hunter encountered dracula (not his trail!)
+	//hunter directly encountered dracula (not his trail!)
 	int arraySize = DRACULA->currentLocationIndex;
     int max = arraySize;
     printf("what location looked like:\n");
@@ -1348,33 +1355,41 @@ void foundDraculaHimself(HunterView hv, PlaceId location) {
     printf("\n");
 	//update current location data
 	DRACULA->currentLocation = location;
-    //update most recent location in locationhist array
-	//DRACULA->locationHistory[currentLocationIndex] = location;
-	//if the place found used to be a double back / hide, go find other occurances
-	//if he hid or used doubleback 1, then previous location was exactly the same
     PlaceId pastMove = DRACULA->moveHistory[max];
-    //int i = arraySize;
     int doubleBackTo;
-    //loop this retroactively until we reach like end of array
+    //loop this retroactively until we get move back to before the start of location history
     while(max >= 0) {
-
+        //handles hide or db1
 	    if(pastMove == HIDE || pastMove == DOUBLE_BACK_1) {
-		    //can never be a double back or hide move on the first round
-		    assert(max - 1 > 0);
-            //update the previous double back or hide move
+            //update current locationHistory item to the place we found
 		    DRACULA->locationHistory[max] = location;
+            printf("added %s in max%d\n", placeIdToName(location),max);
+		    //check withint array bounds
+		    if(max - 1 < 0) break;
+            //see if the move for this location was a hide/db
             pastMove = DRACULA->moveHistory[max-1];
             max = max - 1;
 
-	    //otherwise if the move was a double back call from 2 - 5
+	    //handles d2 - db5
         } else if ( pastMove <= DOUBLE_BACK_5 && pastMove >= DOUBLE_BACK_2){
-		    doubleBackTo = DRACULA->moveHistory[max] - DOUBLE_BACK_1 + 1;
+            //check within array bounds
+            printf("max is %d\n",max);
+            //update current location history item we are viewing
 		    DRACULA->locationHistory[max] = location;
+            printf("added %s in max%d\n", placeIdToName(location),max);
+            //how far are we doubling back to (number of jumps backwards)
+		    doubleBackTo = DRACULA->moveHistory[max] - DOUBLE_BACK_1 + 1;
+            printf("double back to is %d\n", doubleBackTo);
+            if(max - doubleBackTo < 0) break;
+            //see if the move for this location was a hide or douvkevack
             pastMove = DRACULA->moveHistory[max-doubleBackTo];
             max = max - doubleBackTo;
-            //i = max;
+            printf("max is now %d\n",max);
+        //move is not db or hide
 	    } else {
+            //update location
             DRACULA->locationHistory[max] = location;
+            //exit while loop
             break;
         }
 

@@ -32,12 +32,12 @@ int main(void)
 		char *trail =
 		"GNU.... SAO.... HZU.... MBB.... DC?.V.. "
 		"GST.... SAO.... HZU.... MBB.... DC?.V.. "
-		"GST.... SAO.... HZU.... MBB.... DHI.V.. "
+		"GST.... SAO.... HZU.... MBB.... DD2.V.. "
 		"GST.... SAO.... HZU.... MBB.... DC?.V.. "
 		"GST.... SAO.... HZU.... MBB.... DC?.V.. "
 		"GST.... SAO.... HZU.... MBB.... DD3.V.. "
 		"GST.... SAO.... HZU.... MBB.... DD1.V.. "
-		"GST.... SAO.... HZU.... MBB.... DHI.V.. "
+		"GST.... SAO.... HZU.... MBB.... DD5.V.. "
 		"GGE..D. ";
 		Message messages[100] = {};
 		HunterView hv = HvNew(trail, messages);
