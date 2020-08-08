@@ -94,12 +94,11 @@ PlaceId DraculaHunt (HunterView hv, PlaceId bestMove, Player current_player) {
     MoveWeight *MvArray = MvArrayNew(numPossibleLocations);
 
     weightMovesByLocation(hv, MvArray, numPossibleLocations, possible_places);
-    srand(time(NULL));
+
     // sort by weight
     sortMVbyWeight(MvArray, numPossibleLocations);
     printMwArray(MvArray, numPossibleLocations);
-    PlaceId best = MvArray[0]->weight == MvArray[1]->weight
-        ? MvArray[rand() % 2]->location : MvArray[0]->location;
+    PlaceId best = MvArray[0]->location;
     return best;
 }
 
@@ -124,8 +123,9 @@ PlaceId MapSleuth (HunterView hv) {
 // Usage:
 /* */
 void weightMovesByLocation(HunterView hv, MoveWeight *mw, int mwSize, PlaceId *possibleLocations) {
-
+    srand(time(NULL));
     assert(mwSize > 0);
+    
     bool isLeader = false;
     Player currentPlayer = HvGetPlayer(hv);
     int round;
@@ -135,8 +135,9 @@ void weightMovesByLocation(HunterView hv, MoveWeight *mw, int mwSize, PlaceId *p
 
     // associate a certain weight to each location
     for (int i = 0; i < mwSize; i++) {
+        srand(time(NULL));
         mw[i]->location = possibleLocations[i];
-        mw[i]->weight = 10;
+        mw[i]->weight = 10 * ((rand() % 50) / 10);
 
         // if dracula is already at location, increase weight
         int round;
@@ -199,7 +200,7 @@ void weightMovesByLocation(HunterView hv, MoveWeight *mw, int mwSize, PlaceId *p
         PlaceId *route = HvGetShortestPathTo(hv, currentPlayer, CASTLE_DRACULA, &len);
         PlaceId lastknown = HvGetLastKnownDraculaLocation(hv, &round);
         Player p = findClosestPlayer(hv, lastknown);
-        if (len > 4 || (HvGetRound(hv) - round > 5 && p != currentPlayer)) {
+        if (len > 4 || (HvGetRound(hv) - round < 4 && p != currentPlayer)) {
             int i = findMoveWeightIndex(mw, mwSize, route[0]);
             if (i != -1) {
                 mw[i]->weight *= 10;
@@ -215,12 +216,12 @@ void weightMovesByLocation(HunterView hv, MoveWeight *mw, int mwSize, PlaceId *p
         int notOptimal = 0;
         for (int i = PLAYER_LORD_GODALMING; i < PLAYER_DRACULA; i++) {
             healthArray[i] = HvGetHealth(hv, (Player) i);
-            if (healthArray[i] < 6) notOptimal++;
+            if (healthArray[i] < 4) notOptimal++;
         }
         // min factor 7/3 and increases as unknown time increases
         mw[currPlayerPlaceIndex]->weight *= (HvGetRound(hv) - rounds) / 3;
         mw[currPlayerPlaceIndex]->weight *= notOptimal > 1 ? 1.75 :
-            notOptimal > 0 ? 1.25 : 0.9;
+            notOptimal > 0 ? 1.25 : 0.5;
     }
 
     // discourage retracing previous steps
