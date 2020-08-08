@@ -866,11 +866,11 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
         }
     }
     free(city);
-    printf("hunter %d health is %d\n", hunter, HUNTER->health);
-    printf("curr place is %s\n", placeIdToName(curr_place));
+    //printf("hunter %d health is %d\n", hunter, HUNTER->health);
+    //printf("curr place is %s\n", placeIdToName(curr_place));
     // Append history and current location:
     hunterLocationHistoryAppend(gv, hunter, curr_place);
-    printf("hunter %d health is %d\n", hunter, HUNTER->health);
+    //printf("hunter %d health is %d\n", hunter, HUNTER->health);
     return;
 }
 
@@ -1055,7 +1055,7 @@ static void initialiseMessageMemory(GameView gv,Message messageString[]){
             if(valid == true) {
 
                 PLAYER->messageBank[round] = strdup(string);
-                printf("Player %d said: %s\n",player, PLAYER->messageBank[round]);
+                //printf("Player %d said: %s\n",player, PLAYER->messageBank[round]);
             } else {
                 PLAYER->messageBank[round] = '\0';
             }
@@ -1073,16 +1073,16 @@ static void initialiseMessageMemory(GameView gv,Message messageString[]){
 }
 
 void foundDraculaHimself(GameView gv, PlaceId location) {
-    printf("we saw dracula!\n");
+    //printf("we saw dracula!\n");
 	//hunter directly encountered dracula (not his trail!)
 	int arraySize = DRACULA->currentLocationIndex;
     int max = arraySize;
-    printf("what location looked like:\n");
-    for (int i = 0; i <= arraySize; i ++) printf ("%s->", placeIdToName(DRACULA->locationHistory[i]));
-    printf("\n");
-    printf("what move looked like:\n");
-    for (int i = 0; i <= arraySize; i ++) printf ("%s->", placeIdToName(DRACULA->moveHistory[i]));
-    printf("\n");
+    //printf("what location looked like:\n");
+    //for (int i = 0; i <= arraySize; i ++) printf ("%s->", placeIdToName(DRACULA->locationHistory[i]));
+    //printf("\n");
+    //printf("what move looked like:\n");
+    //for (int i = 0; i <= arraySize; i ++) printf ("%s->", placeIdToName(DRACULA->moveHistory[i]));
+    //printf("\n");
 	//update current location data
 	DRACULA->currentLocation = location;
     PlaceId pastMove = DRACULA->moveHistory[max];
@@ -1093,7 +1093,7 @@ void foundDraculaHimself(GameView gv, PlaceId location) {
 	    if(pastMove == HIDE || pastMove == DOUBLE_BACK_1) {
             //update current locationHistory item to the place we found
 		    DRACULA->locationHistory[max] = location;
-            printf("added %s in max%d\n", placeIdToName(location),max);
+            //printf("added %s in max%d\n", placeIdToName(location),max);
 		    //check withint array bounds
 		    if(max - 1 < 0) break;
             //see if the move for this location was a hide/db
@@ -1103,18 +1103,18 @@ void foundDraculaHimself(GameView gv, PlaceId location) {
 	    //handles d2 - db5
         } else if ( pastMove <= DOUBLE_BACK_5 && pastMove >= DOUBLE_BACK_2){
             //check within array bounds
-            printf("max is %d\n",max);
+            //printf("max is %d\n",max);
             //update current location history item we are viewing
 		    DRACULA->locationHistory[max] = location;
-            printf("added %s in max%d\n", placeIdToName(location),max);
+            //printf("added %s in max%d\n", placeIdToName(location),max);
             //how far are we doubling back to (number of jumps backwards)
 		    doubleBackTo = DRACULA->moveHistory[max] - DOUBLE_BACK_1 + 1;
-            printf("double back to is %d\n", doubleBackTo);
+            //printf("double back to is %d\n", doubleBackTo);
             if(max - doubleBackTo < 0) break;
             //see if the move for this location was a hide or douvkevack
             pastMove = DRACULA->moveHistory[max-doubleBackTo];
             max = max - doubleBackTo;
-            printf("max is now %d\n",max);
+            //printf("max is now %d\n",max);
         //move is not db or hide
 	    } else {
             //update location
@@ -1124,8 +1124,8 @@ void foundDraculaHimself(GameView gv, PlaceId location) {
         }
 
     }
-    printf("what location now looks like:\n");
-    for (int i = 0; i <= arraySize; i ++) printf ("%s->", placeIdToName(DRACULA->locationHistory[i]));
-    printf("\n");
+    //printf("what location now looks like:\n");
+    //for (int i = 0; i <= arraySize; i ++) printf ("%s->", placeIdToName(DRACULA->locationHistory[i]));
+    //printf("\n");
     return;
 }
