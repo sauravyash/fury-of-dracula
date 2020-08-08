@@ -39,7 +39,7 @@ Places.o: Places.c Places.h
 
 # if you use other ADTs, add dependencies for them here
 Queue.o: Queue.c Queue.h
-utils.o: utils.c Places.h
+utils.o: utils.c Places.h utils.h
 
 .PHONY: clean
 clean:
