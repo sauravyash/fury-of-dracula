@@ -30,7 +30,7 @@ int main(void)
 		printf("Testing\n");
 
 		char *trail =
-			"GZU.... SED.... HSR.... MSZ.... DLE.V.. GZU.... SNS.... HSN.... MBE.... DBUT... GGE.... SAM.... HMA.... MBC.... DHIT... GFL.... SCO.... HAL.... MKL.... DPAT... GVE.... SHA.... HGR.... MCD.... DCFT... GMU.... SBR.... HCA.... MGA.... DBOT... GMU.... SPR.... HLS.... MGA.... DNAT.V. GBR.... SNU.... HAO.... MGA.... DLET.M. GPR.... SLI.... HGW.... MGA.... DHIT.M. GVI.... SFR.... HDU.... MGA.... DD1T.M. GPR.... SST.... HIR.... MGA.... DEC..M. GBD.... SBU.... HLV.... MGA.... DLOT.M. GKL.... SPA.... HSW.... MGA.... DPLT.M. GGA.... SLETTT. HLOT... MGA.... DTP.V.. GCDVD.. SMR.... HPLT... MGA....";
+			"GPA.... SGA.... HMA.... MCD.... DMU.V.. GMR.... SSZ.... HLS.... MKL....";
 
 		Message messages[24] = {};
 		DraculaView dv = DvNew(trail, messages);

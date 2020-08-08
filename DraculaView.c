@@ -217,17 +217,18 @@ PlaceId *DvGetTrapLocations(DraculaView dv, int *numTraps)
 bool isInTrail(DraculaView dv, PlaceId location) {
     // only compare against as many moves as exist
     int max = DRACULA->currentLocationIndex;
+    //printf("max is %d\n", max);
     //printf("------------------------------------------------------------location is %s----\n", placeIdToName(location));
     int trailSize = (max > 5 ? DOUBLE_BACK_5 - DOUBLE_BACK_1  : max);
-    /*printf("trailsize is %d\n",trailSize);
-    printf("trail is: \n");
-    for (int i = max - 10; i < max; i++) printf("trail is: %s\n",placeIdToName(DRACULA->locationHistory[i]));
-    printf("move is: \n");
-    for (int i = max - 10; i < max; i++) printf("trail is: %s\n",placeIdToName(DRACULA->moveHistory[i]));
-    */for (int i = max; i >= max-trailSize; i--) {
+    //printf("trailsize is %d\n",trailSize);
+    //printf("trail is: \n");
+    //for (int i = max - trailSize; i <= max; i++) printf("trail is: %s\n",placeIdToName(DRACULA->locationHistory[i]));
+    //printf("move is: \n");
+    //for (int i = max - trailSize; i <= max; i++) printf("trail is: %s\n",placeIdToName(DRACULA->moveHistory[i]));
+    for (int i = max; i >= max-trailSize; i--) {
         //printf("i: %d is looking at %s\n", i, placeIdToName(DRACULA->moveHistory[i]));
         if (location == DRACULA->moveHistory[i]) {
-            //printf("was in trial\n");
+            printf("was in trial\n");
             return true;
         }
         //printf("%d is max\n", max);
@@ -742,7 +743,7 @@ static void draculaMove(DraculaView dv, char *string) {
     city[0] = string[1];
     city[1] = string[2];
     city[2] = '\0';
-    //printf("city: %s\n",city);
+    printf("city: %s\n",city);
     //printf("round is %d\n", dv->currentRound);
     // Compare and find city by abbreviation:
     // careful when doublebacks, this turns into a doubleback code
@@ -927,7 +928,7 @@ static void draculaLocationHistoryAppend(DraculaView dv, PlaceId location) {
     //for (int i = 0; i < numReturnedLocs; i++) printf("in trail: %s\n", placeIdToName(trail[i]));
     // ensure the array is large enough, then append
     if (index < MAX_LOC_HISTORY_SIZE) {
-        //printf("appending %s\n", placeIdToName(location));
+        printf("appending %s\n", placeIdToName(location));
         DRACULA->moveHistory[index + 1] = location;
         //HIDE: dracula's location is the same as previous
         if(location == HIDE && trail != NULL){
