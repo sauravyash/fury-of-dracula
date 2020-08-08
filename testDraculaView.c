@@ -30,7 +30,7 @@ int main(void)
 		printf("Testing\n");
 
 		char *trail =
-			"GPA.... SBR.... HMA.... MKL.... DVE.V.. GST.... SPR.... HSR.... MSZ.... DFLT... GZU.... SVI.... HTO.... MZA.... DGOT... GST.... SZA.... HSR.... MVI.... DMRT... GZU.... SVI.... HTO.... MZA.... DHIT... GST.... SZA.... HSR.... MVI.... DCFT... GZU.... SVI.... HTO.... MZA.... DNAT.V. GST.... SZA.... HSR.... MVI.... DLET.M. GZU.... SVI.... HTO.... MZA.... DBUT.M. GST.... SZA.... HSR.... MVI.... DAMT.M. GZU.... SVI.... HTO.... MZA.... DHIT.M. GST.... SZA.... HSR.... MVI.... DD1T.M. GZU.... SVI.... HTO.... MZA.... DCOT.M. GST.... SZA.... HSR.... MVI.... DHA.VM. GZU.... SVI.... HTO.... MZA.... DBRT.M. GST.... SZA.... HSR.... MVI.... DLIT.M. GZU.... SVI.... HTO.... MZA.... DFRT.M. GST.... SZA.... HSR.... MVI.... DHIT.M. GZU.... SVI.... HTO.... MZA.... DNUT.M. GST.... SZA.... HSR.... MVI.... DD1T.V. GZU.... SVI.... HTO.... MZA....";
+			"GZU.... SED.... HSR.... MSZ.... DLE.V.. GZU.... SNS.... HSN.... MBE.... DBUT... GGE.... SAM.... HMA.... MBC.... DHIT... GFL.... SCO.... HAL.... MKL.... DPAT... GVE.... SHA.... HGR.... MCD.... DCFT... GMU.... SBR.... HCA.... MGA.... DBOT... GMU.... SPR.... HLS.... MGA.... DNAT.V. GBR.... SNU.... HAO.... MGA.... DLET.M. GPR.... SLI.... HGW.... MGA.... DHIT.M. GVI.... SFR.... HDU.... MGA.... DD1T.M. GPR.... SST.... HIR.... MGA.... DEC..M. GBD.... SBU.... HLV.... MGA.... DLOT.M. GKL.... SPA.... HSW.... MGA.... DPLT.M. GGA.... SLETTT. HLOT... MGA.... DTP.V.. GCDVD.. SMR.... HPLT... MGA....";
 
 		Message messages[24] = {};
 		DraculaView dv = DvNew(trail, messages);

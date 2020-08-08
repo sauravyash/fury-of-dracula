@@ -284,10 +284,10 @@ PlaceId *DvGetValidMoves(DraculaView dv, int *numReturnedMoves) {
     // create dynamically allocated array
     PlaceId *possibleMoves = malloc(sizeof(PlaceId));
     memoryError(possibleMoves);
-
+    printf("location is %s\n", placeIdToName(DRACULA->currentLocation));
 //THIS DOESNT WORK IF DRACULA IS NOT ON MAP YET! SEG FAULTS NEEDS FIX
     // get connections from current location
-    ConnList list = MapGetConnections(map, dv->allPlayers[PLAYER_DRACULA]->currentLocation);
+    ConnList list = MapGetConnections(map, DRACULA->currentLocation);
 
     // iterate through connections
     int moveIndex = 0;
@@ -942,6 +942,12 @@ static void draculaLocationHistoryAppend(DraculaView dv, PlaceId location) {
             DRACULA->currentLocation = actualLocation;
         }
         //Draculas location was not hidden/double back
+        else if(location == TELEPORT || location == CASTLE_DRACULA || actualLocation == CASTLE_DRACULA)         {
+            DRACULA->health += LIFE_GAIN_CASTLE_DRACULA;
+            actualLocation = CASTLE_DRACULA;
+            DRACULA->locationHistory[index + 1] = actualLocation;
+            DRACULA->currentLocation = actualLocation;
+        }
         else {
             DRACULA->locationHistory[index + 1] = location;
             DRACULA->currentLocation = location;
@@ -950,9 +956,7 @@ static void draculaLocationHistoryAppend(DraculaView dv, PlaceId location) {
         if(placeIdToType(location) == SEA || placeIdToType(actualLocation) == SEA) {
             DRACULA->health -= (LIFE_LOSS_SEA);
         }
-        if(location == TELEPORT || location == CASTLE_DRACULA || actualLocation == CASTLE_DRACULA)         {
-            DRACULA->health += LIFE_GAIN_CASTLE_DRACULA;
-        }
+
         //
     }
     // otherwise print error and exit
