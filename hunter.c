@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <assert.h>
+#include <time.h>
 
 #include "Game.h"
 #include "hunter.h"
@@ -93,11 +94,13 @@ PlaceId DraculaHunt (HunterView hv, PlaceId bestMove, Player current_player) {
     MoveWeight *MvArray = MvArrayNew(numPossibleLocations);
 
     weightMovesByLocation(hv, MvArray, numPossibleLocations, possible_places);
-
+    srand(time(NULL));
     // sort by weight
     sortMVbyWeight(MvArray, numPossibleLocations);
     printMwArray(MvArray, numPossibleLocations);
-    return MvArray[0]->location;
+    PlaceId best = MvArray[0]->weight == MvArray[1]->weight
+        ? MvArray[rand() % 2]->location : MvArray[0]->location;
+    return best;
 }
 
 PlaceId MapSleuth (HunterView hv) {
@@ -189,9 +192,19 @@ void weightMovesByLocation(HunterView hv, MoveWeight *mw, int mwSize, PlaceId *p
             if (index != -1) mw[index]->weight *= 5;
         }
     }
-
+    
+    // keep mina close to castle
     if (HvGetPlayer(hv) == PLAYER_MINA_HARKER) {
-        
+        int len, round;
+        PlaceId *route = HvGetShortestPathTo(hv, currentPlayer, CASTLE_DRACULA, &len);
+        PlaceId lastknown = HvGetLastKnownDraculaLocation(hv, &round);
+        Player p = findClosestPlayer(hv, lastknown);
+        if (len > 4 || (HvGetRound(hv) - round > 5 && p != currentPlayer)) {
+            int i = findMoveWeightIndex(mw, mwSize, route[0]);
+            if (i != -1) {
+                mw[i]->weight *= 10;
+            }
+        }
     }  
     
     // research if last known drac move was before 7 moves dynamically
@@ -210,6 +223,8 @@ void weightMovesByLocation(HunterView hv, MoveWeight *mw, int mwSize, PlaceId *p
             notOptimal > 0 ? 1.25 : 0.9;
     }
 
+    // discourage retracing previous steps
+    // PlaceId *lastMoves =
     return;
 }
 
