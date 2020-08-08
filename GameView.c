@@ -658,13 +658,17 @@ static void draculaLocationHistoryAppend(GameView gv, PlaceId location) {
 
     int index = DRACULA->currentLocationIndex;
     PlaceId actualLocation = NOWHERE;
-    int numReturnedLocs = 0;
+    int numReturnedLocs = -1;
     bool canFree = false;
+    DRACULA->currentLocationIndex++;
     //Get Dracula's trail (last 6 moves)
     PlaceId *trail = GvGetLastLocations(gv, PLAYER_DRACULA , TRAIL_SIZE,
                                 &numReturnedLocs, &canFree);
-    // ensure the array is large enough, then append to move history
+                                printf("dracs trail is : \n");
+    for (int i = 0; i < numReturnedLocs; i++) printf("in trail: %s\n", placeIdToName(trail[i]));
+    // ensure the array is large enough, then append
     if (index < MAX_LOC_HISTORY_SIZE) {
+        printf("appending %s\n", placeIdToName(location));
         DRACULA->moveHistory[index + 1] = location;
         //HIDE: dracula's location is the same as previous
         if(location == HIDE && trail != NULL){
@@ -672,7 +676,7 @@ static void draculaLocationHistoryAppend(GameView gv, PlaceId location) {
             DRACULA->locationHistory[index + 1] = actualLocation;
             DRACULA->currentLocation = actualLocation;
         }
-        //DOUBLE_BACK_X: dracula is now at city he was in x moves ago
+        //go back to x previous locations
         else if (trail != NULL && location >= DOUBLE_BACK_1 && location <=DOUBLE_BACK_5){
             actualLocation = trail[numReturnedLocs-PlaceIdToAsciiDoubleBack(location)];
             DRACULA->locationHistory[index + 1] = actualLocation;
@@ -683,15 +687,14 @@ static void draculaLocationHistoryAppend(GameView gv, PlaceId location) {
             DRACULA->locationHistory[index + 1] = location;
             DRACULA->currentLocation = location;
         }
-        //Dracula loses health when at sea
+
         if(placeIdToType(location) == SEA || placeIdToType(actualLocation) == SEA) {
             DRACULA->health -= (LIFE_LOSS_SEA);
         }
-        //Dracula gains health when he teleports home to CASTLE_DRACULA
-        if(location == TELEPORT || location == CASTLE_DRACULA || actualLocation == CASTLE_DRACULA) {
+        if(location == TELEPORT || location == CASTLE_DRACULA || actualLocation == CASTLE_DRACULA)         {
             DRACULA->health += LIFE_GAIN_CASTLE_DRACULA;
         }
-        DRACULA->currentLocationIndex++;
+        //
     }
     // otherwise print error and exit
     else {
@@ -701,6 +704,7 @@ static void draculaLocationHistoryAppend(GameView gv, PlaceId location) {
     free(trail);
     return;
 }
+
 
 
 
