@@ -20,6 +20,8 @@
 
 #include "Game.h"
 #include "Places.h"
+#include "utils.h"
+#include "Queue.h"
 
 typedef struct draculaView *DraculaView;
 
@@ -286,7 +288,7 @@ bool canDoubleBack(DraculaView dv);
  *       so that future calls to this function with the same player will
  *       be less expensive.
  */
-//PlaceId *DvGetShortestPathTo(DraculaView dv, Player hunter, PlaceId dest,
-//                             int *pathLength);
+PlaceId *DvGetShortestPathTo(DraculaView dv, PlaceId dest,
+                             int *pathLength);
 
 #endif // !defined(FOD__DRACULA_VIEW_H_)

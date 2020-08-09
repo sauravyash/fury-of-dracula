@@ -22,6 +22,8 @@
 #include "Game.h"
 #include "Map.h"
 #include "Places.h"
+
+#include "utils.h"
 #include "Queue.h"
 
 #define SPAIN_MOVES BARCELONA,CADIZ,ALICANTE,GRANADA,SANTANDER,LISBON,MADRID,SARAGOSSA
@@ -46,7 +48,7 @@ static void memoryError (const void * input);
 //PlaceId *getPossibleMoves(DraculaView dv, int *numPossibleMoves);
 PlaceId getRandomMove();
 void applyHunterFactor(MoveWeight *mw, int numPossibleMoves, PlaceId *possibleMovesHunter, int numPossibleMovesHunter);
-void weightMovesByLocation(DraculaView dv, MoveWeight *mw, int numPossibleLocations, PlaceId *possibleLocations);
+PlaceId weightMovesByLocation(DraculaView dv, MoveWeight *mw, int numPossibleLocations, PlaceId *possibleLocations);
 static void sortMVbyWeight(MoveWeight *array, int arraySize);
 static int  MVWeightcompare(const void *p, const void *q);
 static int placeIdCmp(const void *p, const void *q);
@@ -332,30 +334,31 @@ PlaceId weightMovesByLocation(DraculaView dv, MoveWeight * mw, int mwSize, Place
 		if (isHunterPresent(dv,possibleLocations[i]) == true) mw[i]->weight *= 0.3;
 		if (placeIdToType(possibleLocations[i]) == SEA) mw[i]->weight *= 0.8;
 
-        if (DRACULA->currentLocation == CASTLE_DRACULA ) {
+        if (DvGetPlayerLocation(dv, PLAYER_DRACULA) == CASTLE_DRACULA ) {
             //If drac is at castle dracula, then we want to make double backs worth more (just to get away)
             if (possibleLocations[i] >= DOUBLE_BACK_2 &&  possibleLocations[i] <= DOUBLE_BACK_5)  mw[i]->weight *= ( 1 + 0.1 * (possibleLocations[i] - DOUBLE_BACK_1));
             //If drac is at castle dracula, never make a d1 or hide move
-            if (possibleLocations[i] == HIDE ||  possibleLocations[i] DOUBLE_BACK_1) mw[i]->weight = 0;
+            if (possibleLocations[i] == HIDE ||  possibleLocations[i] == DOUBLE_BACK_1) mw[i]->weight = 0;
         }
 	}
 
     int pathLength = -1;
     PlaceId * pathToCD = DvGetShortestPathTo(dv, CASTLE_DRACULA,
-                                 & pathLength);
+                                 &pathLength);
 
 	// Factor in possible hunter move collisions
 	PlaceId *possibleMovesHunter;
 	int numHunterLocations = -1;
     int found = 0;
+    int j = 0;
 	for (Player hunter = PLAYER_LORD_GODALMING; hunter < PLAYER_DRACULA; hunter++) {
 		numHunterLocations = -1;
 		possibleMovesHunter = DvWhereCanTheyGo(dv, hunter, &numHunterLocations);
 		if (numHunterLocations != 0) {
 			sortPlaces(possibleMovesHunter,numHunterLocations);
 			//both MW already sorted as possibleLocations is sorted.
-            int j = 0;
-            if (DRACULA->health <= 30 && DRACULA->health >= 20 && pathLength != -1) {
+
+            if (DvGetHealth(dv,PLAYER_DRACULA) <= 30 && DvGetHealth(dv,PLAYER_DRACULA) >= 20 && pathLength != -1) {
               while (j < numHunterLocations) {
                 //hunter is in the location or reachable
                 if(pathToCD[0] == possibleMovesHunter[j]) found++;

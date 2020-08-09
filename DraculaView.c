@@ -77,6 +77,7 @@ static void memoryError (const void * input);                            // Gene
 static void sortPlaces(PlaceId *places, int numPlaces);                  // Sorts array of PlaceIds from largest to smallest
 static int PlaceIdToAsciiDoubleBack (PlaceId place);                     // Convert a doubleback placeid to doubleback value
 static bool maxEncounters(DraculaView dv, PlaceId location);             //
+PlaceId *draculaBfs(DraculaView dv, Player hunter, PlaceId src, Round r);
 //------------- CONSTRUCTOR/ DESTRUCTOR -------------
 static void initialiseGame (DraculaView dv);                             // Initialise an empty game to fill in
 static PlayerData initialisePlayer(DraculaView dv, Player player);       // Allocate the data for a player and set to default values
@@ -1445,7 +1446,7 @@ static bool maxEncounters(DraculaView dv, PlaceId location) {
 
 
 
-PlaceId *DvGetShortestPathTo(HunterView dv, PlaceId dest,
+PlaceId *DvGetShortestPathTo(DraculaView dv, PlaceId dest,
                              int *pathLength)
 {
 	Round r = dv->roundNumber;
@@ -1492,7 +1493,7 @@ PlaceId *draculaBfs(DraculaView dv, Player hunter, PlaceId src, Round r) {
 		PlaceId curr = QueueDequeue(q1);
 		int numReachable = -1;
         Round r = DRACULA->currentLocationIndex + 1;
-		PlaceId *reachable = DvGetReachable(hv->gv, hunter, r, curr,
+		PlaceId *reachable = DvGetReachable(dv, hunter, r, curr,
 		                                    &numReachable);
 
 		for (int i = 0; i < numReachable; i++) {

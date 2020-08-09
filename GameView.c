@@ -604,7 +604,7 @@ static int PlaceIdToAsciiDoubleBack (PlaceId place) {
 // -- OUTPUT: void
 static void trapLocationRemove(GameView gv, PlaceId location) {
     int i = 0;
-    
+
     int locationFound = 0;
     //find index of trap location (sorted largest to smallest PlaceId value)
     while (i <= gv->trapLocationsIndex) {
@@ -615,7 +615,7 @@ static void trapLocationRemove(GameView gv, PlaceId location) {
         i++;
     }
 
-    if (locationFound == 1) { 
+    if (locationFound == 1) {
         //remove from location by setting to nowhere
         gv->trapLocations[i] = NOWHERE;
 
@@ -823,7 +823,7 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
 //    printf("assert: %s\n (%ld) == %d\n", string, strlen(string), LOCATION_ID_SIZE);
     // String must be of valid size
     assert (strlen(string) > LOCATION_ID_SIZE);
-    
+
     // Store locationID into city[]:
     char *city = malloc((LOCATION_ID_SIZE + 1)*sizeof(char));
     memoryError(city);

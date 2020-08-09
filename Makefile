@@ -35,7 +35,7 @@ playerHunter.o: player.c hunter.h Game.h HunterView.h GameView.h Places.h
 dracula.o: dracula.c dracula.h DraculaView.h GameView.h Places.h Game.h
 hunter.o: hunter.c hunter.h HunterView.h GameView.h Places.h Game.h
 GameView.o:	GameView.c GameView.h Places.h Game.h
-DraculaView.o: DraculaView.c DraculaView.h GameView.h Places.h Game.h
+DraculaView.o: DraculaView.c DraculaView.h GameView.h Places.h Game.h Queue.h utils.h
 HunterView.o: HunterView.c GameView.h Places.h HunterView.h Game.h Queue.h utils.h
 Map.o: Map.c Map.h Places.h
 Places.o: Places.c Places.h
