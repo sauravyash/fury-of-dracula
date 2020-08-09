@@ -138,6 +138,11 @@ void weightMovesByLocation(HunterView hv, MoveWeight *mw, int mwSize, PlaceId *p
         //srand(time(NULL));
         mw[i]->location = possibleLocations[i];
         mw[i]->weight = 10; //* ((rand() % 50) / 10);
+        
+        // Generally keep away from the sea:
+        if (placeIdToType(possibleLocations[i]) == SEA) {
+            mw[i]->weight *= 0.7;  
+        }
 
         // if dracula is already at location, increase weight
         int round;
