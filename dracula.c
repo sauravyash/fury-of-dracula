@@ -354,7 +354,12 @@ PlaceId weightMovesByLocation(DraculaView dv, MoveWeight * mw, int mwSize, Place
 		mw[i]->location = possibleLocations[i];
 		mw[i]->weight = 10;
 		//if hunter is already at location, decrease weight even further
-		if (isHunterPresent(dv,possibleLocations[i]) == true) mw[i]->weight *= 0.3;
+		if (isHunterPresent(dv,possibleLocations[i]) == true) {
+            mw[i]->weight *= 0.3;
+            if (mw[i]->location == DvGetPlayerLocation(dv, PLAYER_DRACULA)) {
+                mw[i]->weight *= 0.1;
+            }
+        }
 		if (placeIdToType(possibleLocations[i]) == SEA) mw[i]->weight *= 0.8;
 
         if (DvGetPlayerLocation(dv, PLAYER_DRACULA) == CASTLE_DRACULA ) {
@@ -395,10 +400,7 @@ PlaceId weightMovesByLocation(DraculaView dv, MoveWeight * mw, int mwSize, Place
 
 			applyHunterFactor(mw, mwSize, possibleMovesHunter,numHunterLocations);
 		}
-
-
     }
-
 
     // Drac being low on health possible moves -> depending on how well this does; maybe less than 30 but more than   20? idk i dont want him cramped in
     // Also if we go there with like 10 health and get interepted on the way, we die. If we go there and theres more than 1 hunter there, we die; , maybe
