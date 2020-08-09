@@ -141,7 +141,7 @@ void weightMovesByLocation(HunterView hv, MoveWeight *mw, int mwSize, PlaceId *p
         
         // Generally keep away from the sea:
         if (placeIdToType(possibleLocations[i]) == SEA) {
-            mw[i]->weight *= 0.7;  
+            mw[i]->weight *= 0.3;  
         }
 
         // if dracula is already at location, increase weight
@@ -205,7 +205,49 @@ void weightMovesByLocation(HunterView hv, MoveWeight *mw, int mwSize, PlaceId *p
         PlaceId *route = HvGetShortestPathTo(hv, currentPlayer, CASTLE_DRACULA, &len);
         PlaceId lastknown = HvGetLastKnownDraculaLocation(hv, &round);
         Player p = findClosestPlayer(hv, lastknown);
+        if (len > 3 || (HvGetRound(hv) - round < 3 && p != currentPlayer)) {
+            int i = findMoveWeightIndex(mw, mwSize, route[0]);
+            if (i != -1) {
+                mw[i]->weight *= 10;
+            }
+        }
+    }
+    
+    // keep lord g in middle near paris
+    if (HvGetPlayer(hv) == PLAYER_LORD_GODALMING) {
+        int len, round;
+        PlaceId *route = HvGetShortestPathTo(hv, currentPlayer, PARIS, &len);
+        PlaceId lastknown = HvGetLastKnownDraculaLocation(hv, &round);
+        Player p = findClosestPlayer(hv, lastknown);
+        if (len > 7 || (HvGetRound(hv) - round < 4 && p != currentPlayer)) {
+            int i = findMoveWeightIndex(mw, mwSize, route[0]);
+            if (i != -1) {
+                mw[i]->weight *= 10;
+            }
+        }
+    }
+    
+    // keep van hell down the back
+    if (HvGetPlayer(hv) == PLAYER_VAN_HELSING) {
+        int len, round;
+        PlaceId *route = HvGetShortestPathTo(hv, currentPlayer, MADRID, &len);
+        PlaceId lastknown = HvGetLastKnownDraculaLocation(hv, &round);
+        Player p = findClosestPlayer(hv, lastknown);
         if (len > 4 || (HvGetRound(hv) - round < 4 && p != currentPlayer)) {
+            int i = findMoveWeightIndex(mw, mwSize, route[0]);
+            if (i != -1) {
+                mw[i]->weight *= 10;
+            }
+        }
+    }
+    
+    // keep dr s upwards
+    if (HvGetPlayer(hv) == PLAYER_DR_SEWARD) {
+        int len, round;
+        PlaceId *route = HvGetShortestPathTo(hv, currentPlayer, BERLIN, &len);
+        PlaceId lastknown = HvGetLastKnownDraculaLocation(hv, &round);
+        Player p = findClosestPlayer(hv, lastknown);
+        if (len > 5 || (HvGetRound(hv) - round < 4 && p != currentPlayer)) {
             int i = findMoveWeightIndex(mw, mwSize, route[0]);
             if (i != -1) {
                 mw[i]->weight *= 10;
@@ -227,6 +269,27 @@ void weightMovesByLocation(HunterView hv, MoveWeight *mw, int mwSize, PlaceId *p
         mw[currPlayerPlaceIndex]->weight *= (HvGetRound(hv) - rounds) / 3;
         mw[currPlayerPlaceIndex]->weight *= notOptimal > 1 ? 1.75 :
             notOptimal > 0 ? 1.25 : 0.5;
+    }
+    
+    // Stop going bloody back and fourth like a yo-yo
+    int numMoves;
+    bool varFree;
+    PlaceId *MoveHistory = HvGetMoveHistory(hv, currentPlayer, &numMoves, &varFree);
+    for (int i = 0; i < mwSize; i++) {
+        for (int j = numMoves - 1; j > numMoves - 3; j--) {
+            if (MoveHistory[j] == possibleLocations[i]) {
+                mw[i]->weight *= 0.3 * (numMoves - j + 1);
+            }
+        }
+    }
+    
+    // Keep away from others
+    for (int i = 0; i < mwSize; i++) {
+        for (int j = 0; j < NUM_PLAYERS - 1; j++) {
+            if (possibleLocations[i] == HvGetPlayerLocation(hv, j)) {
+                mw[i]->weight *= 0.3;
+            }
+        }
     }
 
     // avoid traps
