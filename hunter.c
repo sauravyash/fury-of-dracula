@@ -254,11 +254,11 @@ void weightMovesByLocation(HunterView hv, MoveWeight *mw, int mwSize, PlaceId *p
 }
 
 void printMwArray(MoveWeight *mw, int size) {
-    for (int i = 0; i < size; i++) {
+    //for (int i = 0; i < size; i++) {
         //printf("Loc: %s, Weight: %f\n",
-                placeIdToName(mw[i]->location),
-                mw[i]->weight);
-    }
+    //            placeIdToName(mw[i]->location),
+    //            mw[i]->weight);
+    //}
 }
 
 Player findClosestPlayer(HunterView hv, PlaceId pID) {
