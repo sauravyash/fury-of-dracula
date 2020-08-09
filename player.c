@@ -62,7 +62,8 @@ typedef DraculaView View;
 # define decideMove decideDraculaMove
 # define ViewFree DvFree
 
-# define xPastPlays "GZA.... SED.... HZU.... MZU...."
+# define xPastPlays "GPA.... SBR.... HMA.... MKL.... DMI.V.. GPA.... SBR.... HSR.... MCD.... DGOT... GST.... SPR.... HTO.... MGA.... DVET... GST.... SPR.... HMR.... MCN.... DFLT... GST.... SPR.... HMR.... MCN.... DROT... GST.... SPR.... HMR.... MCN.... DBIT... GST.... SVI.... HMS.... MBS.... DNPT.V. GZU.... SZA.... HTS.... MVR.... DHIT.M. GMU.... SSZ.... HROT... MSO.... DD1T.M. GZA.... SJM.... HNPTTTD MBC.... DTS..M. GVI.... SZA.... HZA.... MSO.... DIO.... GZA.... SSJ.... HVI.... MVA.... DBS..M. GVI.... SZA.... HPR.... MIO.... DCNT... GPR.... SVI.... HNU.... MTS.... DGA.V.. GVI.... SMU.... HST.... MRO.... DCDT... GBD.... SZU.... HZU.... MTS.... DD2T... GSZ.... SST.... HMU.... MIO.... DHIT... GJM.... SZU.... HVE.... MBS.... DBCT... GSJ.... SST.... HAS.... MVR.... DKLT.M. GVA.... SZU.... HIO.... MCN.... DBET.V. GIO.... SST.... HVA.... MGATT.. DSZT.M. GTS.... SZU.... HSO.... MKLT... DZAT... GRO.... SMI.... HVR.... MSZT... DSJT... GTS.... SVE.... HBS.... MZAT... DSOT.M. GRO.... SAS.... HCN.... MZA.... DSAT... GTS.... SIO.... HGA.... MVI.... DHIT.M. GRO.... SVA.... HKL.... MPR.... DD1.V.. GTS.... SSOT... HSZ.... MNU.... DVAT... GNP.... SVR.... HBD.... MST.... DATT.M. GTS.... SBS.... HZA.... MNU.... DIO.... GRO.... SCN.... HVI.... MMU.... DAS..M. GTS.... SGA.... HPR.... MZU.... DBIT.M. GMS.... SKL.... HNU.... MMU...."
+
 # define xMsgs { "", "", "", "" }
 
 #else

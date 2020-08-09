@@ -174,7 +174,7 @@ void decideDraculaMove(DraculaView dv)
     int numPossibleLocations;
     PlaceId *possibleLocations =DvWhereCanIGo(dv, &numPossibleLocations);
     printf("\nPossible locations are:   ");
-    for (int i = 0; i <= numPossibleLocations; i ++) {
+    for (int i = 0; i < numPossibleLocations; i ++) {
         printf("%s, ", placeIdToName(possibleLocations[i]));
     }
     //printf("\n");
@@ -219,7 +219,7 @@ void decideDraculaMove(DraculaView dv)
  //   printMW(MvArray, MvArraySize);
 
      //if no hunters are close try to go to CD, if they do get close, just abort mission
-
+    printMW(MvArray, MvArraySize);
 
     bestMove = convertBestLocToMove(dv, MvArray, MvArraySize, bestMove, 0);
 
@@ -243,7 +243,7 @@ PlaceId convertBestLocToMove(DraculaView dv, MoveWeight *MvArray, int MvArraySiz
     int trailSize;
     bool canFree;
     PlaceId *trail = DvGetLocationHistory(dv, PLAYER_DRACULA, &trailSize, &canFree);
-    for (int loc = trailSize; loc > trailSize - 5; loc--) {
+    for (int loc = trailSize; loc > trailSize - 5 && loc > -1; loc--) {
         // if the best move is in the trail
         if (bestMove == trail[loc]) {
             // if drac hasn't hidden in the last 5 turns and bestMove is his curr location
@@ -253,19 +253,30 @@ PlaceId convertBestLocToMove(DraculaView dv, MoveWeight *MvArray, int MvArraySiz
                 bestMove = HIDE;
                 break;
             }
+            printf("Best DBack: %s \n", placeIdToName(bestMove));
             // if drac hasn't dbed in the last 5 turns
             if (canDoubleBack(dv)) {
                 // chooses right db based on index of matched move in trail
-                switch (trailSize - loc - 1)
-                {
-                case 0: bestMove = DOUBLE_BACK_1; break;
-                case 1: bestMove = DOUBLE_BACK_2; break;
-                case 2: bestMove = DOUBLE_BACK_3; break;
-                case 3: bestMove = DOUBLE_BACK_4; break;
-                case 4: bestMove = DOUBLE_BACK_5; break;
-                default:
-                    break;
+                switch (trailSize - loc - 1) {
+                    case 0: 
+                        bestMove = DOUBLE_BACK_1; 
+                        break;
+                    case 1: 
+                        bestMove = DOUBLE_BACK_2;
+                        break;
+                    case 2:
+                        bestMove = DOUBLE_BACK_3;
+                        break;
+                    case 3: 
+                        bestMove = DOUBLE_BACK_4;
+                        break;
+                    case 4: 
+                        bestMove = DOUBLE_BACK_5;
+                        break;
+                    default:
+                        break;
                 }
+                printf("Best DBack: %s, trailSize: %d, loc: %d\n", placeIdToName(bestMove), trailSize, loc);
                 break;
             }
             // if drac can't do the best move
@@ -276,6 +287,8 @@ PlaceId convertBestLocToMove(DraculaView dv, MoveWeight *MvArray, int MvArraySiz
             }
         }
     }
+    
+
     if (canFree) free(trail);
     return bestMove;
 }

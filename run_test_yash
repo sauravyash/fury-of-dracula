@@ -1,7 +1,7 @@
 #!/bin/sh
 rm results.txt
 rm -rf tests/*
-max=50
+max=200
 for x in `seq 1 $max`;
 do
     /web/cs2521/20T2/ass/ass2/hunt/dryrun/rungame.sh  Makefile dracula.c \
