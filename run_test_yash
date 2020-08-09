@@ -1,11 +1,13 @@
 #!/bin/sh
-rm output.txt
-max=20
+rm results.txt
+rm -rf tests/*
+max=10
 for x in `seq 1 $max`;
 do
     /web/cs2521/20T2/ass/ass2/hunt/dryrun/rungame.sh  Makefile dracula.c \
     hunter.c DraculaView.c DraculaView.h HunterView.c HunterView.h GameView.c \
     GameView.h Queue.c Queue.h testGameView.c testDraculaView.c \
-    testHunterView.c testMap.c testUtils.c testUtils.h utils.c utils.h | tail -n -10 >> output.txt
-    #echo "scale=2 ; $x / $max" | bc
+    testHunterView.c testMap.c testUtils.c testUtils.h utils.c utils.h | pv -pterbTCB 1G > "tests/output${x}.txt"
+    echo "${x}:          " >> results.txt
+    tail -n -7 "tests/output${x}.txt" >> results.txt
 done

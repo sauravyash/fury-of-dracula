@@ -1,0 +1,3493 @@
+[0;36mCreated a temp directory '/tmp/tmp.Zo15kPFmDV' for checking your submission[0m
+[0;36mCopying your files into '/tmp/tmp.Zo15kPFmDV'[0m
+[0;36mChecking that your submission includes all the required files[0m
+[0;36mChecking that your submission does NOT include files that shouldn't be modified[0m
+[0;36mCopying our versions of files that shouldn't be modified into '/tmp/tmp.Zo15kPFmDV'[0m
+[0;36mCopying in the remaining files that you weren't required to modify or submit[0m
+[0;36mCheck your Makefile for 'LIBS'[0m
+[0;36mChecking that your code compiles[0m
+gcc -Wall -Werror -g   -c -o dracula.o dracula.c
+gcc -Wall -Werror -g -DI_AM_DRACULA -c player.c -o playerDracula.o
+gcc -Wall -Werror -g   -c -o DraculaView.o DraculaView.c
+gcc -Wall -Werror -g   -c -o GameView.o GameView.c
+gcc -Wall -Werror -g   -c -o Map.o Map.c
+gcc -Wall -Werror -g   -c -o Places.o Places.c
+gcc -Wall -Werror -g   -c -o Queue.o Queue.c
+gcc -Wall -Werror -g   -c -o utils.o utils.c
+gcc   dracula.o playerDracula.o DraculaView.o GameView.o Map.o Places.o Queue.o utils.o   -o dracula
+gcc -Wall -Werror -g   -c -o hunter.o hunter.c
+gcc -Wall -Werror -g -c player.c -o playerHunter.o
+gcc -Wall -Werror -g   -c -o HunterView.o HunterView.c
+gcc   hunter.o playerHunter.o HunterView.o GameView.o Map.o Places.o Queue.o utils.o   -o hunter
+gcc -Wall -Werror -g   -c -o testDraculaView.o testDraculaView.c
+gcc -Wall -Werror -g   -c -o testUtils.o testUtils.c
+gcc   testDraculaView.o testUtils.o DraculaView.o GameView.o Map.o Places.o Queue.o utils.o   -o testDraculaView
+[0;32mCompilation succeeded![0m
+
+[0;32mDryrun succeeded![0m
+gcc -Wall -Werror -g   -c -o dracula.o dracula.c
+gcc -Wall -Werror -g -DI_AM_DRACULA -c player.c -o playerDracula.o
+gcc -Wall -Werror -g   -c -o DraculaView.o DraculaView.c
+gcc -Wall -Werror -g   -c -o GameView.o GameView.c
+gcc -Wall -Werror -g   -c -o Map.o Map.c
+gcc -Wall -Werror -g   -c -o Places.o Places.c
+gcc -Wall -Werror -g   -c -o Queue.o Queue.c
+gcc -Wall -Werror -g   -c -o utils.o utils.c
+gcc   dracula.o playerDracula.o DraculaView.o GameView.o Map.o Places.o Queue.o utils.o /usr/lib/x86_64-linux-gnu/libdl.so /usr/lib/x86_64-linux-gnu/libjansson.so   -o dracula
+gcc -Wall -Werror -g   -c -o hunter.o hunter.c
+gcc -Wall -Werror -g -c player.c -o playerHunter.o
+gcc -Wall -Werror -g   -c -o HunterView.o HunterView.c
+gcc   hunter.o playerHunter.o HunterView.o GameView.o Map.o Places.o Queue.o utils.o /usr/lib/x86_64-linux-gnu/libdl.so /usr/lib/x86_64-linux-gnu/libjansson.so   -o hunter
+   The FURY of DRACULA   
+          _..._          
+        .'     '.        
+       ; __   __ ;       
+       |/  \ /  \|       
+     |\| -- ' -- |/|     
+     |(| \o| |o/ |)|     
+     _\|    U    |/_     
+  .-'  | ,.___., |  '-.  
+  \    ;  V'-'V  ;    /  
+   `\   \       /   /`   
+     `\  '-...-'  /`     
+       `\  / \  /`       
+         `\\_//`         
+...........................
+--------------------------------------------------------------------------
+> Running player 0... 
+Running with input: "past_plays": ""
+==============================================================
+Program Output (0): 
+==============================================================
+Move:  {
+  "message": "Lol we moving",
+  "move": "PA",
+  "timer": 139
+}
+> Game score: 366
+> Moving from: undefined
+> Life Points: 9
+> Player 0 made move:
+> +++
+  message: Lol we moving
+  move: PA
+  timer: 139
+> ---
+--------------------------------------------------------------------------
+> Running player 1... 
+Running with input: "past_plays": "GPA...."
+==============================================================
+Program Output (0): 
+==============================================================
+Move:  {
+  "move": "BR",
+  "message": "Lol we moving",
+  "timer": 141
+}
+> Game score: 366
+> Moving from: undefined
+> Life Points: 9
+> Player 1 made move:
+> +++
+  move: BR
+  message: Lol we moving
+  timer: 141
+> ---
+--------------------------------------------------------------------------
+> Running player 2... 
+Running with input: "past_plays": "GPA.... SBR...."
+==============================================================
+Program Output (0): 
+==============================================================
+Move:  {
+  "move": "MA",
+  "message": "Lol we moving",
+  "timer": 136
+}
+> Game score: 366
+> Moving from: undefined
+> Life Points: 9
+> Player 2 made move:
+> +++
+  move: MA
+  message: Lol we moving
+  timer: 136
+> ---
+--------------------------------------------------------------------------
+> Running player 3... 
+Running with input: "past_plays": "GPA.... SBR.... HMA...."
+==============================================================
+Program Output (0): 
+==============================================================
+Move:  {
+  "move": "KL",
+  "timer": 134,
+  "message": "Lol we moving"
+}
+> Game score: 366
+> Moving from: undefined
+> Life Points: 9
+> Player 3 made move:
+> +++
+  move: KL
+  timer: 134
+  message: Lol we moving
+> ---
+--------------------------------------------------------------------------
+> Running player 4... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL...."
+==============================================================
+Program Output (0): 
+==============================================================
+Move:  {
+  "move": "VE",
+  "message": "Happy Birthday To Me!",
+  "timer": 102
+}
+> Game score: 366
+> Moving from: undefined
+> Blood Points: 40
+> Player 4 made move:
+> +++
+  move: VE
+  message: Happy Birthday To Me!
+  timer: 102
+> ---
+> End of Round:  0
+> Starting Round:  1
+--------------------------------------------------------------------------
+> Running player 0... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "PA",
+  "message": "Lol we moving",
+  "timer": 158
+}
+> Game score: 365
+> Moving from: PA
+> Life Points: 9
+> Player 0 made move:
+> +++
+  move: PA
+  message: Lol we moving
+  timer: 158
+> ---
+--------------------------------------------------------------------------
+> Running player 1... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "PR",
+  "message": "Lol we moving",
+  "timer": 163
+}
+> Game score: 365
+> Moving from: BR
+> Life Points: 9
+> Player 1 made move:
+> +++
+  move: PR
+  message: Lol we moving
+  timer: 163
+> ---
+--------------------------------------------------------------------------
+> Running player 2... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "SR",
+  "timer": 166,
+  "message": "Lol we moving"
+}
+> Game score: 365
+> Moving from: MA
+> Life Points: 9
+> Player 2 made move:
+> +++
+  move: SR
+  timer: 166
+  message: Lol we moving
+> ---
+--------------------------------------------------------------------------
+> Running player 3... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "CD",
+  "timer": 241,
+  "message": "Lol we moving"
+}
+> Game score: 365
+> Moving from: KL
+> Life Points: 9
+> Player 3 made move:
+> +++
+  move: CD
+  timer: 241
+  message: Lol we moving
+> ---
+--------------------------------------------------------------------------
+> Running player 4... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DVE.V.. GPA.... SPR.... HSR.... MCD...."
+==============================================================
+Program Output (204): hello
+location is Venice
+Adriatic Sea
+Munich
+Milan
+Genoa
+Florence
+Hide
+Double Back 1
+
+Possible locations are:   Adriatic Sea, Munich, Milan, Genoa, Florence, Hide, Double Back 1, Adriatic Sea, lets heal!
+
+==============================================================
+Move:  {
+  "move": "FL",
+  "message": "doing my best ",
+  "timer": 163
+}
+> Game score: 365
+> Moving from: VE
+> Blood Points: 40
+> Legal Drac moves: FL GO MI MU AS D1 HI
+> Player 4 made move:
+> +++
+  move: FL
+  message: doing my best 
+  timer: 163
+> ---
+> End of Round:  1
+> Starting Round:  2
+--------------------------------------------------------------------------
+> Running player 0... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T..."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "ST",
+  "message": "Lol we moving",
+  "timer": 172
+}
+> Game score: 364
+> Moving from: PA
+> Life Points: 9
+> Player 0 made move:
+> +++
+  move: ST
+  message: Lol we moving
+  timer: 172
+> ---
+--------------------------------------------------------------------------
+> Running player 1... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "VI",
+  "message": "Lol we moving",
+  "timer": 171
+}
+> Game score: 364
+> Moving from: PR
+> Life Points: 9
+> Player 1 made move:
+> +++
+  move: VI
+  message: Lol we moving
+  timer: 171
+> ---
+--------------------------------------------------------------------------
+> Running player 2... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "timer": 172,
+  "move": "SR",
+  "message": "Lol we moving"
+}
+> Game score: 364
+> Moving from: SR
+> Life Points: 9
+> Player 2 made move:
+> +++
+  timer: 172
+  move: SR
+  message: Lol we moving
+> ---
+--------------------------------------------------------------------------
+> Running player 3... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "GA",
+  "message": "Lol we moving",
+  "timer": 240
+}
+> Game score: 364
+> Moving from: CD
+> Life Points: 9
+> Player 3 made move:
+> +++
+  move: GA
+  message: Lol we moving
+  timer: 240
+> ---
+--------------------------------------------------------------------------
+> Running player 4... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DVE.V.. GPA.... SPR.... HSR.... MCD.... DFLT... GST.... SVI.... HSR.... MGA...."
+==============================================================
+Program Output (156): hello
+location is Florence
+was in trial
+Rome
+Genoa
+Hide
+Double Back 1
+
+Possible locations are:   Rome, Genoa, Hide, Double Back 1, Adriatic Sea, lets heal!
+
+==============================================================
+Move:  {
+  "timer": 166,
+  "move": "GO",
+  "message": "doing my best "
+}
+> Game score: 364
+> Moving from: FL
+> Blood Points: 40
+> Legal Drac moves: GO RO D1 D2 HI
+> Player 4 made move:
+> +++
+  timer: 166
+  move: GO
+  message: doing my best 
+> ---
+> End of Round:  2
+> Starting Round:  3
+--------------------------------------------------------------------------
+> Running player 0... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T..."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "ZU",
+  "timer": 175,
+  "message": "Lol we moving"
+}
+> Game score: 363
+> Moving from: ST
+> Life Points: 9
+> Player 0 made move:
+> +++
+  move: ZU
+  timer: 175
+  message: Lol we moving
+> ---
+--------------------------------------------------------------------------
+> Running player 1... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "VI",
+  "message": "Lol we moving",
+  "timer": 183
+}
+> Game score: 363
+> Moving from: VI
+> Life Points: 9
+> Player 1 made move:
+> +++
+  move: VI
+  message: Lol we moving
+  timer: 183
+> ---
+--------------------------------------------------------------------------
+> Running player 2... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "TO",
+  "message": "Lol we moving",
+  "timer": 191
+}
+> Game score: 363
+> Moving from: SR
+> Life Points: 9
+> Player 2 made move:
+> +++
+  move: TO
+  message: Lol we moving
+  timer: 191
+> ---
+--------------------------------------------------------------------------
+> Running player 3... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "message": "Lol we moving",
+  "move": "GA",
+  "timer": 241
+}
+> Game score: 363
+> Moving from: GA
+> Life Points: 9
+> Player 3 made move:
+> +++
+  message: Lol we moving
+  move: GA
+  timer: 241
+> ---
+--------------------------------------------------------------------------
+> Running player 4... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DVE.V.. GPA.... SPR.... HSR.... MCD.... DFLT... GST.... SVI.... HSR.... MGA.... DGOT... GZU.... SVI.... HTO.... MGA...."
+==============================================================
+Program Output (238): hello
+location is Genoa
+was in trial
+was in trial
+Tyrrhenian Sea
+Milan
+Marseilles
+Double Back 2
+Hide
+Double Back 1
+
+Possible locations are:   Tyrrhenian Sea, Milan, Marseilles, Double Back 2, Hide, Double Back 1, Adriatic Sea, lets heal!
+
+==============================================================
+Move:  {
+  "timer": 177,
+  "move": "HI",
+  "message": "doing my best "
+}
+> Game score: 363
+> Moving from: GO
+> Blood Points: 40
+> Legal Drac moves: MR MI TS D1 D2 D3 HI
+> Player 4 made move:
+> +++
+  timer: 177
+  move: HI
+  message: doing my best 
+> ---
+> End of Round:  3
+> Starting Round:  4
+--------------------------------------------------------------------------
+> Running player 0... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DC?T..."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "ST",
+  "message": "Lol we moving",
+  "timer": 181
+}
+> Game score: 362
+> Moving from: ZU
+> Life Points: 9
+> Player 0 made move:
+> +++
+  move: ST
+  message: Lol we moving
+  timer: 181
+> ---
+--------------------------------------------------------------------------
+> Running player 1... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DC?T... GST...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "ZA",
+  "message": "Lol we moving",
+  "timer": 177
+}
+> Game score: 362
+> Moving from: VI
+> Life Points: 9
+> Player 1 made move:
+> +++
+  move: ZA
+  message: Lol we moving
+  timer: 177
+> ---
+--------------------------------------------------------------------------
+> Running player 2... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DC?T... GST.... SZA...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "TO",
+  "timer": 181,
+  "message": "Lol we moving"
+}
+> Game score: 362
+> Moving from: TO
+> Life Points: 9
+> Player 2 made move:
+> +++
+  move: TO
+  timer: 181
+  message: Lol we moving
+> ---
+--------------------------------------------------------------------------
+> Running player 3... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DC?T... GST.... SZA.... HTO...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "CN",
+  "message": "Lol we moving",
+  "timer": 1498
+}
+> Game score: 362
+> Moving from: GA
+> Life Points: 9
+> Player 3 made move:
+> +++
+  move: CN
+  message: Lol we moving
+  timer: 1498
+> ---
+--------------------------------------------------------------------------
+> Running player 4... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DVE.V.. GPA.... SPR.... HSR.... MCD.... DFLT... GST.... SVI.... HSR.... MGA.... DGOT... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN...."
+==============================================================
+Program Output (227): hello
+location is Genoa
+was in trial
+was in trial
+Tyrrhenian Sea
+Milan
+Marseilles
+Double Back 3
+Double Back 1
+
+Possible locations are:   Tyrrhenian Sea, Milan, Marseilles, Double Back 3, Double Back 1, Adriatic Sea, lets heal!
+
+==============================================================
+Move:  {
+  "move": "MI",
+  "message": "doing my best ",
+  "timer": 185
+}
+> Game score: 362
+> Moving from: GO
+> Blood Points: 40
+> Legal Drac moves: MR MI TS D1 D2 D3 D4
+> Player 4 made move:
+> +++
+  move: MI
+  message: doing my best 
+  timer: 185
+> ---
+> End of Round:  4
+> Starting Round:  5
+--------------------------------------------------------------------------
+> Running player 0... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DC?T... GST.... SZA.... HTO.... MCN.... DC?T..."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "ST",
+  "message": "Lol we moving",
+  "timer": 177
+}
+> Game score: 361
+> Moving from: ST
+> Life Points: 9
+> Player 0 made move:
+> +++
+  move: ST
+  message: Lol we moving
+  timer: 177
+> ---
+--------------------------------------------------------------------------
+> Running player 1... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DC?T... GST.... SZA.... HTO.... MCN.... DC?T... GST...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "SZ",
+  "message": "Lol we moving",
+  "timer": 181
+}
+> Game score: 361
+> Moving from: ZA
+> Life Points: 9
+> Player 1 made move:
+> +++
+  move: SZ
+  message: Lol we moving
+  timer: 181
+> ---
+--------------------------------------------------------------------------
+> Running player 2... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DC?T... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "MR",
+  "message": "Lol we moving",
+  "timer": 168
+}
+> Game score: 361
+> Moving from: TO
+> Life Points: 9
+> Player 2 made move:
+> +++
+  move: MR
+  message: Lol we moving
+  timer: 168
+> ---
+--------------------------------------------------------------------------
+> Running player 3... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DC?T... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "message": "Lol we moving",
+  "move": "CN",
+  "timer": 237
+}
+> Game score: 361
+> Moving from: CN
+> Life Points: 9
+> Player 3 made move:
+> +++
+  message: Lol we moving
+  move: CN
+  timer: 237
+> ---
+--------------------------------------------------------------------------
+> Running player 4... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DVE.V.. GPA.... SPR.... HSR.... MCD.... DFLT... GST.... SVI.... HSR.... MGA.... DGOT... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DMIT... GST.... SSZ.... HMR.... MCN...."
+==============================================================
+Program Output (213): hello
+location is Milan
+was in trial
+was in trial
+Zurich
+Munich
+Marseilles
+Double Back 2
+Double Back 1
+
+Possible locations are:   Zurich, Munich, Marseilles, Double Back 2, Double Back 1, Adriatic Sea, lets heal!
+
+==============================================================
+Move:  {
+  "move": "D1",
+  "message": "doing my best ",
+  "timer": 177
+}
+> Game score: 361
+> Moving from: MI
+> Blood Points: 40
+> Legal Drac moves: MR MU ZU D1 D2 D3 D5
+> Player 4 made move:
+> +++
+  move: D1
+  message: doing my best 
+  timer: 177
+> ---
+> End of Round:  5
+> Starting Round:  6
+--------------------------------------------------------------------------
+> Running player 0... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DC?T... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T..."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "ZU",
+  "message": "Lol we moving",
+  "timer": 501
+}
+> Game score: 360
+> Moving from: ST
+> Life Points: 9
+> Player 0 made move:
+> +++
+  move: ZU
+  message: Lol we moving
+  timer: 501
+> ---
+--------------------------------------------------------------------------
+> Running player 1... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DC?T... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "JM",
+  "message": "Lol we moving",
+  "timer": 433
+}
+> Game score: 360
+> Moving from: SZ
+> Life Points: 9
+> Player 1 made move:
+> +++
+  move: JM
+  message: Lol we moving
+  timer: 433
+> ---
+--------------------------------------------------------------------------
+> Running player 2... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DC?T... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "timer": 436,
+  "move": "MS",
+  "message": "Lol we moving"
+}
+> Game score: 360
+> Moving from: MR
+> Life Points: 9
+> Player 2 made move:
+> +++
+  timer: 436
+  move: MS
+  message: Lol we moving
+> ---
+--------------------------------------------------------------------------
+> Running player 3... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DC?T... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "BS",
+  "message": "Lol we moving",
+  "timer": 713
+}
+> Game score: 360
+> Moving from: CN
+> Life Points: 9
+> Player 3 made move:
+> +++
+  move: BS
+  message: Lol we moving
+  timer: 713
+> ---
+--------------------------------------------------------------------------
+> Running player 4... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DVE.V.. GPA.... SPR.... HSR.... MCD.... DFLT... GST.... SVI.... HSR.... MGA.... DGOT... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DMIT... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS...."
+==============================================================
+Program Output (155): hello
+location is Milan
+was in trial
+was in trial
+Zurich
+Munich
+Marseilles
+
+Possible locations are:   Zurich, Munich, Marseilles, Adriatic Sea, lets heal!
+
+==============================================================
+Move:  {
+  "timer": 170,
+  "move": "MU",
+  "message": "doing my best "
+}
+> Game score: 360
+> Moving from: MI
+> Blood Points: 40
+> Legal Drac moves: MR MU VE ZU
+> Player 4 made move:
+> +++
+  timer: 170
+  move: MU
+  message: doing my best 
+> ---
+> End of Round:  6
+> Starting Round:  7
+--------------------------------------------------------------------------
+> Running player 0... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DC?T... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DC?T.V."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "MU",
+  "message": "Lol we moving",
+  "timer": 438
+}
+> Game score: 346
+> Moving from: ZU
+> Life Points: 9
+> Player 0 made move:
+> +++
+  move: MU
+  message: Lol we moving
+  timer: 438
+> ---
+--------------------------------------------------------------------------
+> Running player 1... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DC?T... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "message": "Lol we moving",
+  "move": "SJ",
+  "timer": 436
+}
+> Game score: 346
+> Moving from: JM
+> Life Points: 9
+> Player 1 made move:
+> +++
+  message: Lol we moving
+  move: SJ
+  timer: 436
+> ---
+--------------------------------------------------------------------------
+> Running player 2... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DC?T... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "TS",
+  "message": "Lol we moving",
+  "timer": 452
+}
+> Game score: 346
+> Moving from: MS
+> Life Points: 9
+> Player 2 made move:
+> +++
+  move: TS
+  message: Lol we moving
+  timer: 452
+> ---
+--------------------------------------------------------------------------
+> Running player 3... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DC?T... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "message": "Lol we moving",
+  "move": "VR",
+  "timer": 712
+}
+> Game score: 346
+> Moving from: BS
+> Life Points: 9
+> Player 3 made move:
+> +++
+  message: Lol we moving
+  move: VR
+  timer: 712
+> ---
+--------------------------------------------------------------------------
+> Running player 4... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DVE.V.. GPA.... SPR.... HSR.... MCD.... DFLT... GST.... SVI.... HSR.... MGA.... DGOT... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DMIT... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR...."
+==============================================================
+Program Output (490): hello
+location is Munich
+was in trial
+Zurich
+Zagreb
+Vienna
+Venice
+Strasbourg
+Nuremburg
+
+Possible locations are:   Zurich, Zagreb, Vienna, Venice, Strasbourg, Nuremburg, Adriatic Sea, path is Zagreb
+comparing to Milan
+path is Zagreb
+comparing to Munich
+path is Zagreb
+comparing to Nuremburg
+path is Zagreb
+comparing to Strasbourg
+path is Zagreb
+comparing to Venice
+path is Zagreb
+comparing to Vienna
+path is Zagreb
+comparing to Zagreb
+path is Zagreb
+comparing to Zurich
+lets heal!
+possible!
+
+==============================================================
+Move:  {
+  "move": "ZA",
+  "message": "doing my best ",
+  "timer": 177
+}
+> Game score: 346
+> Moving from: MU
+> Blood Points: 30
+> Legal Drac moves: NU ST VE VI ZA ZU
+> Player 4 made move:
+> +++
+  move: ZA
+  message: doing my best 
+  timer: 177
+> ---
+> End of Round:  7
+> Starting Round:  8
+--------------------------------------------------------------------------
+> Running player 0... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DC?T... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DC?T.M."
+==============================================================
+Program Output (6): hp: 3
+
+==============================================================
+Move:  {
+  "move": "ZA",
+  "message": "Lol we moving",
+  "timer": 425
+}
+> Game score: 345
+> Moving from: MU
+> Life Points: 3
+> Player 0 made move:
+> +++
+  move: ZA
+  message: Lol we moving
+  timer: 425
+> ---
+--------------------------------------------------------------------------
+> Running player 1... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DC?T... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "VA",
+  "message": "Lol we moving",
+  "timer": 426
+}
+> Game score: 339
+> Moving from: SJ
+> Life Points: 9
+> Player 1 made move:
+> +++
+  move: VA
+  message: Lol we moving
+  timer: 426
+> ---
+--------------------------------------------------------------------------
+> Running player 2... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DC?T... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "timer": 429,
+  "move": "RO",
+  "message": "Lol we moving"
+}
+> Game score: 339
+> Moving from: TS
+> Life Points: 9
+> Player 2 made move:
+> +++
+  timer: 429
+  move: RO
+  message: Lol we moving
+> ---
+--------------------------------------------------------------------------
+> Running player 3... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DC?T... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "SO",
+  "message": "Lol we moving",
+  "timer": 832
+}
+> Game score: 339
+> Moving from: VR
+> Life Points: 9
+> Player 3 made move:
+> +++
+  move: SO
+  message: Lol we moving
+  timer: 832
+> ---
+--------------------------------------------------------------------------
+> Running player 4... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DVE.V.. GPA.... SPR.... HSR.... MCD.... DFLT... GST.... SVI.... HSR.... MGA.... DGOT... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DMIT... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO...."
+==============================================================
+Program Output (605): hello
+location is Zagreb
+was in trial
+Vienna
+Szeged
+Sarajevo
+Budapest
+
+Possible locations are:   Vienna, Szeged, Sarajevo, Budapest, Milan, path is Szeged
+comparing to Belgrade
+path is Szeged
+comparing to Sarajevo
+path is Szeged
+comparing to St Joseph and St Mary
+path is Szeged
+comparing to Szeged
+path is Szeged
+comparing to Zagreb
+path is Szeged
+comparing to Valona
+path is Szeged
+comparing to Geneva
+path is Szeged
+comparing to Milan
+path is Szeged
+comparing to Naples
+path is Szeged
+comparing to Naples
+path is Szeged
+comparing to Rome
+path is Szeged
+comparing to Tyrrhenian Sea
+lets heal!
+possible!
+
+==============================================================
+Move:  {
+  "move": "SZ",
+  "timer": 186,
+  "message": "doing my best "
+}
+> Game score: 339
+> Moving from: ZA
+> Blood Points: 20
+> Legal Drac moves: BD SJ SZ VI
+> Player 4 made move:
+> +++
+  move: SZ
+  timer: 186
+  message: doing my best 
+> ---
+> End of Round:  8
+> Starting Round:  9
+--------------------------------------------------------------------------
+> Running player 0... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M."
+==============================================================
+Program Output (6): hp: 0
+
+==============================================================
+Move:  {
+  "move": "ZA",
+  "message": "Lol we moving",
+  "timer": 442
+}
+> Game score: 338
+> Moving from: JM
+> Life Points: 9
+> Player 0 made move:
+> +++
+  move: ZA
+  message: Lol we moving
+  timer: 442
+> ---
+--------------------------------------------------------------------------
+> Running player 1... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "IO",
+  "message": "Lol we moving",
+  "timer": 444
+}
+> Game score: 338
+> Moving from: VA
+> Life Points: 9
+> Player 1 made move:
+> +++
+  move: IO
+  message: Lol we moving
+  timer: 444
+> ---
+--------------------------------------------------------------------------
+> Running player 2... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "timer": 458,
+  "move": "NP",
+  "message": "Lol we moving"
+}
+> Game score: 338
+> Moving from: RO
+> Life Points: 9
+> Player 2 made move:
+> +++
+  timer: 458
+  move: NP
+  message: Lol we moving
+> ---
+--------------------------------------------------------------------------
+> Running player 3... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "BC",
+  "message": "Lol we moving",
+  "timer": 683
+}
+> Game score: 338
+> Moving from: SO
+> Life Points: 9
+> Player 3 made move:
+> +++
+  move: BC
+  message: Lol we moving
+  timer: 683
+> ---
+--------------------------------------------------------------------------
+> Running player 4... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DVE.V.. GPA.... SPR.... HSR.... MCD.... DFLT... GST.... SVI.... HSR.... MGA.... DGOT... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DMIT... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DSZT.M. GZA.... SIO.... HNP.... MBC...."
+==============================================================
+Program Output (546): hello
+location is Szeged
+was in trial
+Klausenburg
+Budapest
+Belgrade
+Hide
+
+Possible locations are:   Klausenburg, Budapest, Belgrade, Hide, Munich, path is Klausenburg
+comparing to Budapest
+path is Klausenburg
+comparing to Munich
+path is Klausenburg
+comparing to Sarajevo
+path is Klausenburg
+comparing to St Joseph and St Mary
+path is Klausenburg
+comparing to Szeged
+path is Klausenburg
+comparing to Vienna
+path is Klausenburg
+comparing to Zagreb
+path is Klausenburg
+comparing to Sofia
+path is Klausenburg
+comparing to Szeged
+lets heal!
+possible!
+
+==============================================================
+Move:  {
+  "move": "KL",
+  "message": "doing my best ",
+  "timer": 185
+}
+> Game score: 338
+> Moving from: SZ
+> Blood Points: 20
+> Legal Drac moves: BE BD KL HI
+> Player 4 made move:
+> +++
+  move: KL
+  message: doing my best 
+  timer: 185
+> ---
+> End of Round:  9
+> Starting Round:  10
+--------------------------------------------------------------------------
+> Running player 0... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DC?T.M."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "VI",
+  "message": "Lol we moving",
+  "timer": 695
+}
+> Game score: 337
+> Moving from: ZA
+> Life Points: 9
+> Player 0 made move:
+> +++
+  move: VI
+  message: Lol we moving
+  timer: 695
+> ---
+--------------------------------------------------------------------------
+> Running player 1... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DC?T.M. GVI...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "TS",
+  "timer": 509,
+  "message": "Lol we moving"
+}
+> Game score: 337
+> Moving from: IO
+> Life Points: 9
+> Player 1 made move:
+> +++
+  move: TS
+  timer: 509
+  message: Lol we moving
+> ---
+--------------------------------------------------------------------------
+> Running player 2... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DC?T.M. GVI.... STS...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "TS",
+  "message": "Lol we moving",
+  "timer": 440
+}
+> Game score: 337
+> Moving from: NP
+> Life Points: 9
+> Player 2 made move:
+> +++
+  move: TS
+  message: Lol we moving
+  timer: 440
+> ---
+--------------------------------------------------------------------------
+> Running player 3... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DC?T.M. GVI.... STS.... HTS...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "message": "Lol we moving",
+  "move": "KL",
+  "timer": 944
+}
+> Game score: 337
+> Moving from: BC
+> Life Points: 9
+> Player 3 made move:
+> +++
+  message: Lol we moving
+  move: KL
+  timer: 944
+> ---
+--------------------------------------------------------------------------
+> Running player 4... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DVE.V.. GPA.... SPR.... HSR.... MCD.... DFLT... GST.... SVI.... HSR.... MGA.... DGOT... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DMIT... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DSZT.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.."
+==============================================================
+Program Output (211): hello
+location is Klausenburg
+was in trial
+Galatz
+Castle Dracula
+Budapest
+Bucharest
+Belgrade
+Hide
+
+Possible locations are:   Galatz, Castle Dracula, Budapest, Bucharest, Belgrade, Hide, Adriatic Sea, lets heal!
+
+==============================================================
+Move:  {
+  "message": "doing my best ",
+  "move": "HI",
+  "timer": 177
+}
+> Game score: 337
+> Moving from: KL
+> Blood Points: 10
+> Legal Drac moves: BE BC BD CD GA HI
+> Player 4 made move:
+> +++
+  message: doing my best 
+  move: HI
+  timer: 177
+> ---
+> End of Round:  10
+> Starting Round:  11
+--------------------------------------------------------------------------
+> Running player 0... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "PR",
+  "message": "Lol we moving",
+  "timer": 429
+}
+> Game score: 336
+> Moving from: VI
+> Life Points: 9
+> Player 0 made move:
+> +++
+  move: PR
+  message: Lol we moving
+  timer: 429
+> ---
+--------------------------------------------------------------------------
+> Running player 1... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "timer": 443,
+  "move": "RO",
+  "message": "Lol we moving"
+}
+> Game score: 336
+> Moving from: TS
+> Life Points: 9
+> Player 1 made move:
+> +++
+  timer: 443
+  move: RO
+  message: Lol we moving
+> ---
+--------------------------------------------------------------------------
+> Running player 2... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "IO",
+  "message": "Lol we moving",
+  "timer": 409
+}
+> Game score: 336
+> Moving from: TS
+> Life Points: 9
+> Player 2 made move:
+> +++
+  move: IO
+  message: Lol we moving
+  timer: 409
+> ---
+--------------------------------------------------------------------------
+> Running player 3... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO...."
+==============================================================
+Program Output (6): hp: 3
+
+==============================================================
+Move:  {
+  "timer": 707,
+  "move": "CD",
+  "message": "Lol we moving"
+}
+> Game score: 336
+> Moving from: KL
+> Life Points: 3
+> Player 3 made move:
+> +++
+  timer: 707
+  move: CD
+  message: Lol we moving
+> ---
+--------------------------------------------------------------------------
+> Running player 4... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DVE.V.. GPA.... SPR.... HSR.... MCD.... DFLT... GST.... SVI.... HSR.... MGA.... DGOT... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DMIT... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DSZT.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD...."
+==============================================================
+Program Output (258): hello
+location is Klausenburg
+was in trial
+Double Back 3
+Galatz
+Castle Dracula
+Budapest
+Bucharest
+Belgrade
+Double Back 1
+
+Possible locations are:   Double Back 3, Galatz, Castle Dracula, Budapest, Bucharest, Belgrade, Double Back 1, Adriatic Sea, lets heal!
+
+==============================================================
+Move:  {
+  "message": "doing my best ",
+  "move": "BE",
+  "timer": 179
+}
+> Game score: 336
+> Moving from: KL
+> Blood Points: 10
+> Legal Drac moves: BE BC BD CD GA D1 D2 D3
+> Player 4 made move:
+> +++
+  message: doing my best 
+  move: BE
+  timer: 179
+> ---
+> End of Round:  11
+> Starting Round:  12
+--------------------------------------------------------------------------
+> Running player 0... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "NU",
+  "message": "Lol we moving",
+  "timer": 430
+}
+> Game score: 335
+> Moving from: PR
+> Life Points: 9
+> Player 0 made move:
+> +++
+  move: NU
+  message: Lol we moving
+  timer: 430
+> ---
+--------------------------------------------------------------------------
+> Running player 1... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "message": "Lol we moving",
+  "move": "TS",
+  "timer": 422
+}
+> Game score: 335
+> Moving from: RO
+> Life Points: 9
+> Player 1 made move:
+> +++
+  message: Lol we moving
+  move: TS
+  timer: 422
+> ---
+--------------------------------------------------------------------------
+> Running player 2... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "VA",
+  "message": "Lol we moving",
+  "timer": 432
+}
+> Game score: 335
+> Moving from: IO
+> Life Points: 9
+> Player 2 made move:
+> +++
+  move: VA
+  message: Lol we moving
+  timer: 432
+> ---
+--------------------------------------------------------------------------
+> Running player 3... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA...."
+==============================================================
+Program Output (6): hp: 3
+
+==============================================================
+Move:  {
+  "move": "CD",
+  "message": "Lol we moving",
+  "timer": 703
+}
+> Game score: 335
+> Moving from: CD
+> Life Points: 3
+> Player 3 made move:
+> +++
+  move: CD
+  message: Lol we moving
+  timer: 703
+> ---
+--------------------------------------------------------------------------
+> Running player 4... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DVE.V.. GPA.... SPR.... HSR.... MCD.... DFLT... GST.... SVI.... HSR.... MGA.... DGOT... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DMIT... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DSZT.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DBET.M. GNU.... STS.... HVA.... MCD...."
+==============================================================
+Program Output (245): hello
+location is Belgrade
+was in trial
+was in trial
+Double Back 4
+Sofia
+Sarajevo
+Double Back 2
+Bucharest
+Double Back 1
+
+Possible locations are:   Double Back 4, Sofia, Sarajevo, Double Back 2, Bucharest, Double Back 1, Adriatic Sea, lets heal!
+
+==============================================================
+Move:  {
+  "move": "BC",
+  "message": "doing my best ",
+  "timer": 238
+}
+> Game score: 335
+> Moving from: BE
+> Blood Points: 10
+> Legal Drac moves: BC SJ SO D1 D2 D3 D4
+> Player 4 made move:
+> +++
+  move: BC
+  message: doing my best 
+  timer: 238
+> ---
+> End of Round:  12
+> Starting Round:  13
+--------------------------------------------------------------------------
+> Running player 0... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T..."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "LI",
+  "message": "Lol we moving",
+  "timer": 455
+}
+> Game score: 334
+> Moving from: NU
+> Life Points: 9
+> Player 0 made move:
+> +++
+  move: LI
+  message: Lol we moving
+  timer: 455
+> ---
+--------------------------------------------------------------------------
+> Running player 1... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "RO",
+  "message": "Lol we moving",
+  "timer": 446
+}
+> Game score: 334
+> Moving from: TS
+> Life Points: 9
+> Player 1 made move:
+> +++
+  move: RO
+  message: Lol we moving
+  timer: 446
+> ---
+--------------------------------------------------------------------------
+> Running player 2... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "timer": 465,
+  "move": "SO",
+  "message": "Lol we moving"
+}
+> Game score: 334
+> Moving from: VA
+> Life Points: 9
+> Player 2 made move:
+> +++
+  timer: 465
+  move: SO
+  message: Lol we moving
+> ---
+--------------------------------------------------------------------------
+> Running player 3... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO...."
+==============================================================
+Program Output (6): hp: 6
+
+==============================================================
+Move:  {
+  "move": "GA",
+  "message": "Lol we moving",
+  "timer": 779
+}
+> Game score: 334
+> Moving from: CD
+> Life Points: 6
+> Player 3 made move:
+> +++
+  move: GA
+  message: Lol we moving
+  timer: 779
+> ---
+--------------------------------------------------------------------------
+> Running player 4... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DVE.V.. GPA.... SPR.... HSR.... MCD.... DFLT... GST.... SVI.... HSR.... MGA.... DGOT... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DMIT... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DSZT.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DBET.M. GNU.... STS.... HVA.... MCD.... DBCT... GLI.... SRO.... HSO.... MGA...."
+==============================================================
+Program Output (242): hello
+location is Bucharest
+was in trial
+was in trial
+Sofia
+Double Back 3
+Galatz
+Constanta
+Double Back 2
+Double Back 1
+
+Possible locations are:   Sofia, Double Back 3, Galatz, Constanta, Double Back 2, Double Back 1, Adriatic Sea, lets heal!
+
+==============================================================
+Move:  {
+  "move": "D1",
+  "message": "doing my best ",
+  "timer": 199
+}
+> Game score: 334
+> Moving from: BC
+> Blood Points: 10
+> Legal Drac moves: CN GA SO D1 D2 D3 D4
+> Player 4 made move:
+> +++
+  move: D1
+  message: doing my best 
+  timer: 199
+> ---
+> End of Round:  13
+> Starting Round:  14
+--------------------------------------------------------------------------
+> Running player 0... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "message": "Lol we moving",
+  "move": "HA",
+  "timer": 447
+}
+> Game score: 333
+> Moving from: LI
+> Life Points: 9
+> Player 0 made move:
+> +++
+  message: Lol we moving
+  move: HA
+  timer: 447
+> ---
+--------------------------------------------------------------------------
+> Running player 1... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "TS",
+  "message": "Lol we moving",
+  "timer": 1311
+}
+> Game score: 333
+> Moving from: RO
+> Life Points: 9
+> Player 1 made move:
+> +++
+  move: TS
+  message: Lol we moving
+  timer: 1311
+> ---
+--------------------------------------------------------------------------
+> Running player 2... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "VR",
+  "message": "Lol we moving",
+  "timer": 459
+}
+> Game score: 333
+> Moving from: SO
+> Life Points: 9
+> Player 2 made move:
+> +++
+  move: VR
+  message: Lol we moving
+  timer: 459
+> ---
+--------------------------------------------------------------------------
+> Running player 3... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR...."
+==============================================================
+Program Output (6): hp: 6
+
+==============================================================
+Move:  {
+  "move": "KL",
+  "message": "Lol we moving",
+  "timer": 1154
+}
+> Game score: 333
+> Moving from: GA
+> Life Points: 6
+> Player 3 made move:
+> +++
+  move: KL
+  message: Lol we moving
+  timer: 1154
+> ---
+--------------------------------------------------------------------------
+> Running player 4... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DVE.V.. GPA.... SPR.... HSR.... MCD.... DFLT... GST.... SVI.... HSR.... MGA.... DGOT... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DMIT... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DSZT.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DBET.M. GNU.... STS.... HVA.... MCD.... DBCT... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT..."
+==============================================================
+Program Output (155): hello
+location is Bucharest
+was in trial
+was in trial
+Sofia
+Galatz
+Constanta
+
+Possible locations are:   Sofia, Galatz, Constanta, Adriatic Sea, lets heal!
+
+==============================================================
+Move:  {
+  "move": "CN",
+  "message": "doing my best ",
+  "timer": 213
+}
+> Game score: 333
+> Moving from: BC
+> Blood Points: 10
+> Legal Drac moves: CN GA SO
+> Player 4 made move:
+> +++
+  move: CN
+  message: doing my best 
+  timer: 213
+> ---
+> End of Round:  14
+> Starting Round:  15
+--------------------------------------------------------------------------
+> Running player 0... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DC?T.M."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "message": "Lol we moving",
+  "move": "NS",
+  "timer": 470
+}
+> Game score: 332
+> Moving from: HA
+> Life Points: 9
+> Player 0 made move:
+> +++
+  message: Lol we moving
+  move: NS
+  timer: 470
+> ---
+--------------------------------------------------------------------------
+> Running player 1... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DC?T.M. GNS...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "NP",
+  "timer": 480,
+  "message": "Lol we moving"
+}
+> Game score: 332
+> Moving from: TS
+> Life Points: 9
+> Player 1 made move:
+> +++
+  move: NP
+  timer: 480
+  message: Lol we moving
+> ---
+--------------------------------------------------------------------------
+> Running player 2... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DC?T.M. GNS.... SNP...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "BS",
+  "timer": 467,
+  "message": "Lol we moving"
+}
+> Game score: 332
+> Moving from: VR
+> Life Points: 9
+> Player 2 made move:
+> +++
+  move: BS
+  timer: 467
+  message: Lol we moving
+> ---
+--------------------------------------------------------------------------
+> Running player 3... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DC?T.M. GNS.... SNP.... HBS...."
+==============================================================
+Program Output (6): hp: 4
+
+==============================================================
+Move:  {
+  "move": "SZ",
+  "message": "Lol we moving",
+  "timer": 762
+}
+> Game score: 332
+> Moving from: KL
+> Life Points: 4
+> Player 3 made move:
+> +++
+  move: SZ
+  message: Lol we moving
+  timer: 762
+> ---
+--------------------------------------------------------------------------
+> Running player 4... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DVE.V.. GPA.... SPR.... HSR.... MCD.... DFLT... GST.... SVI.... HSR.... MGA.... DGOT... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DMIT... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DSZT.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DBET.M. GNU.... STS.... HVA.... MCD.... DBCT... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ...."
+==============================================================
+Program Output (142): hello
+location is Constanta
+was in trial
+Black Sea
+Varna
+Galatz
+
+Possible locations are:   Black Sea, Varna, Galatz, Adriatic Sea, lets heal!
+
+==============================================================
+Move:  {
+  "move": "GA",
+  "message": "doing my best ",
+  "timer": 207
+}
+> Game score: 332
+> Moving from: CN
+> Blood Points: 10
+> Legal Drac moves: GA VR BS
+> Player 4 made move:
+> +++
+  move: GA
+  message: doing my best 
+  timer: 207
+> ---
+> End of Round:  15
+> Starting Round:  16
+--------------------------------------------------------------------------
+> Running player 0... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DC?T.M. GNS.... SNP.... HBS.... MSZ.... DC?T..."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "EC",
+  "timer": 469,
+  "message": "Lol we moving"
+}
+> Game score: 331
+> Moving from: NS
+> Life Points: 9
+> Player 0 made move:
+> +++
+  move: EC
+  timer: 469
+  message: Lol we moving
+> ---
+--------------------------------------------------------------------------
+> Running player 1... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DC?T.M. GNS.... SNP.... HBS.... MSZ.... DC?T... GEC...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "TS",
+  "message": "Lol we moving",
+  "timer": 444
+}
+> Game score: 331
+> Moving from: NP
+> Life Points: 9
+> Player 1 made move:
+> +++
+  move: TS
+  message: Lol we moving
+  timer: 444
+> ---
+--------------------------------------------------------------------------
+> Running player 2... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DC?T.M. GNS.... SNP.... HBS.... MSZ.... DC?T... GEC.... STS...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "CN",
+  "message": "Lol we moving",
+  "timer": 459
+}
+> Game score: 331
+> Moving from: BS
+> Life Points: 9
+> Player 2 made move:
+> +++
+  move: CN
+  message: Lol we moving
+  timer: 459
+> ---
+--------------------------------------------------------------------------
+> Running player 3... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DC?T... GEC.... STS.... HCNT..."
+==============================================================
+Program Output (6): hp: 4
+
+==============================================================
+Move:  {
+  "move": "ZA",
+  "message": "Lol we moving",
+  "timer": 704
+}
+> Game score: 331
+> Moving from: SZ
+> Life Points: 4
+> Player 3 made move:
+> +++
+  move: ZA
+  message: Lol we moving
+  timer: 704
+> ---
+--------------------------------------------------------------------------
+> Running player 4... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DVE.V.. GPA.... SPR.... HSR.... MCD.... DFLT... GST.... SVI.... HSR.... MGA.... DGOT... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DMIT... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DSZT.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DBET.M. GNU.... STS.... HVA.... MCD.... DBCT... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA...."
+==============================================================
+Program Output (170): hello
+location is Galatz
+was in trial
+was in trial
+Klausenburg
+Castle Dracula
+Hide
+
+Possible locations are:   Klausenburg, Castle Dracula, Hide, Adriatic Sea, lets heal!
+
+==============================================================
+Move:  {
+  "move": "CD",
+  "message": "doing my best ",
+  "timer": 188
+}
+> Game score: 331
+> Moving from: GA
+> Blood Points: 10
+> Legal Drac moves: CD KL HI
+> Player 4 made move:
+> +++
+  move: CD
+  message: doing my best 
+  timer: 188
+> ---
+> End of Round:  16
+> Starting Round:  17
+--------------------------------------------------------------------------
+> Running player 0... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DC?T... GEC.... STS.... HCNT... MZA.... DCDT..."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "PL",
+  "message": "Lol we moving",
+  "timer": 456
+}
+> Game score: 330
+> Moving from: EC
+> Life Points: 9
+> Player 0 made move:
+> +++
+  move: PL
+  message: Lol we moving
+  timer: 456
+> ---
+--------------------------------------------------------------------------
+> Running player 1... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DC?T... GEC.... STS.... HCNT... MZA.... DCDT... GPL...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "MS",
+  "timer": 788,
+  "message": "Lol we moving"
+}
+> Game score: 330
+> Moving from: TS
+> Life Points: 9
+> Player 1 made move:
+> +++
+  move: MS
+  timer: 788
+  message: Lol we moving
+> ---
+--------------------------------------------------------------------------
+> Running player 2... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DC?T... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS...."
+==============================================================
+Program Output (6): hp: 7
+
+==============================================================
+Move:  {
+  "move": "GA",
+  "message": "Lol we moving",
+  "timer": 519
+}
+> Game score: 330
+> Moving from: CN
+> Life Points: 7
+> Player 2 made move:
+> +++
+  move: GA
+  message: Lol we moving
+  timer: 519
+> ---
+--------------------------------------------------------------------------
+> Running player 3... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT..."
+==============================================================
+Program Output (6): hp: 4
+
+==============================================================
+Move:  {
+  "move": "VI",
+  "message": "Lol we moving",
+  "timer": 1406
+}
+> Game score: 330
+> Moving from: ZA
+> Life Points: 4
+> Player 3 made move:
+> +++
+  move: VI
+  message: Lol we moving
+  timer: 1406
+> ---
+--------------------------------------------------------------------------
+> Running player 4... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DVE.V.. GPA.... SPR.... HSR.... MCD.... DFLT... GST.... SVI.... HSR.... MGA.... DGOT... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DMIT... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DSZT.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DBET.M. GNU.... STS.... HVA.... MCD.... DBCT... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI...."
+==============================================================
+Program Output (516): hello
+location is Castle Dracula
+was in trial
+Klausenburg
+Hide
+
+Possible locations are:   Klausenburg, Hide, Adriatic Sea, path is Unknown Place
+comparing to English Channel
+path is Unknown Place
+comparing to London
+path is Unknown Place
+comparing to Plymouth
+path is Unknown Place
+comparing to Cagliari
+path is Unknown Place
+comparing to Marseilles
+path is Unknown Place
+comparing to Mediterranean Sea
+path is Unknown Place
+comparing to Tyrrhenian Sea
+path is Unknown Place
+comparing to Zagreb
+lets heal!
+possible!
+
+==============================================================
+Move:  {
+  "move": "KL",
+  "timer": 1826,
+  "message": "doing my best "
+}
+> Game score: 330
+> Moving from: CD
+> Blood Points: 20
+> Legal Drac moves: KL HI
+> Player 4 made move:
+> +++
+  move: KL
+  timer: 1826
+  message: doing my best 
+> ---
+> End of Round:  17
+> Starting Round:  18
+--------------------------------------------------------------------------
+> Running player 0... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DC?T.M."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "EC",
+  "message": "Lol we moving",
+  "timer": 480
+}
+> Game score: 329
+> Moving from: PL
+> Life Points: 9
+> Player 0 made move:
+> +++
+  move: EC
+  message: Lol we moving
+  timer: 480
+> ---
+--------------------------------------------------------------------------
+> Running player 1... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DC?T.M. GEC...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "MR",
+  "timer": 1002,
+  "message": "Lol we moving"
+}
+> Game score: 329
+> Moving from: MS
+> Life Points: 9
+> Player 1 made move:
+> +++
+  move: MR
+  timer: 1002
+  message: Lol we moving
+> ---
+--------------------------------------------------------------------------
+> Running player 2... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DC?T.M. GEC.... SMR...."
+==============================================================
+Program Output (6): hp: 5
+
+==============================================================
+Move:  {
+  "move": "KL",
+  "message": "Lol we moving",
+  "timer": 481
+}
+> Game score: 329
+> Moving from: GA
+> Life Points: 5
+> Player 2 made move:
+> +++
+  move: KL
+  message: Lol we moving
+  timer: 481
+> ---
+--------------------------------------------------------------------------
+> Running player 3... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DKLT.M. GEC.... SMR.... HKLTD.."
+==============================================================
+Program Output (6): hp: 4
+
+==============================================================
+Move:  {
+  "move": "BD",
+  "message": "Lol we moving",
+  "timer": 2178
+}
+> Game score: 323
+> Moving from: VI
+> Life Points: 4
+> Player 3 made move:
+> +++
+  move: BD
+  message: Lol we moving
+  timer: 2178
+> ---
+--------------------------------------------------------------------------
+> Running player 4... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DVE.V.. GPA.... SPR.... HSR.... MCD.... DFLT... GST.... SVI.... HSR.... MGA.... DGOT... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DMIT... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DSZT.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DBET.M. GNU.... STS.... HVA.... MCD.... DBCT... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DKLT.M. GEC.... SMR.... HKLTD.. MBD...."
+==============================================================
+Program Output (195): hello
+location is Klausenburg
+was in trial
+was in trial
+Szeged
+Budapest
+Bucharest
+Belgrade
+Hide
+
+Possible locations are:   Szeged, Budapest, Bucharest, Belgrade, Hide, Castle Dracula, lets heal!
+
+==============================================================
+Move:  {
+  "message": "doing my best ",
+  "move": "BC",
+  "timer": 198
+}
+> Game score: 323
+> Moving from: KL
+> Blood Points: 10
+> Legal Drac moves: BE BC BD SZ HI
+> Player 4 made move:
+> +++
+  message: doing my best 
+  move: BC
+  timer: 198
+> ---
+> End of Round:  18
+> Starting Round:  19
+--------------------------------------------------------------------------
+> Running player 0... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DKLT.M. GEC.... SMR.... HKLTD.. MBD.... DC?T.M."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "timer": 467,
+  "message": "Lol we moving",
+  "move": "PL"
+}
+> Game score: 322
+> Moving from: EC
+> Life Points: 9
+> Player 0 made move:
+> +++
+  timer: 467
+  message: Lol we moving
+  move: PL
+> ---
+--------------------------------------------------------------------------
+> Running player 1... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DKLT.M. GEC.... SMR.... HKLTD.. MBD.... DC?T.M. GPL...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "timer": 465,
+  "move": "ZU",
+  "message": "Lol we moving"
+}
+> Game score: 322
+> Moving from: MR
+> Life Points: 9
+> Player 1 made move:
+> +++
+  timer: 465
+  move: ZU
+  message: Lol we moving
+> ---
+--------------------------------------------------------------------------
+> Running player 2... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DKLT.M. GEC.... SMR.... HKLTD.. MBD.... DC?T.M. GPL.... SZU...."
+==============================================================
+Program Output (6): hp: 0
+
+==============================================================
+Move:  {
+  "move": "ZA",
+  "message": "Lol we moving",
+  "timer": 692
+}
+> Game score: 322
+> Moving from: JM
+> Life Points: 9
+> Player 2 made move:
+> +++
+  move: ZA
+  message: Lol we moving
+  timer: 692
+> ---
+--------------------------------------------------------------------------
+> Running player 3... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DKLT.M. GEC.... SMR.... HKLTD.. MBD.... DC?T.M. GPL.... SZU.... HZA...."
+==============================================================
+Program Output (6): hp: 4
+
+==============================================================
+Move:  {
+  "move": "KL",
+  "message": "Lol we moving",
+  "timer": 742
+}
+> Game score: 322
+> Moving from: BD
+> Life Points: 4
+> Player 3 made move:
+> +++
+  move: KL
+  message: Lol we moving
+  timer: 742
+> ---
+--------------------------------------------------------------------------
+> Running player 4... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DVE.V.. GPA.... SPR.... HSR.... MCD.... DFLT... GST.... SVI.... HSR.... MGA.... DGOT... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DMIT... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DSZT.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DBET.M. GNU.... STS.... HVA.... MCD.... DBCT... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DKLT.M. GEC.... SMR.... HKLTD.. MBD.... DBCT.M. GPL.... SZU.... HZA.... MKL...."
+==============================================================
+Program Output (278): hello
+location is Bucharest
+was in trial
+was in trial
+was in trial
+Sofia
+Double Back 2
+Double Back 4
+Double Back 5
+Belgrade
+Hide
+Double Back 1
+
+Possible locations are:   Sofia, Double Back 2, Double Back 4, Double Back 5, Belgrade, Hide, Double Back 1, Adriatic Sea, lets heal!
+
+==============================================================
+Move:  {
+  "move": "SO",
+  "message": "doing my best ",
+  "timer": 271
+}
+> Game score: 322
+> Moving from: BC
+> Blood Points: 10
+> Legal Drac moves: BE SO D1 D2 D4 D5 HI
+> Player 4 made move:
+> +++
+  move: SO
+  message: doing my best 
+  timer: 271
+> ---
+> End of Round:  19
+> Starting Round:  20
+--------------------------------------------------------------------------
+> Running player 0... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DKLT.M. GEC.... SMR.... HKLTD.. MBD.... DC?T.M. GPL.... SZU.... HZA.... MKL.... DC?T.V."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "timer": 467,
+  "message": "Lol we moving",
+  "move": "EC"
+}
+> Game score: 308
+> Moving from: PL
+> Life Points: 9
+> Player 0 made move:
+> +++
+  timer: 467
+  message: Lol we moving
+  move: EC
+> ---
+--------------------------------------------------------------------------
+> Running player 1... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DKLT.M. GEC.... SMR.... HKLTD.. MBD.... DC?T.M. GPL.... SZU.... HZA.... MKL.... DC?T.V. GEC...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "ST",
+  "message": "Lol we moving",
+  "timer": 481
+}
+> Game score: 308
+> Moving from: ZU
+> Life Points: 9
+> Player 1 made move:
+> +++
+  move: ST
+  message: Lol we moving
+  timer: 481
+> ---
+--------------------------------------------------------------------------
+> Running player 2... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DKLT.M. GEC.... SMR.... HKLTD.. MBD.... DC?T.M. GPL.... SZU.... HZA.... MKL.... DC?T.V. GEC.... SST...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "VI",
+  "message": "Lol we moving",
+  "timer": 472
+}
+> Game score: 308
+> Moving from: ZA
+> Life Points: 9
+> Player 2 made move:
+> +++
+  move: VI
+  message: Lol we moving
+  timer: 472
+> ---
+--------------------------------------------------------------------------
+> Running player 3... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DKLT.M. GEC.... SMR.... HKLTD.. MBD.... DC?T.M. GPL.... SZU.... HZA.... MKL.... DC?T.V. GEC.... SST.... HVI...."
+==============================================================
+Program Output (6): hp: 4
+
+==============================================================
+Move:  {
+  "move": "CD",
+  "timer": 1007,
+  "message": "Lol we moving"
+}
+> Game score: 308
+> Moving from: KL
+> Life Points: 4
+> Player 3 made move:
+> +++
+  move: CD
+  timer: 1007
+  message: Lol we moving
+> ---
+--------------------------------------------------------------------------
+> Running player 4... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DVE.V.. GPA.... SPR.... HSR.... MCD.... DFLT... GST.... SVI.... HSR.... MGA.... DGOT... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DMIT... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DSZT.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DBET.M. GNU.... STS.... HVA.... MCD.... DBCT... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DKLT.M. GEC.... SMR.... HKLTD.. MBD.... DBCT.M. GPL.... SZU.... HZA.... MKL.... DSOT.V. GEC.... SST.... HVI.... MCDT..."
+==============================================================
+Program Output (243): hello
+location is Sofia
+was in trial
+Varna
+Valona
+Sarajevo
+Salonica
+Double Back 2
+Belgrade
+Hide
+Double Back 1
+
+Possible locations are:   Varna, Valona, Sarajevo, Salonica, Double Back 2, Belgrade, Hide, Double Back 1, Adriatic Sea, lets heal!
+
+==============================================================
+Move:  {
+  "move": "SA",
+  "timer": 276,
+  "message": "doing my best "
+}
+> Game score: 308
+> Moving from: SO
+> Blood Points: 10
+> Legal Drac moves: BE SA SJ VR VA D1 D2 HI
+> Player 4 made move:
+> +++
+  move: SA
+  timer: 276
+  message: doing my best 
+> ---
+> End of Round:  20
+> Starting Round:  21
+--------------------------------------------------------------------------
+> Running player 0... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DKLT.M. GEC.... SMR.... HKLTD.. MBD.... DC?T.M. GPL.... SZU.... HZA.... MKL.... DC?T.V. GEC.... SST.... HVI.... MCDT... DC?T..."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "PL",
+  "message": "Lol we moving",
+  "timer": 460
+}
+> Game score: 307
+> Moving from: EC
+> Life Points: 9
+> Player 0 made move:
+> +++
+  move: PL
+  message: Lol we moving
+  timer: 460
+> ---
+--------------------------------------------------------------------------
+> Running player 1... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DKLT.M. GEC.... SMR.... HKLTD.. MBD.... DC?T.M. GPL.... SZU.... HZA.... MKL.... DC?T.V. GEC.... SST.... HVI.... MCDT... DC?T... GPL...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "timer": 479,
+  "move": "PA",
+  "message": "Lol we moving"
+}
+> Game score: 307
+> Moving from: ST
+> Life Points: 9
+> Player 1 made move:
+> +++
+  timer: 479
+  move: PA
+  message: Lol we moving
+> ---
+--------------------------------------------------------------------------
+> Running player 2... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DKLT.M. GEC.... SMR.... HKLTD.. MBD.... DC?T.M. GPL.... SZU.... HZA.... MKL.... DC?T.V. GEC.... SST.... HVI.... MCDT... DC?T... GPL.... SPA...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "timer": 648,
+  "message": "Lol we moving",
+  "move": "PR"
+}
+> Game score: 307
+> Moving from: VI
+> Life Points: 9
+> Player 2 made move:
+> +++
+  timer: 648
+  message: Lol we moving
+  move: PR
+> ---
+--------------------------------------------------------------------------
+> Running player 3... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DKLT.M. GEC.... SMR.... HKLTD.. MBD.... DC?T.M. GPL.... SZU.... HZA.... MKL.... DC?T.V. GEC.... SST.... HVI.... MCDT... DC?T... GPL.... SPA.... HPR...."
+==============================================================
+Program Output (6): hp: 2
+
+==============================================================
+Move:  {
+  "move": "GA",
+  "message": "Lol we moving",
+  "timer": 738
+}
+> Game score: 307
+> Moving from: CD
+> Life Points: 2
+> Player 3 made move:
+> +++
+  move: GA
+  message: Lol we moving
+  timer: 738
+> ---
+--------------------------------------------------------------------------
+> Running player 4... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DVE.V.. GPA.... SPR.... HSR.... MCD.... DFLT... GST.... SVI.... HSR.... MGA.... DGOT... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DMIT... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DSZT.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DBET.M. GNU.... STS.... HVA.... MCD.... DBCT... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DKLT.M. GEC.... SMR.... HKLTD.. MBD.... DBCT.M. GPL.... SZU.... HZA.... MKL.... DSOT.V. GEC.... SST.... HVI.... MCDT... DSAT... GPL.... SPA.... HPR.... MGA...."
+==============================================================
+Program Output (192): hello
+location is Salonica
+was in trial
+Ionian Sea
+Valona
+Double Back 2
+Hide
+Double Back 1
+
+Possible locations are:   Ionian Sea, Valona, Double Back 2, Hide, Double Back 1, Sofia, lets heal!
+
+==============================================================
+Move:  {
+  "move": "VA",
+  "message": "doing my best ",
+  "timer": 227
+}
+> Game score: 307
+> Moving from: SA
+> Blood Points: 10
+> Legal Drac moves: VA IO D1 D2 HI
+> Player 4 made move:
+> +++
+  move: VA
+  message: doing my best 
+  timer: 227
+> ---
+> End of Round:  21
+> Starting Round:  22
+--------------------------------------------------------------------------
+> Running player 0... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DKLT.M. GEC.... SMR.... HKLTD.. MBD.... DC?T.M. GPL.... SZU.... HZA.... MKL.... DC?T.V. GEC.... SST.... HVI.... MCDT... DC?T... GPL.... SPA.... HPR.... MGA.... DC?T..."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "EC",
+  "message": "Lol we moving",
+  "timer": 638
+}
+> Game score: 306
+> Moving from: PL
+> Life Points: 9
+> Player 0 made move:
+> +++
+  move: EC
+  message: Lol we moving
+  timer: 638
+> ---
+--------------------------------------------------------------------------
+> Running player 1... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DKLT.M. GEC.... SMR.... HKLTD.. MBD.... DC?T.M. GPL.... SZU.... HZA.... MKL.... DC?T.V. GEC.... SST.... HVI.... MCDT... DC?T... GPL.... SPA.... HPR.... MGA.... DC?T... GEC...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "NA",
+  "message": "Lol we moving",
+  "timer": 610
+}
+> Game score: 306
+> Moving from: PA
+> Life Points: 9
+> Player 1 made move:
+> +++
+  move: NA
+  message: Lol we moving
+  timer: 610
+> ---
+--------------------------------------------------------------------------
+> Running player 2... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DKLT.M. GEC.... SMR.... HKLTD.. MBD.... DC?T.M. GPL.... SZU.... HZA.... MKL.... DC?T.V. GEC.... SST.... HVI.... MCDT... DC?T... GPL.... SPA.... HPR.... MGA.... DC?T... GEC.... SNA...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "NU",
+  "timer": 538,
+  "message": "Lol we moving"
+}
+> Game score: 306
+> Moving from: PR
+> Life Points: 9
+> Player 2 made move:
+> +++
+  move: NU
+  timer: 538
+  message: Lol we moving
+> ---
+--------------------------------------------------------------------------
+> Running player 3... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DKLT.M. GEC.... SMR.... HKLTD.. MBD.... DC?T.M. GPL.... SZU.... HZA.... MKL.... DC?T.V. GEC.... SST.... HVI.... MCDT... DC?T... GPL.... SPA.... HPR.... MGA.... DC?T... GEC.... SNA.... HNU...."
+==============================================================
+Program Output (6): hp: 2
+
+==============================================================
+Move:  {
+  "move": "CN",
+  "message": "Lol we moving",
+  "timer": 927
+}
+> Game score: 306
+> Moving from: GA
+> Life Points: 2
+> Player 3 made move:
+> +++
+  move: CN
+  message: Lol we moving
+  timer: 927
+> ---
+--------------------------------------------------------------------------
+> Running player 4... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DVE.V.. GPA.... SPR.... HSR.... MCD.... DFLT... GST.... SVI.... HSR.... MGA.... DGOT... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DMIT... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DSZT.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DBET.M. GNU.... STS.... HVA.... MCD.... DBCT... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DKLT.M. GEC.... SMR.... HKLTD.. MBD.... DBCT.M. GPL.... SZU.... HZA.... MKL.... DSOT.V. GEC.... SST.... HVI.... MCDT... DSAT... GPL.... SPA.... HPR.... MGA.... DVAT... GEC.... SNA.... HNU.... MCN...."
+==============================================================
+Program Output (258): hello
+location is Valona
+was in trial
+was in trial
+Ionian Sea
+Double Back 3
+Sarajevo
+Double Back 2
+Athens
+Hide
+Double Back 1
+
+Possible locations are:   Ionian Sea, Double Back 3, Sarajevo, Double Back 2, Athens, Hide, Double Back 1, Adriatic Sea, lets heal!
+
+==============================================================
+Move:  {
+  "move": "AT",
+  "message": "doing my best ",
+  "timer": 320
+}
+> Game score: 306
+> Moving from: VA
+> Blood Points: 10
+> Legal Drac moves: AT SJ IO D1 D2 D3 HI
+> Player 4 made move:
+> +++
+  move: AT
+  message: doing my best 
+  timer: 320
+> ---
+> End of Round:  22
+> Starting Round:  23
+--------------------------------------------------------------------------
+> Running player 0... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DKLT.M. GEC.... SMR.... HKLTD.. MBD.... DC?T.M. GPL.... SZU.... HZA.... MKL.... DC?T.V. GEC.... SST.... HVI.... MCDT... DC?T... GPL.... SPA.... HPR.... MGA.... DC?T... GEC.... SNA.... HNU.... MCN.... DC?T..."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "PL",
+  "message": "Lol we moving",
+  "timer": 485
+}
+> Game score: 305
+> Moving from: EC
+> Life Points: 9
+> Player 0 made move:
+> +++
+  move: PL
+  message: Lol we moving
+  timer: 485
+> ---
+--------------------------------------------------------------------------
+> Running player 1... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DKLT.M. GEC.... SMR.... HKLTD.. MBD.... DC?T.M. GPL.... SZU.... HZA.... MKL.... DC?T.V. GEC.... SST.... HVI.... MCDT... DC?T... GPL.... SPA.... HPR.... MGA.... DC?T... GEC.... SNA.... HNU.... MCN.... DC?T... GPL...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "BB",
+  "message": "Lol we moving",
+  "timer": 575
+}
+> Game score: 305
+> Moving from: NA
+> Life Points: 9
+> Player 1 made move:
+> +++
+  move: BB
+  message: Lol we moving
+  timer: 575
+> ---
+--------------------------------------------------------------------------
+> Running player 2... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DKLT.M. GEC.... SMR.... HKLTD.. MBD.... DC?T.M. GPL.... SZU.... HZA.... MKL.... DC?T.V. GEC.... SST.... HVI.... MCDT... DC?T... GPL.... SPA.... HPR.... MGA.... DC?T... GEC.... SNA.... HNU.... MCN.... DC?T... GPL.... SBB...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "ST",
+  "message": "Lol we moving",
+  "timer": 519
+}
+> Game score: 305
+> Moving from: NU
+> Life Points: 9
+> Player 2 made move:
+> +++
+  move: ST
+  message: Lol we moving
+  timer: 519
+> ---
+--------------------------------------------------------------------------
+> Running player 3... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DKLT.M. GEC.... SMR.... HKLTD.. MBD.... DC?T.M. GPL.... SZU.... HZA.... MKL.... DC?T.V. GEC.... SST.... HVI.... MCDT... DC?T... GPL.... SPA.... HPR.... MGA.... DC?T... GEC.... SNA.... HNU.... MCN.... DC?T... GPL.... SBB.... HST...."
+==============================================================
+Program Output (6): hp: 2
+
+==============================================================
+Move:  {
+  "move": "BS",
+  "message": "Lol we moving",
+  "timer": 890
+}
+> Game score: 305
+> Moving from: CN
+> Life Points: 2
+> Player 3 made move:
+> +++
+  move: BS
+  message: Lol we moving
+  timer: 890
+> ---
+--------------------------------------------------------------------------
+> Running player 4... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DVE.V.. GPA.... SPR.... HSR.... MCD.... DFLT... GST.... SVI.... HSR.... MGA.... DGOT... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DMIT... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DSZT.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DBET.M. GNU.... STS.... HVA.... MCD.... DBCT... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DKLT.M. GEC.... SMR.... HKLTD.. MBD.... DBCT.M. GPL.... SZU.... HZA.... MKL.... DSOT.V. GEC.... SST.... HVI.... MCDT... DSAT... GPL.... SPA.... HPR.... MGA.... DVAT... GEC.... SNA.... HNU.... MCN.... DATT... GPL.... SBB.... HST.... MBS...."
+==============================================================
+Program Output (178): hello
+location is Athens
+was in trial
+Ionian Sea
+Double Back 2
+Hide
+Double Back 1
+
+Possible locations are:   Ionian Sea, Double Back 2, Hide, Double Back 1, Salonica, lets heal!
+
+==============================================================
+Move:  {
+  "move": "HI",
+  "timer": 275,
+  "message": "doing my best "
+}
+> Game score: 305
+> Moving from: AT
+> Blood Points: 10
+> Legal Drac moves: IO D1 D2 HI
+> Player 4 made move:
+> +++
+  move: HI
+  timer: 275
+  message: doing my best 
+> ---
+> End of Round:  23
+> Starting Round:  24
+--------------------------------------------------------------------------
+> Running player 0... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DKLT.M. GEC.... SMR.... HKLTD.. MBD.... DC?T.M. GPL.... SZU.... HZA.... MKL.... DC?T.V. GEC.... SST.... HVI.... MCDT... DC?T... GPL.... SPA.... HPR.... MGA.... DC?T... GEC.... SNA.... HNU.... MCN.... DC?T... GPL.... SBB.... HST.... MBS.... DC?T..."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "LO",
+  "message": "Lol we moving",
+  "timer": 566
+}
+> Game score: 304
+> Moving from: PL
+> Life Points: 9
+> Player 0 made move:
+> +++
+  move: LO
+  message: Lol we moving
+  timer: 566
+> ---
+--------------------------------------------------------------------------
+> Running player 1... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DKLT.M. GEC.... SMR.... HKLTD.. MBD.... DC?T.M. GPL.... SZU.... HZA.... MKL.... DC?T.V. GEC.... SST.... HVI.... MCDT... DC?T... GPL.... SPA.... HPR.... MGA.... DC?T... GEC.... SNA.... HNU.... MCN.... DC?T... GPL.... SBB.... HST.... MBS.... DC?T... GLO...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "SN",
+  "message": "Lol we moving",
+  "timer": 6762
+}
+> Game score: 304
+> Moving from: BB
+> Life Points: 9
+> Player 1 made move:
+> +++
+  move: SN
+  message: Lol we moving
+  timer: 6762
+> ---
+--------------------------------------------------------------------------
+> Running player 2... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DKLT.M. GEC.... SMR.... HKLTD.. MBD.... DC?T.M. GPL.... SZU.... HZA.... MKL.... DC?T.V. GEC.... SST.... HVI.... MCDT... DC?T... GPL.... SPA.... HPR.... MGA.... DC?T... GEC.... SNA.... HNU.... MCN.... DC?T... GPL.... SBB.... HST.... MBS.... DC?T... GLO.... SSN...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "ZU",
+  "message": "Lol we moving",
+  "timer": 3413
+}
+> Game score: 304
+> Moving from: ST
+> Life Points: 9
+> Player 2 made move:
+> +++
+  move: ZU
+  message: Lol we moving
+  timer: 3413
+> ---
+--------------------------------------------------------------------------
+> Running player 3... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DKLT.M. GEC.... SMR.... HKLTD.. MBD.... DC?T.M. GPL.... SZU.... HZA.... MKL.... DC?T.V. GEC.... SST.... HVI.... MCDT... DC?T... GPL.... SPA.... HPR.... MGA.... DC?T... GEC.... SNA.... HNU.... MCN.... DC?T... GPL.... SBB.... HST.... MBS.... DC?T... GLO.... SSN.... HZU...."
+==============================================================
+Program Output (6): hp: 2
+
+==============================================================
+Move:  {
+  "move": "IO",
+  "message": "Lol we moving",
+  "timer": 863
+}
+> Game score: 304
+> Moving from: BS
+> Life Points: 2
+> Player 3 made move:
+> +++
+  move: IO
+  message: Lol we moving
+  timer: 863
+> ---
+--------------------------------------------------------------------------
+> Running player 4... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DVE.V.. GPA.... SPR.... HSR.... MCD.... DFLT... GST.... SVI.... HSR.... MGA.... DGOT... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DMIT... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DSZT.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DBET.M. GNU.... STS.... HVA.... MCD.... DBCT... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DKLT.M. GEC.... SMR.... HKLTD.. MBD.... DBCT.M. GPL.... SZU.... HZA.... MKL.... DSOT.V. GEC.... SST.... HVI.... MCDT... DSAT... GPL.... SPA.... HPR.... MGA.... DVAT... GEC.... SNA.... HNU.... MCN.... DATT... GPL.... SBB.... HST.... MBS.... DHIT... GLO.... SSN.... HZU.... MIO...."
+==============================================================
+Program Output (171): hello
+location is Athens
+was in trial
+Ionian Sea
+Double Back 3
+Double Back 1
+
+Possible locations are:   Ionian Sea, Double Back 3, Double Back 1, Adriatic Sea, lets heal!
+
+==============================================================
+Move:  {
+  "move": "D1",
+  "message": "doing my best ",
+  "timer": 2818
+}
+> Game score: 304
+> Moving from: AT
+> Blood Points: 10
+> Legal Drac moves: IO D1 D2 D3
+> Player 4 made move:
+> +++
+  move: D1
+  message: doing my best 
+  timer: 2818
+> ---
+> End of Round:  24
+> Starting Round:  25
+--------------------------------------------------------------------------
+> Running player 0... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DKLT.M. GEC.... SMR.... HKLTD.. MBD.... DC?T.M. GPL.... SZU.... HZA.... MKL.... DC?T.V. GEC.... SST.... HVI.... MCDT... DC?T... GPL.... SPA.... HPR.... MGA.... DC?T... GEC.... SNA.... HNU.... MCN.... DC?T... GPL.... SBB.... HST.... MBS.... DC?T... GLO.... SSN.... HZU.... MIO.... DD1T.M."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "EC",
+  "message": "Lol we moving",
+  "timer": 481
+}
+> Game score: 303
+> Moving from: LO
+> Life Points: 9
+> Player 0 made move:
+> +++
+  move: EC
+  message: Lol we moving
+  timer: 481
+> ---
+--------------------------------------------------------------------------
+> Running player 1... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DKLT.M. GEC.... SMR.... HKLTD.. MBD.... DC?T.M. GPL.... SZU.... HZA.... MKL.... DC?T.V. GEC.... SST.... HVI.... MCDT... DC?T... GPL.... SPA.... HPR.... MGA.... DC?T... GEC.... SNA.... HNU.... MCN.... DC?T... GPL.... SBB.... HST.... MBS.... DC?T... GLO.... SSN.... HZU.... MIO.... DD1T.M. GEC...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "SR",
+  "message": "Lol we moving",
+  "timer": 679
+}
+> Game score: 303
+> Moving from: SN
+> Life Points: 9
+> Player 1 made move:
+> +++
+  move: SR
+  message: Lol we moving
+  timer: 679
+> ---
+--------------------------------------------------------------------------
+> Running player 2... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DKLT.M. GEC.... SMR.... HKLTD.. MBD.... DC?T.M. GPL.... SZU.... HZA.... MKL.... DC?T.V. GEC.... SST.... HVI.... MCDT... DC?T... GPL.... SPA.... HPR.... MGA.... DC?T... GEC.... SNA.... HNU.... MCN.... DC?T... GPL.... SBB.... HST.... MBS.... DC?T... GLO.... SSN.... HZU.... MIO.... DD1T.M. GEC.... SSR...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "MU",
+  "message": "Lol we moving",
+  "timer": 676
+}
+> Game score: 303
+> Moving from: ZU
+> Life Points: 9
+> Player 2 made move:
+> +++
+  move: MU
+  message: Lol we moving
+  timer: 676
+> ---
+--------------------------------------------------------------------------
+> Running player 3... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DKLT.M. GEC.... SMR.... HKLTD.. MBD.... DC?T.M. GPL.... SZU.... HZA.... MKL.... DC?T.V. GEC.... SST.... HVI.... MCDT... DC?T... GPL.... SPA.... HPR.... MGA.... DC?T... GEC.... SNA.... HNU.... MCN.... DC?T... GPL.... SBB.... HST.... MBS.... DC?T... GLO.... SSN.... HZU.... MIO.... DD1T.M. GEC.... SSR.... HMU...."
+==============================================================
+Program Output (6): hp: 2
+
+==============================================================
+Move:  {
+  "move": "VA",
+  "message": "Lol we moving",
+  "timer": 733
+}
+> Game score: 303
+> Moving from: IO
+> Life Points: 2
+> Player 3 made move:
+> +++
+  move: VA
+  message: Lol we moving
+  timer: 733
+> ---
+--------------------------------------------------------------------------
+> Running player 4... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DVE.V.. GPA.... SPR.... HSR.... MCD.... DFLT... GST.... SVI.... HSR.... MGA.... DGOT... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DMIT... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DSZT.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DBET.M. GNU.... STS.... HVA.... MCD.... DBCT... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DKLT.M. GEC.... SMR.... HKLTD.. MBD.... DBCT.M. GPL.... SZU.... HZA.... MKL.... DSOT.V. GEC.... SST.... HVI.... MCDT... DSAT... GPL.... SPA.... HPR.... MGA.... DVAT... GEC.... SNA.... HNU.... MCN.... DATT... GPL.... SBB.... HST.... MBS.... DHIT... GLO.... SSN.... HZU.... MIO.... DD1T.M. GEC.... SSR.... HMU.... MVAT..."
+==============================================================
+Program Output (113): hello
+location is Athens
+was in trial
+Ionian Sea
+
+Possible locations are:   Ionian Sea, Adriatic Sea, lets heal!
+
+==============================================================
+Move:  {
+  "move": "IO",
+  "message": "doing my best ",
+  "timer": 219
+}
+> Game score: 297
+> Moving from: AT
+> Blood Points: 10
+> Legal Drac moves: IO
+> Player 4 made move:
+> +++
+  move: IO
+  message: doing my best 
+  timer: 219
+> ---
+> End of Round:  25
+> Starting Round:  26
+--------------------------------------------------------------------------
+> Running player 0... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DKLT.M. GEC.... SMR.... HKLTD.. MBD.... DC?T.M. GPL.... SZU.... HZA.... MKL.... DC?T.V. GEC.... SST.... HVI.... MCDT... DC?T... GPL.... SPA.... HPR.... MGA.... DVAT... GEC.... SNA.... HNU.... MCN.... DC?T... GPL.... SBB.... HST.... MBS.... DC?T... GLO.... SSN.... HZU.... MIO.... DD1T.M. GEC.... SSR.... HMU.... MVAT... DS?..M."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "PL",
+  "message": "Lol we moving",
+  "timer": 649
+}
+> Game score: 296
+> Moving from: EC
+> Life Points: 9
+> Player 0 made move:
+> +++
+  move: PL
+  message: Lol we moving
+  timer: 649
+> ---
+--------------------------------------------------------------------------
+> Running player 1... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DKLT.M. GEC.... SMR.... HKLTD.. MBD.... DC?T.M. GPL.... SZU.... HZA.... MKL.... DC?T.V. GEC.... SST.... HVI.... MCDT... DC?T... GPL.... SPA.... HPR.... MGA.... DVAT... GEC.... SNA.... HNU.... MCN.... DC?T... GPL.... SBB.... HST.... MBS.... DC?T... GLO.... SSN.... HZU.... MIO.... DD1T.M. GEC.... SSR.... HMU.... MVAT... DS?..M. GPL...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "timer": 494,
+  "move": "TO",
+  "message": "Lol we moving"
+}
+> Game score: 296
+> Moving from: SR
+> Life Points: 9
+> Player 1 made move:
+> +++
+  timer: 494
+  move: TO
+  message: Lol we moving
+> ---
+--------------------------------------------------------------------------
+> Running player 2... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DKLT.M. GEC.... SMR.... HKLTD.. MBD.... DC?T.M. GPL.... SZU.... HZA.... MKL.... DC?T.V. GEC.... SST.... HVI.... MCDT... DC?T... GPL.... SPA.... HPR.... MGA.... DVAT... GEC.... SNA.... HNU.... MCN.... DC?T... GPL.... SBB.... HST.... MBS.... DC?T... GLO.... SSN.... HZU.... MIO.... DD1T.M. GEC.... SSR.... HMU.... MVAT... DS?..M. GPL.... STO...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "message": "Lol we moving",
+  "move": "VE",
+  "timer": 674
+}
+> Game score: 296
+> Moving from: MU
+> Life Points: 9
+> Player 2 made move:
+> +++
+  message: Lol we moving
+  move: VE
+  timer: 674
+> ---
+--------------------------------------------------------------------------
+> Running player 3... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DKLT.M. GEC.... SMR.... HKLTD.. MBD.... DC?T.M. GPL.... SZU.... HZA.... MKL.... DC?T.V. GEC.... SST.... HVI.... MCDT... DC?T... GPL.... SPA.... HPR.... MGA.... DVAT... GEC.... SNA.... HNU.... MCN.... DC?T... GPL.... SBB.... HST.... MBS.... DC?T... GLO.... SSN.... HZU.... MIO.... DD1T.M. GEC.... SSR.... HMU.... MVAT... DS?..M. GPL.... STO.... HVE...."
+==============================================================
+Program Output (6): hp: 0
+
+==============================================================
+Move:  {
+  "timer": 1180,
+  "move": "SJ",
+  "message": "Lol we moving"
+}
+> Game score: 296
+> Moving from: JM
+> Life Points: 9
+> Player 3 made move:
+> +++
+  timer: 1180
+  move: SJ
+  message: Lol we moving
+> ---
+--------------------------------------------------------------------------
+> Running player 4... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DVE.V.. GPA.... SPR.... HSR.... MCD.... DFLT... GST.... SVI.... HSR.... MGA.... DGOT... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DMIT... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DSZT.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DBET.M. GNU.... STS.... HVA.... MCD.... DBCT... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DKLT.M. GEC.... SMR.... HKLTD.. MBD.... DBCT.M. GPL.... SZU.... HZA.... MKL.... DSOT.V. GEC.... SST.... HVI.... MCDT... DSAT... GPL.... SPA.... HPR.... MGA.... DVAT... GEC.... SNA.... HNU.... MCN.... DATT... GPL.... SBB.... HST.... MBS.... DHIT... GLO.... SSN.... HZU.... MIO.... DD1T.M. GEC.... SSR.... HMU.... MVAT... DIO..M. GPL.... STO.... HVE.... MSJ...."
+==============================================================
+Program Output (199): hello
+location is Ionian Sea
+was in trial
+was in trial
+Tyrrhenian Sea
+Salonica
+Black Sea
+Adriatic Sea
+
+Possible locations are:   Tyrrhenian Sea, Salonica, Black Sea, Adriatic Sea, Athens, lets heal!
+
+==============================================================
+Move:  {
+  "timer": 214,
+  "move": "SA",
+  "message": "doing my best "
+}
+> Game score: 296
+> Moving from: IO
+> Blood Points: 8
+> Legal Drac moves: SA TS AS BS
+> Player 4 made move:
+> +++
+  timer: 214
+  move: SA
+  message: doing my best 
+> ---
+> End of Round:  26
+> Starting Round:  27
+--------------------------------------------------------------------------
+> Running player 0... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DKLT.M. GEC.... SMR.... HKLTD.. MBD.... DC?T.M. GPL.... SZU.... HZA.... MKL.... DC?T.V. GEC.... SST.... HVI.... MCDT... DC?T... GPL.... SPA.... HPR.... MGA.... DVAT... GEC.... SNA.... HNU.... MCN.... DC?T... GPL.... SBB.... HST.... MBS.... DC?T... GLO.... SSN.... HZU.... MIO.... DD1T.M. GEC.... SSR.... HMU.... MVAT... DS?..M. GPL.... STO.... HVE.... MSJ.... DC?.VM."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "EC",
+  "message": "Lol we moving",
+  "timer": 618
+}
+> Game score: 295
+> Moving from: PL
+> Life Points: 9
+> Player 0 made move:
+> +++
+  move: EC
+  message: Lol we moving
+  timer: 618
+> ---
+--------------------------------------------------------------------------
+> Running player 1... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DKLT.M. GEC.... SMR.... HKLTD.. MBD.... DC?T.M. GPL.... SZU.... HZA.... MKL.... DC?T.V. GEC.... SST.... HVI.... MCDT... DC?T... GPL.... SPA.... HPR.... MGA.... DVAT... GEC.... SNA.... HNU.... MCN.... DC?T... GPL.... SBB.... HST.... MBS.... DC?T... GLO.... SSN.... HZU.... MIO.... DD1T.M. GEC.... SSR.... HMU.... MVAT... DS?..M. GPL.... STO.... HVE.... MSJ.... DC?.VM. GEC...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "CF",
+  "message": "Lol we moving",
+  "timer": 561
+}
+> Game score: 295
+> Moving from: TO
+> Life Points: 9
+> Player 1 made move:
+> +++
+  move: CF
+  message: Lol we moving
+  timer: 561
+> ---
+--------------------------------------------------------------------------
+> Running player 2... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DKLT.M. GEC.... SMR.... HKLTD.. MBD.... DC?T.M. GPL.... SZU.... HZA.... MKL.... DC?T.V. GEC.... SST.... HVI.... MCDT... DC?T... GPL.... SPA.... HPR.... MGA.... DVAT... GEC.... SNA.... HNU.... MCN.... DC?T... GPL.... SBB.... HST.... MBS.... DC?T... GLO.... SSN.... HZU.... MIO.... DD1T.M. GEC.... SSR.... HMU.... MVAT... DS?..M. GPL.... STO.... HVE.... MSJ.... DC?.VM. GEC.... SCF...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "AS",
+  "message": "Lol we moving",
+  "timer": 512
+}
+> Game score: 295
+> Moving from: VE
+> Life Points: 9
+> Player 2 made move:
+> +++
+  move: AS
+  message: Lol we moving
+  timer: 512
+> ---
+--------------------------------------------------------------------------
+> Running player 3... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DKLT.M. GEC.... SMR.... HKLTD.. MBD.... DC?T.M. GPL.... SZU.... HZA.... MKL.... DC?T.V. GEC.... SST.... HVI.... MCDT... DC?T... GPL.... SPA.... HPR.... MGA.... DVAT... GEC.... SNA.... HNU.... MCN.... DC?T... GPL.... SBB.... HST.... MBS.... DC?T... GLO.... SSN.... HZU.... MIO.... DD1T.M. GEC.... SSR.... HMU.... MVAT... DS?..M. GPL.... STO.... HVE.... MSJ.... DC?.VM. GEC.... SCF.... HAS...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "message": "Lol we moving",
+  "move": "VA",
+  "timer": 989
+}
+> Game score: 295
+> Moving from: SJ
+> Life Points: 9
+> Player 3 made move:
+> +++
+  message: Lol we moving
+  move: VA
+  timer: 989
+> ---
+--------------------------------------------------------------------------
+> Running player 4... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DVE.V.. GPA.... SPR.... HSR.... MCD.... DFLT... GST.... SVI.... HSR.... MGA.... DGOT... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DMIT... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DSZT.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DBET.M. GNU.... STS.... HVA.... MCD.... DBCT... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DKLT.M. GEC.... SMR.... HKLTD.. MBD.... DBCT.M. GPL.... SZU.... HZA.... MKL.... DSOT.V. GEC.... SST.... HVI.... MCDT... DSAT... GPL.... SPA.... HPR.... MGA.... DVAT... GEC.... SNA.... HNU.... MCN.... DATT... GPL.... SBB.... HST.... MBS.... DHIT... GLO.... SSN.... HZU.... MIO.... DD1T.M. GEC.... SSR.... HMU.... MVAT... DIO..M. GPL.... STO.... HVE.... MSJ.... DSA.VM. GEC.... SCF.... HAS.... MVA...."
+==============================================================
+Program Output (120): hello
+location is Salonica
+was in trial
+Valona
+Sofia
+
+Possible locations are:   Valona, Sofia, Adriatic Sea, lets heal!
+
+==============================================================
+Move:  {
+  "message": "doing my best ",
+  "move": "SO",
+  "timer": 207
+}
+> Game score: 295
+> Moving from: SA
+> Blood Points: 8
+> Legal Drac moves: SO VA
+> Player 4 made move:
+> +++
+  message: doing my best 
+  move: SO
+  timer: 207
+> ---
+> End of Round:  27
+> Starting Round:  28
+--------------------------------------------------------------------------
+> Running player 0... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DKLT.M. GEC.... SMR.... HKLTD.. MBD.... DC?T.M. GPL.... SZU.... HZA.... MKL.... DC?T.V. GEC.... SST.... HVI.... MCDT... DC?T... GPL.... SPA.... HPR.... MGA.... DVAT... GEC.... SNA.... HNU.... MCN.... DC?T... GPL.... SBB.... HST.... MBS.... DC?T... GLO.... SSN.... HZU.... MIO.... DD1T.M. GEC.... SSR.... HMU.... MVAT... DS?..M. GPL.... STO.... HVE.... MSJ.... DC?.VM. GEC.... SCF.... HAS.... MVA.... DC?T..."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "timer": 689,
+  "move": "PL",
+  "message": "Lol we moving"
+}
+> Game score: 294
+> Moving from: EC
+> Life Points: 9
+> Player 0 made move:
+> +++
+  timer: 689
+  move: PL
+  message: Lol we moving
+> ---
+--------------------------------------------------------------------------
+> Running player 1... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DKLT.M. GEC.... SMR.... HKLTD.. MBD.... DC?T.M. GPL.... SZU.... HZA.... MKL.... DC?T.V. GEC.... SST.... HVI.... MCDT... DC?T... GPL.... SPA.... HPR.... MGA.... DVAT... GEC.... SNA.... HNU.... MCN.... DC?T... GPL.... SBB.... HST.... MBS.... DC?T... GLO.... SSN.... HZU.... MIO.... DD1T.M. GEC.... SSR.... HMU.... MVAT... DS?..M. GPL.... STO.... HVE.... MSJ.... DC?.VM. GEC.... SCF.... HAS.... MVA.... DC?T... GPL...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "timer": 1191,
+  "move": "GE",
+  "message": "Lol we moving"
+}
+> Game score: 294
+> Moving from: CF
+> Life Points: 9
+> Player 1 made move:
+> +++
+  timer: 1191
+  move: GE
+  message: Lol we moving
+> ---
+--------------------------------------------------------------------------
+> Running player 2... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DKLT.M. GEC.... SMR.... HKLTD.. MBD.... DC?T.M. GPL.... SZU.... HZA.... MKL.... DC?T.V. GEC.... SST.... HVI.... MCDT... DC?T... GPL.... SPA.... HPR.... MGA.... DVAT... GEC.... SNA.... HNU.... MCN.... DC?T... GPL.... SBB.... HST.... MBS.... DC?T... GLO.... SSN.... HZU.... MIO.... DD1T.M. GEC.... SSR.... HMU.... MVAT... DS?..M. GPL.... STO.... HVE.... MSJ.... DC?.VM. GEC.... SCF.... HAS.... MVA.... DC?T... GPL.... SGE...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "BI",
+  "message": "Lol we moving",
+  "timer": 478
+}
+> Game score: 294
+> Moving from: AS
+> Life Points: 9
+> Player 2 made move:
+> +++
+  move: BI
+  message: Lol we moving
+  timer: 478
+> ---
+--------------------------------------------------------------------------
+> Running player 3... 
+Running with input: "past_plays": "GPA.... SBR.... HMA.... MKL.... DC?.V.. GPA.... SPR.... HSR.... MCD.... DC?T... GST.... SVI.... HSR.... MGA.... DC?T... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DC?T... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DC?T.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DC?T.M. GNU.... STS.... HVA.... MCD.... DC?T... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DKLT.M. GEC.... SMR.... HKLTD.. MBD.... DC?T.M. GPL.... SZU.... HZA.... MKL.... DC?T.V. GEC.... SST.... HVI.... MCDT... DC?T... GPL.... SPA.... HPR.... MGA.... DVAT... GEC.... SNA.... HNU.... MCN.... DC?T... GPL.... SBB.... HST.... MBS.... DC?T... GLO.... SSN.... HZU.... MIO.... DD1T.M. GEC.... SSR.... HMU.... MVAT... DS?..M. GPL.... STO.... HVE.... MSJ.... DC?.VM. GEC.... SCF.... HAS.... MVA.... DC?T... GPL.... SGE.... HBI...."
+==============================================================
+Program Output (6): hp: 9
+
+==============================================================
+Move:  {
+  "move": "SO",
+  "message": "Lol we moving",
+  "timer": 1014
+}
+> Game score: 294
+> Moving from: VA
+> Life Points: 9
+> Player 3 made move:
+> +++
+  move: SO
+  message: Lol we moving
+  timer: 1014
+> ---
+--------------------------------------------------------------------------
+> End of game: 
+> +++
+  score: 294
+  revealedPastPlays: GPA.... SBR.... HMA.... MKL.... DVE.V.. GPA.... SPR.... HSR.... MCD.... DFLT... GST.... SVI.... HSR.... MGA.... DGOT... GZU.... SVI.... HTO.... MGA.... DHIT... GST.... SZA.... HTO.... MCN.... DMIT... GST.... SSZ.... HMR.... MCN.... DD1T... GZU.... SJM.... HMS.... MBS.... DMUT.V. GMUTD.. SSJ.... HTS.... MVR.... DZAT.M. GZATD.. SVA.... HRO.... MSO.... DSZT.M. GZA.... SIO.... HNP.... MBC.... DKLT.M. GVI.... STS.... HTS.... MKLTD.. DHIT.M. GPR.... SRO.... HIO.... MCD.... DBET.M. GNU.... STS.... HVA.... MCD.... DBCT... GLI.... SRO.... HSO.... MGA.... DD1.V.. GHA.... STS.... HVR.... MKLT... DCNT.M. GNS.... SNP.... HBS.... MSZ.... DGAT... GEC.... STS.... HCNT... MZA.... DCDT... GPL.... SMS.... HGAT... MVI.... DKLT.M. GEC.... SMR.... HKLTD.. MBD.... DBCT.M. GPL.... SZU.... HZA.... MKL.... DSOT.V. GEC.... SST.... HVI.... MCDT... DSAT... GPL.... SPA.... HPR.... MGA.... DVAT... GEC.... SNA.... HNU.... MCN.... DATT... GPL.... SBB.... HST.... MBS.... DHIT... GLO.... SSN.... HZU.... MIO.... DD1T.M. GEC.... SSR.... HMU.... MVAT... DIO..M. GPL.... STO.... HVE.... MSJ.... DSA.VM. GEC.... SCF.... HAS.... MVA.... DSOT... GPL.... SGE.... HBI.... MSOTD..
+  messages: ["Lol we moving","Lol we moving","Lol we moving","Lol we moving","Happy Birthday To Me!","Lol we moving","Lol we moving","Lol we moving","Lol we moving","doing my best ","Lol we moving","Lol we moving","Lol we moving","Lol we moving","doing my best ","Lol we moving","Lol we moving","Lol we moving","Lol we moving","doing my best ","Lol we moving","Lol we moving","Lol we moving","Lol we moving","doing my best ","Lol we moving","Lol we moving","Lol we moving","Lol we moving","doing my best ","Lol we moving","Lol we moving","Lol we moving","Lol we moving","doing my best ","Lol we moving","Lol we moving","Lol we moving","Lol we moving","doing my best ","Lol we moving","Lol we moving","Lol we moving","Lol we moving","doing my best ","Lol we moving","Lol we moving","Lol we moving","Lol we moving","doing my best ","Lol we moving","Lol we moving","Lol we moving","Lol we moving","doing my best ","Lol we moving","Lol we moving","Lol we moving","Lol we moving","doing my best ","Lol we moving","Lol we moving","Lol we moving","Lol we moving","doing my best ","Lol we moving","Lol we moving","Lol we moving","Lol we moving","doing my best ","Lol we moving","Lol we moving","Lol we moving","Lol we moving","doing my best ","Lol we moving","Lol we moving","Lol we moving","Lol we moving","doing my best ","Lol we moving","Lol we moving","Lol we moving","Lol we moving","doing my best ","Lol we moving","Lol we moving","Lol we moving","Lol we moving","doing my best ","Lol we moving","Lol we moving","Lol we moving","Lol we moving","doing my best ","Lol we moving","Lol we moving","Lol we moving","Lol we moving","doing my best ","Lol we moving","Lol we moving","Lol we moving","Lol we moving","doing my best ","Lol we moving","Lol we moving","Lol we moving","Lol we moving","doing my best ","Lol we moving","Lol we moving","Lol we moving","Lol we moving","doing my best ","Lol we moving","Lol we moving","Lol we moving","Lol we moving","doing my best ","Lol we moving","Lol we moving","Lol we moving","Lol we moving","doing my best ","Lol we moving","Lol we moving","Lol we moving","Lol we moving","doing my best ","Lol we moving","Lol we moving","Lol we moving","Lol we moving","doing my best ","Lol we moving","Lol we moving","Lol we moving","Lol we moving","doing my best ","Lol we moving","Lol we moving","Lol we moving","Lol we moving"]
+> ---
+> Game Over
+294
+28
+Final score: 294
+Final round: 28
