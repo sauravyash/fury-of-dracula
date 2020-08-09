@@ -377,7 +377,7 @@ PlaceId weightMovesByLocation(DraculaView dv, MoveWeight * mw, int mwSize, Place
     // Drac being low on health possible moves -> depending on how well this does; maybe less than 30 but more than   20? idk i dont want him cramped in
     // Also if we go there with like 10 health and get interepted on the way, we die. If we go there and theres more than 1 hunter there, we die; , maybe
 
-    if (found < pathLength || found <= 6) {
+    if ((found < pathLength || found <= 6) && pathLength >= 0 ) {
         printf("lets heal!\n");
         if (j > 0) return pathToCD[0];
     }
