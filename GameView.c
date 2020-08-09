@@ -846,7 +846,7 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
         switch(*c){
             // It's a trap!
             case ITS_A_TRAP:
-            printf("trap!\n");
+            //printf("trap!\n");
                 HUNTER->health -= LIFE_LOSS_TRAP_ENCOUNTER;
                 if ( isHunterAlive(gv, hunter) == false){
                     curr_place = HOSPITAL_PLACE;
@@ -863,7 +863,7 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
 
             // Dracula encounter
             case 'D':
-            printf("Dracula!\n");
+            //printf("Dracula!\n");
                 HUNTER->health -= LIFE_LOSS_DRACULA_ENCOUNTER;
 
                 if ( isHunterAlive(gv, hunter) == false){

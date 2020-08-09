@@ -748,7 +748,7 @@ static void draculaMove(DraculaView dv, char *string) {
     city[0] = string[1];
     city[1] = string[2];
     city[2] = '\0';
-    printf("city: %s\n",city);
+    //printf("city: %s\n",city);
     //printf("round is %d\n", dv->currentRound);
     // Compare and find city by abbreviation:
     // careful when doublebacks, this turns into a doubleback code
@@ -933,7 +933,7 @@ static void draculaLocationHistoryAppend(DraculaView dv, PlaceId location) {
     //for (int i = 0; i < numReturnedLocs; i++) printf("in trail: %s\n", placeIdToName(trail[i]));
     // ensure the array is large enough, then append
     if (index < MAX_LOC_HISTORY_SIZE) {
-        printf("appending %s\n", placeIdToName(location));
+        //printf("appending %s\n", placeIdToName(location));
         DRACULA->moveHistory[index + 1] = location;
         //HIDE: dracula's location is the same as previous
         if(location == HIDE && trail != NULL){

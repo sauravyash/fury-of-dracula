@@ -243,7 +243,7 @@ void weightMovesByLocation(HunterView hv, MoveWeight *mw, int mwSize, PlaceId *p
             float factor = 0.05 * (num - i);
             factor = factor > 1 ? 1 : factor;
 
-            if (factor < 0.3) printf("lastmove: %s, factor: %f\n", placeIdToName(lastMoves[i]), factor);
+            //if (factor < 0.3) printf("lastmove: %s, factor: %f\n", placeIdToName(lastMoves[i]), factor);
             int index = findMoveWeightIndex(mw, mwSize, lastMoves[i]);
             if (index != -1) mw[index]->weight *= factor;
         }
@@ -255,7 +255,7 @@ void weightMovesByLocation(HunterView hv, MoveWeight *mw, int mwSize, PlaceId *p
 
 void printMwArray(MoveWeight *mw, int size) {
     for (int i = 0; i < size; i++) {
-        printf("Loc: %s, Weight: %f\n",
+        //printf("Loc: %s, Weight: %f\n",
                 placeIdToName(mw[i]->location),
                 mw[i]->weight);
     }
