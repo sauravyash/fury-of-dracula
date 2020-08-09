@@ -204,7 +204,10 @@ void decideDraculaMove(DraculaView dv)
     PlaceId bestMove = MvArray[0]->location;
 
 
-    if (healMove != NOWHERE ) bestMove = healMove;
+    if (healMove != NOWHERE ) {
+        //check if it is in the possible moves array
+        bestMove = healMove;
+    }
     //printf("best loc is: %s\n", placeIdToName(bestMove));
  //   printMW(MvArray, MvArraySize);
 
@@ -361,7 +364,10 @@ PlaceId weightMovesByLocation(DraculaView dv, MoveWeight * mw, int mwSize, Place
             if (DvGetHealth(dv,PLAYER_DRACULA) <= 30 && DvGetHealth(dv,PLAYER_DRACULA) >= 20 && pathLength != -1) {
               while (j < numHunterLocations) {
                 //hunter is in the location or reachable
+
                 if(pathToCD[0] == possibleMovesHunter[j]) found++;
+                printf("path is %s\n", placeIdToName(pathToCD[0]));
+                printf("comparing to %s\n", placeIdToName(possibleMovesHunter[j]));
                 j++;
               }
 
@@ -379,7 +385,10 @@ PlaceId weightMovesByLocation(DraculaView dv, MoveWeight * mw, int mwSize, Place
 
     if ((found < pathLength || found <= 6) && pathLength >= 0 ) {
         printf("lets heal!\n");
-        if (j > 0) return pathToCD[0];
+        if (j > 0) {
+            printf("possible!\n");
+            return pathToCD[0];
+        }
     }
 
 
