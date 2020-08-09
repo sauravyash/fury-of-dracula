@@ -199,13 +199,29 @@ void weightMovesByLocation(HunterView hv, MoveWeight *mw, int mwSize, PlaceId *p
         }
     }
 
+    // If drac is low on health-> he will have to return to CD sooner or later...
+    int DracHealth = HvGetHealth(hv, PLAYER_DRACULA);
+    if (DracHealth < 15) {
+        Player dieDrac = findClosestPlayer(hv, CASTLE_DRACULA);
+        if (currentPlayer == dieDrac || DracHealth < 5) {
+            int len = 0;
+            PlaceId *route = HvGetShortestPathTo(hv, currentPlayer, CASTLE_DRACULA, &len);
+            if (len > 0) {
+                int i = findMoveWeightIndex(mw, mwSize, route[0]);
+                if (i != -1) {
+                    mw[i]->weight *= 20;
+                }
+            }
+        } 
+    }
+
     // keep mina close to castle
     if (HvGetPlayer(hv) == PLAYER_MINA_HARKER) {
         int len, round;
         PlaceId *route = HvGetShortestPathTo(hv, currentPlayer, CASTLE_DRACULA, &len);
         PlaceId lastknown = HvGetLastKnownDraculaLocation(hv, &round);
         Player p = findClosestPlayer(hv, lastknown);
-        if (len > 3 || (HvGetRound(hv) - round < 3 && p != currentPlayer)) {
+        if (len > 1 || (HvGetRound(hv) - round < 3 && p != currentPlayer)) {
             int i = findMoveWeightIndex(mw, mwSize, route[0]);
             if (i != -1) {
                 mw[i]->weight *= 10;
