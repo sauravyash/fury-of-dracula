@@ -831,15 +831,13 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
     city[1] = string[2];
     city[2] = '\0';
     
-    //If hunter was in hospital, restore health points
+    // NOT A VALID GAME RULE: If hunter was in hospital, restore health points
     if (HUNTER->currentLocation == HOSPITAL_PLACE && HUNTER->health < 1) HUNTER->health = GAME_START_HUNTER_LIFE_POINTS;
     
     // Compare and find city by abbreviation:
     PlaceId curr_place = placeAbbrevToId(city);
 
     if (curr_place == NOWHERE) printf("Error: Place not found...\n");
-
-
 
     // Parsing through characters after location to determine actions
     char *c;
@@ -850,11 +848,14 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
             case ITS_A_TRAP:
             //printf("trap!\n");
                 HUNTER->health -= LIFE_LOSS_TRAP_ENCOUNTER;
-                if ( isHunterAlive(gv, hunter) == false){
+                if (isHunterAlive(gv, hunter) == false) {
                     curr_place = HOSPITAL_PLACE;
+                    HUNTER->health = GAME_START_HUNTER_LIFE_POINTS;
                 }
                 //remove trap
                 trapLocationRemove(gv, curr_place);
+
+
                 break;
 
 
@@ -870,6 +871,7 @@ static void hunterMove(GameView gv, char *string, Player hunter) {
 
                 if ( isHunterAlive(gv, hunter) == false){
                     curr_place = HOSPITAL_PLACE;
+                    HUNTER->health = GAME_START_HUNTER_LIFE_POINTS;   
                 }
 
                 DRACULA->health -= LIFE_LOSS_HUNTER_ENCOUNTER;
