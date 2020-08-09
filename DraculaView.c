@@ -19,6 +19,8 @@
 #include "Game.h"
 #include "GameView.h"
 #include "Map.h"
+#include "utils.h"
+#include "Queue.h"
 
 #define PLAY_S_SIZE 7
 #define LOCATION_ID_SIZE 2
@@ -1438,4 +1440,79 @@ static bool maxEncounters(DraculaView dv, PlaceId location) {
         if(dv->trapLocations[i] == location) counter++;
     }
     return (counter >= 3);
+}
+
+
+
+
+PlaceId *DvGetShortestPathTo(HunterView dv, PlaceId dest,
+                             int *pathLength)
+{
+	Round r = dv->roundNumber;
+	PlaceId src = DRACULA->currentLocation;
+	PlaceId *pred = draculaBfs(dv,PLAYER_DRACULA , src, r);
+
+	// One pass to get the path length
+	int dist = 0;
+	PlaceId curr = dest;
+	while (curr != src) {
+		dist++;
+		curr = pred[curr];
+	}
+
+	PlaceId *path = malloc(dist * sizeof(PlaceId));
+	// Another pass to copy the path in
+	int i = dist - 1;
+	curr = dest;
+	while (curr != src) {
+		path[i] = curr;
+		curr = pred[curr];
+		i--;
+	}
+
+	free(pred);
+	*pathLength = dist;
+	return path;
+}
+/**
+ * Performs a BFS for the given hunter starting at `src`, assuming the
+ * round is `r`. Returns a predecessor array.
+ */
+
+PlaceId *draculaBfs(DraculaView dv, Player hunter, PlaceId src, Round r) {
+	PlaceId *pred = malloc(NUM_REAL_PLACES * sizeof(PlaceId));
+	placesFill(pred, NUM_REAL_PLACES, -1);
+	pred[src] = src;
+
+	Queue q1 = QueueNew(); // current round locations
+	Queue q2 = QueueNew(); // next round locations
+
+	QueueEnqueue(q1, src);
+	while (!(QueueIsEmpty(q1) && QueueIsEmpty(q2))) {
+		PlaceId curr = QueueDequeue(q1);
+		int numReachable = -1;
+        Round r = DRACULA->currentLocationIndex + 1;
+		PlaceId *reachable = DvGetReachable(hv->gv, hunter, r, curr,
+		                                    &numReachable);
+
+		for (int i = 0; i < numReachable; i++) {
+			if (pred[reachable[i]] == -1) {
+				pred[reachable[i]] = curr;
+				QueueEnqueue(q2, reachable[i]);
+			}
+		}
+		free(reachable);
+
+		// When we've exhausted the current round's locations, advance
+		// to the next round and swap the queues (so the next round's
+		// locations becomes the current round's locations)
+		if (QueueIsEmpty(q1)) {
+			Queue tmp = q1; q1 = q2; q2 = tmp; // swap queues
+			r++;
+		}
+	}
+
+	QueueDrop(q1);
+	QueueDrop(q2);
+	return pred;
 }

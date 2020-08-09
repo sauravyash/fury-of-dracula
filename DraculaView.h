@@ -265,5 +265,28 @@ bool canHide(DraculaView dv);
 
 bool canDoubleBack(DraculaView dv);
 
+/**
+ * Gets  the  shortest  path from the given hunter's current location to
+ * the given location, taking into account all connection types and  the
+ * fact that hunters can only move once per round.
+ *
+ * This function should store the path in a dynamically allocated array,
+ * and set *pathLength to the length of the path. If there are  multiple
+ * shortest  paths, any of them can be returned. The path should exclude
+ * the hunter's current location.
+ *
+ * EXAMPLE: If  the  hunter  is currently at Cadiz (CA) and the shortest
+ *          path to Barcelona (BA) was Cadiz -> Madrid -> Barcelona, the
+ *          returned array should contain just [Madrid,  Barcelona]  and
+ *          *pathLength should be set to 2.
+ *
+ * NOTE: Since  this function will require a traversal of the map, which
+ *       is a lot of work for just a single path, you may  want to store
+ *       the  result of the traversal in your HunterView data structure,
+ *       so that future calls to this function with the same player will
+ *       be less expensive.
+ */
+//PlaceId *DvGetShortestPathTo(DraculaView dv, Player hunter, PlaceId dest,
+//                             int *pathLength);
 
 #endif // !defined(FOD__DRACULA_VIEW_H_)

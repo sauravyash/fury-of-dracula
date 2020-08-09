@@ -125,7 +125,7 @@ PlaceId MapSleuth (HunterView hv) {
 void weightMovesByLocation(HunterView hv, MoveWeight *mw, int mwSize, PlaceId *possibleLocations) {
     srand(time(NULL));
     assert(mwSize > 0);
-    
+
     bool isLeader = false;
     Player currentPlayer = HvGetPlayer(hv);
     int round;
@@ -152,9 +152,9 @@ void weightMovesByLocation(HunterView hv, MoveWeight *mw, int mwSize, PlaceId *p
         }
     }
 
-    int currPlayerPlaceIndex = 
+    int currPlayerPlaceIndex =
         findMoveWeightIndex(mw, mwSize, HvGetPlayerLocation(hv,currentPlayer));
-    
+
     // leader moves
     if (isLeader) {
         if (currPlayerPlaceIndex == -1) {
@@ -182,7 +182,7 @@ void weightMovesByLocation(HunterView hv, MoveWeight *mw, int mwSize, PlaceId *p
     PlaceId immatureVamp = HvGetVampireLocation(hv);
     if (placeIsReal(immatureVamp) && !isLeader) {
         Player *closestPlayers = findClosestPlayers(hv, immatureVamp);
-        Player closestNonLeader = 
+        Player closestNonLeader =
             (closestPlayers[0] == leader) ? closestPlayers[0] : closestPlayers[1];
         free(closestPlayers);
         if (currentPlayer == closestNonLeader) {
@@ -193,7 +193,7 @@ void weightMovesByLocation(HunterView hv, MoveWeight *mw, int mwSize, PlaceId *p
             if (index != -1) mw[index]->weight *= 5;
         }
     }
-    
+
     // keep mina close to castle
     if (HvGetPlayer(hv) == PLAYER_MINA_HARKER) {
         int len, round;
@@ -206,8 +206,8 @@ void weightMovesByLocation(HunterView hv, MoveWeight *mw, int mwSize, PlaceId *p
                 mw[i]->weight *= 10;
             }
         }
-    }  
-    
+    }
+
     // research if last known drac move was before 7 moves dynamically
     int rounds;
     HvGetLastKnownDraculaLocation(hv, &rounds);
@@ -246,8 +246,8 @@ void weightMovesByLocation(HunterView hv, MoveWeight *mw, int mwSize, PlaceId *p
             if (factor < 0.3) printf("lastmove: %s, factor: %f\n", placeIdToName(lastMoves[i]), factor);
             int index = findMoveWeightIndex(mw, mwSize, lastMoves[i]);
             if (index != -1) mw[index]->weight *= factor;
-        } 
-        
+        }
+
         if (isFree) free(lastMoves);
     }
     return;
@@ -262,7 +262,7 @@ void printMwArray(MoveWeight *mw, int size) {
 }
 
 Player findClosestPlayer(HunterView hv, PlaceId pID) {
-    if (!placeIsReal(pID)) return PLAYER_LORD_GODALMING; 
+    if (!placeIsReal(pID)) return PLAYER_LORD_GODALMING;
     Player *list = findClosestPlayers(hv, pID);
     Player leader = list[0];
     free(list);
@@ -274,16 +274,16 @@ Player findClosestPlayer(HunterView hv, PlaceId pID) {
 Player *findClosestPlayers(HunterView hv, PlaceId pID) {
     Player *closest = malloc(sizeof(Player) * (NUM_PLAYERS - 1));
     int playerMoveLen[NUM_PLAYERS - 1] = {0,1,2,3};
-    
+
     if (!placeIsReal(pID)) return NULL;
-    
+
     int lenShortest;
     for (int i = 0; i < NUM_PLAYERS - 1; i++) {
         PlaceId *p = HvGetShortestPathTo(hv, i, pID, &lenShortest);
         playerMoveLen[i] = lenShortest;
         free(p);
     }
-    
+
     for (int i = 0; i < NUM_PLAYERS - 1; i++) {
         bool used[4] = { false };
         int highestIndex = 0;

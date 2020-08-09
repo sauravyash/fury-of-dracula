@@ -195,13 +195,19 @@ void decideDraculaMove(DraculaView dv)
     //printf("Number of possible moves is %d\n",numPossibleLocations);
     int MvArraySize = numPossibleLocations;
     MoveWeight * MvArray = MvArrayNew(MvArraySize);
-    weightMovesByLocation(dv, MvArray, MvArraySize,possibleLocations);
+    PlaceId healMove = weightMovesByLocation(dv, MvArray, MvArraySize,possibleLocations);
     //do Stuff
     sortMVbyWeight(MvArray, MvArraySize);
     //highest weighted location is best choice
     PlaceId bestMove = MvArray[0]->location;
+
+
+    if (healMove != NOWHERE ) bestMove = healMove;
     //printf("best loc is: %s\n", placeIdToName(bestMove));
  //   printMW(MvArray, MvArraySize);
+
+     //if no hunters are close try to go to CD, if they do get close, just abort mission
+
 
     bestMove = convertBestLocToMove(dv, MvArray, MvArraySize, bestMove, 0);
 
@@ -315,7 +321,7 @@ bool isHunterPresent (DraculaView dv, PlaceId location) {
 }
 
 // weight dracula's possible moves based on if a hunter is currently there or reaachable by
-void weightMovesByLocation(DraculaView dv, MoveWeight * mw, int mwSize, PlaceId *possibleLocations) {
+PlaceId weightMovesByLocation(DraculaView dv, MoveWeight * mw, int mwSize, PlaceId *possibleLocations) {
 
 	assert(mwSize > 0);
 	//associate a certain weight to each location
@@ -325,22 +331,58 @@ void weightMovesByLocation(DraculaView dv, MoveWeight * mw, int mwSize, PlaceId 
 		//if hunter is already at location, decrease weight even further
 		if (isHunterPresent(dv,possibleLocations[i]) == true) mw[i]->weight *= 0.3;
 		if (placeIdToType(possibleLocations[i]) == SEA) mw[i]->weight *= 0.8;
+
+        if (DRACULA->currentLocation == CASTLE_DRACULA ) {
+            //If drac is at castle dracula, then we want to make double backs worth more (just to get away)
+            if (possibleLocations[i] >= DOUBLE_BACK_2 &&  possibleLocations[i] <= DOUBLE_BACK_5)  mw[i]->weight *= ( 1 + 0.1 * (possibleLocations[i] - DOUBLE_BACK_1));
+            //If drac is at castle dracula, never make a d1 or hide move
+            if (possibleLocations[i] == HIDE ||  possibleLocations[i] DOUBLE_BACK_1) mw[i]->weight = 0;
+        }
 	}
+
+    int pathLength = -1;
+    PlaceId * pathToCD = DvGetShortestPathTo(dv, CASTLE_DRACULA,
+                                 & pathLength);
 
 	// Factor in possible hunter move collisions
 	PlaceId *possibleMovesHunter;
 	int numHunterLocations = -1;
+    int found = 0;
 	for (Player hunter = PLAYER_LORD_GODALMING; hunter < PLAYER_DRACULA; hunter++) {
 		numHunterLocations = -1;
 		possibleMovesHunter = DvWhereCanTheyGo(dv, hunter, &numHunterLocations);
 		if (numHunterLocations != 0) {
 			sortPlaces(possibleMovesHunter,numHunterLocations);
 			//both MW already sorted as possibleLocations is sorted.
+            int j = 0;
+            if (DRACULA->health <= 30 && DRACULA->health >= 20 && pathLength != -1) {
+              while (j < numHunterLocations) {
+                //hunter is in the location or reachable
+                if(pathToCD[0] == possibleMovesHunter[j]) found++;
+                j++;
+              }
+
+            }
+
 			applyHunterFactor(mw, mwSize, possibleMovesHunter,numHunterLocations);
 		}
 
-	}
-    return;
+
+    }
+
+
+    // Drac being low on health possible moves -> depending on how well this does; maybe less than 30 but more than   20? idk i dont want him cramped in
+    // Also if we go there with like 10 health and get interepted on the way, we die. If we go there and theres more than 1 hunter there, we die; , maybe
+
+    if (found < pathLength || found <= 6) {
+        printf("lets heal!\n");
+        if (j > 0) return pathToCD[0];
+    }
+
+
+
+
+    return NOWHERE;
 }
 
 //slightly better than n^2 complexity now since both pointers are bumped
