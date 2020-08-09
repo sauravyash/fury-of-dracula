@@ -173,10 +173,10 @@ void decideDraculaMove(DraculaView dv)
 
     int numPossibleLocations;
     PlaceId *possibleLocations =DvWhereCanIGo(dv, &numPossibleLocations);
-    //printf("\nPossible locations are:   ");
-    //for (int i = 0; i < numPossibleLocations; i ++) {
-    //    printf("%s, ", placeIdToName(possibleLocations[i]));
-    //}
+    printf("\nPossible locations are:   ");
+    for (int i = 0; i <= numPossibleLocations; i ++) {
+        printf("%s, ", placeIdToName(possibleLocations[i]));
+    }
     //printf("\n");
     //int numPossibleMoves = -1;
     //PlaceId * possibleLocations = DvGetValidMoves(dv, &numPossibleMoves);
@@ -204,9 +204,16 @@ void decideDraculaMove(DraculaView dv)
     PlaceId bestMove = MvArray[0]->location;
 
 
-    if (healMove != NOWHERE ) {
+    if (healMove != NOWHERE) {
+        int found = false;
         //check if it is in the possible moves array
-        bestMove = healMove;
+        for (int i = 0; i <= numPossibleLocations; i++) {
+            if (healMove == possibleLocations[i]) {
+                found = true;
+                break;
+            }
+        }
+        if (found == true)  bestMove = healMove;
     }
     //printf("best loc is: %s\n", placeIdToName(bestMove));
  //   printMW(MvArray, MvArraySize);
