@@ -15,12 +15,13 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "utils.h"
+#include "Queue.h"
 #include "DraculaView.h"
 #include "Game.h"
 #include "GameView.h"
 #include "Map.h"
-#include "utils.h"
-#include "Queue.h"
+
 
 #define PLAY_S_SIZE 7
 #define LOCATION_ID_SIZE 2
@@ -106,6 +107,7 @@ static int Find_Rails (Map map, PlaceId place, PlaceId from, PlaceId *array, int
 static void hunterLocationHistoryAppend(DraculaView dv, Player hunter, PlaceId location);
 PlaceId *DvGetReachable(DraculaView dv, Player player, Round round,
                         PlaceId from, int *numReturnedLocs);
+PlaceId *DvGetShortestPathTo(DraculaView dv, PlaceId dest, int *pathLength);
 // ****************************************
 
 

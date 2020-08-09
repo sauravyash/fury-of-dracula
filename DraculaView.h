@@ -20,8 +20,7 @@
 
 #include "Game.h"
 #include "Places.h"
-#include "utils.h"
-#include "Queue.h"
+
 
 typedef struct draculaView *DraculaView;
 
