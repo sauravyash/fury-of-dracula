@@ -32,29 +32,31 @@
 #define IRELAND_SIZE 2
 #define BRITAIN_MOVES EDINBURGH, LIVERPOOL, MANCHESTER, LONDON, SWANSEA, PLYMOUTH
 #define BRITAIN_SIZE 6
-#define ITALY_MOVES CAGLIARI,NAPLES,BARI,ROME,FLORENCE	//I know athens isnt in italy but theres only one way in/out thats not by sea so i dont want drac to spawn there
+#define ITALY_MOVES CAGLIARI,NAPLES,BARI,ROME,FLORENCE
 #define ITALY_SIZE 5
 #define MAGIC_NUMBER_SEED 15
-//PlaceId unwantedPlaces[] = {SPAIN_MOVES,IRELAND_MOVES,BRITAIN_MOVES,ITALY_MOVES};
 
 typedef struct moveweight *MoveWeight;
 struct moveweight {
     PlaceId location;
     double weight;
-    //PlaceId moveType;
 } ;
+
+// Private Function Prototypes
 
 static void memoryError (const void * input);
 //PlaceId *getPossibleMoves(DraculaView dv, int *numPossibleMoves);
-PlaceId getRandomMove();
-void applyHunterFactor(MoveWeight *mw, int numPossibleMoves, PlaceId *possibleMovesHunter, int numPossibleMovesHunter);
-PlaceId weightMovesByLocation(DraculaView dv, MoveWeight *mw, int numPossibleLocations, PlaceId *possibleLocations);
+static PlaceId getRandomMove();
+static void applyHunterFactor(MoveWeight *mw, int numPossibleMoves,
+    PlaceId *possibleMovesHunter, int numPossibleMovesHunter);
+static PlaceId weightMovesByLocation(DraculaView dv, MoveWeight *mw,
+    int numPossibleLocations, PlaceId *possibleLocations);
 static void sortMVbyWeight(MoveWeight *array, int arraySize);
 static int  MVWeightcompare(const void *p, const void *q);
 static int placeIdCmp(const void *p, const void *q);
 static void sortPlaces(PlaceId *places, int numPlaces);
-
-PlaceId convertBestLocToMove(DraculaView dv, MoveWeight *mvArray, int MvArraySize, PlaceId bestMove, int index);
+static PlaceId convertBestLocToMove(DraculaView dv, MoveWeight *mvArray,
+    int MvArraySize, PlaceId bestMove, int index);
 
 // Make new MoveWeight Struct item
 // INPUT: void
@@ -64,9 +66,7 @@ MoveWeight MVNewNode(void){
 	memoryError(new);
 	new->location = NOWHERE;
 	new->weight = -1;
-	//new->moveType = NOWHERE;
 	return new;
-
 }
 
 //Free a given array of type MoveWeight *
@@ -77,6 +77,7 @@ void freeArray (MoveWeight * array, int size) {
 		free(array[i]);
 	}
 	free(array);
+    return;
 }
 
 // Create a array of MoveWeight items
@@ -93,49 +94,46 @@ MoveWeight * MvArrayNew(int size) {
 //Spawn Dracula in a random location that is not in
 // Ireland, Spain, Cagliari, a place a hunter is in or can reach
 // INPUT: DraculaView
-// OUTPUT: non specific spawn location
+// OUTPUT: random spawn location with constraints
 PlaceId spawnDracula (DraculaView dv) {
 	PlaceId unwantedPlaces[] = {SPAIN_MOVES,IRELAND_MOVES,BRITAIN_MOVES,ITALY_MOVES,
 		ATHENS,HOSPITAL_PLACE,CASTLE_DRACULA};
-	//dont reallly care about duplicates? ->check if binary search can handle it
-	//sortPlaces(unwantedPlaces,SPAIN_SIZE+ITALY_SIZE+IRELAND_SIZE+BRITAIN_SIZE+1+(NUM_PLAYERS-1));
-	//printf("Unwanted places are:\n");
+
+    //initialise array to track unwanted locations
 	PlaceId placeList[NUM_REAL_PLACES] = {0};
 	int numReturnedLocs = -1;
 	PlaceId * hunterLocations;
 	Player hunter = PLAYER_LORD_GODALMING;
+
+    //list all hunter locations and possible hunter locations as undesirable
 	while (hunter < PLAYER_DRACULA) {
 		hunterLocations= DvWhereCanTheyGo(dv, hunter, &numReturnedLocs);
 		memoryError(hunterLocations);
 		for (int i = 0; i < numReturnedLocs; i++){
-			//printf("%d: %s\n", hunter, placeIdToName(hunterLocations[i]));
 			placeList[hunterLocations[i]] = 1;
 		}
 		hunter++;
 	}
+
+    //certain regions are undersirable
 	for(int i = 0; i < SPAIN_SIZE + ITALY_SIZE + IRELAND_SIZE + BRITAIN_SIZE + 3; i++ ){
-		//printf("%s\n", placeIdToName(unwantedPlaces[i]));
 		placeList[unwantedPlaces[i]] = 1;
 	}
+
+    //sea locations are undeusriable
 	for (int i = 0; i < NUM_REAL_PLACES; i++) {
 		if(placeIdToType(i) == SEA) placeList[i] = 1;
-		//printf("[%d]", placeList[i]);
-
 	}
 
-
+    //generate a random location that is not in the array
 	srand (time(0));
-	//printf("\n");
 	int i = 0;
 	PlaceId location = rand() % NUM_REAL_PLACES;
 	while (placeList[location] == 1) {
-	//	printf("cant' be %s\n", placeIdToName(location));
-		//char input [10];
-		//scanf("%s",input);
 		i++;
 		srand (time(0));
 		location = (rand() + i )% NUM_REAL_PLACES;
-	//	printf("trying %s\n",placeIdToName(location));
+        //prevent loop if all possible locations are undesirable
 		if(i == NUM_REAL_PLACES) {
 			//make it a sea move perhaps?
 			break;
@@ -144,7 +142,7 @@ PlaceId spawnDracula (DraculaView dv) {
 	return location;
 }
 
-// Debug Print function of weights and locations
+// Debug Print function of locations and corresponding weights
 // INPUT: MW array, size of array
 void printMW (MoveWeight * mw, int size) {
 	printf("\nMW is:   \n");
@@ -155,21 +153,15 @@ void printMW (MoveWeight * mw, int size) {
 }
 
 //Decides drac move
-// Changes "register best play" output string
+// INPUT: draculaView
+// OUTPUT: Changes "register best play" output string
 void decideDraculaMove(DraculaView dv)
 {
+    //if it is the first round, call spawn drac function
     if (DvGetRound(dv) == 0) {
         registerBestPlay(placeIdToAbbrev(spawnDracula(dv)), "Happy Birthday To Me!");
         return;
     }
-
-    //int numPossibleMoves = -1;
-    //PlaceId * possibleMoves = DvGetValidMoves(dv, &numPossibleMoves);
-
-    //printf("\nPossible moves are:       ");
-    //for (int i = 0; i < numPossibleMoves; i ++) {
-    //    printf("%s, ", placeIdToName(possibleMoves[i]));
-    //}
 
     int numPossibleLocations;
     PlaceId *possibleLocations =DvWhereCanIGo(dv, &numPossibleLocations);
@@ -177,33 +169,31 @@ void decideDraculaMove(DraculaView dv)
     for (int i = 0; i < numPossibleLocations; i ++) {
         printf("%s, ", placeIdToName(possibleLocations[i]));
     }
-    //printf("\n");
-    //int numPossibleMoves = -1;
-    //PlaceId * possibleLocations = DvGetValidMoves(dv, &numPossibleMoves);
+
     //either there are no valid moves besides teleport, or drac hasnt made a move yet
     if (numPossibleLocations == 0) {
-        //If it is not round 0 (where drac hasnt made a move yet) and there are no possible moves, dracula must teleport
+        //If it is not round 0 & there are no possible moves, dracula must teleport
         if (DvGetRound(dv) != 0) {
             registerBestPlay(placeIdToAbbrev(TELEPORT), "You'll never expect this!");
             return;
-        //This is first round, just spawn dracula
+        //This is first round, just spawn dracula; already coveered  by first clase
         } else {
             registerBestPlay(placeIdToAbbrev(spawnDracula(dv)), "Happy Birthday To Me!");
             return;
         }
     }
+
     //sorts array alphabethically
     sortPlaces(possibleLocations,numPossibleLocations);
-    //printf("Number of possible moves is %d\n",numPossibleLocations);
     int MvArraySize = numPossibleLocations;
     MoveWeight * MvArray = MvArrayNew(MvArraySize);
     PlaceId healMove = weightMovesByLocation(dv, MvArray, MvArraySize,possibleLocations);
-    //do Stuff
+    //sorts array in descending weight
     sortMVbyWeight(MvArray, MvArraySize);
     //highest weighted location is best choice
     PlaceId bestMove = MvArray[0]->location;
 
-
+    //if healing move was chosen
     if (healMove != NOWHERE) {
         int found = false;
         //check if it is in the possible moves array
@@ -213,25 +203,15 @@ void decideDraculaMove(DraculaView dv)
                 break;
             }
         }
+        //only register the heal move as best move if it is a possible location
         if (found == true)  bestMove = healMove;
     }
-    //printf("best loc is: %s\n", placeIdToName(bestMove));
- //   printMW(MvArray, MvArraySize);
 
-     //if no hunters are close try to go to CD, if they do get close, just abort mission
     printMW(MvArray, MvArraySize);
-
+    //convert location to a move (ie HI or Double backs)
     bestMove = convertBestLocToMove(dv, MvArray, MvArraySize, bestMove, 0);
 
-    //printf("best move is: %s\n", placeIdToName(bestMove));
-    //make a hide move
-    //if(bestMove == DvGetPlayerLocation(dv,PLAYER_DRACULA)) {
-    //	registerBestPlay(placeIdToAbbrev(HIDE), "marco polo?");
-    //}
-
-
     registerBestPlay(placeIdToAbbrev(bestMove), "doing my best ");
-    //printf("best move is %s\n", placeIdToName(bestMove));
     freeArray(MvArray,numPossibleLocations);
     return;
 }
@@ -239,7 +219,11 @@ void decideDraculaMove(DraculaView dv)
 
 
 // convert hide/doubleback locations to moves: HIDE/DOUBLEBACK_N
-PlaceId convertBestLocToMove(DraculaView dv, MoveWeight *MvArray, int MvArraySize, PlaceId bestMove, int index) {
+// INPUT: Dracula View, Array of Weighted Moves/locations , Size of Array,
+// Location of best move, Index of best move in array (should always be one)
+// OUPTUT: move in either City name format or as a hide/ double back
+PlaceId convertBestLocToMove(DraculaView dv, MoveWeight *MvArray, int MvArraySize,
+    PlaceId bestMove, int index) {
     int trailSize;
     bool canFree;
     PlaceId *trail = DvGetLocationHistory(dv, PLAYER_DRACULA, &trailSize, &canFree);
@@ -247,8 +231,6 @@ PlaceId convertBestLocToMove(DraculaView dv, MoveWeight *MvArray, int MvArraySiz
         // if the best move is in the trail
         if (bestMove == trail[loc]) {
             // if drac hasn't hidden in the last 5 turns and bestMove is his curr location
-            //printf("canhide: %d\ncandb: %d\nbest move: %s\ntrail loc: %s\n", canHide(dv), canDoubleBack(dv), placeIdToName(bestMove), placeIdToName(trail[loc]));
-            //printf("loc: %d\n trailsize: %d\n", loc, trailSize);
             if (canHide(dv) && loc == trailSize - 1) {
                 bestMove = HIDE;
                 break;
@@ -258,19 +240,19 @@ PlaceId convertBestLocToMove(DraculaView dv, MoveWeight *MvArray, int MvArraySiz
             if (canDoubleBack(dv)) {
                 // chooses right db based on index of matched move in trail
                 switch (trailSize - loc - 1) {
-                    case 0: 
-                        bestMove = DOUBLE_BACK_1; 
+                    case 0:
+                        bestMove = DOUBLE_BACK_1;
                         break;
-                    case 1: 
+                    case 1:
                         bestMove = DOUBLE_BACK_2;
                         break;
                     case 2:
                         bestMove = DOUBLE_BACK_3;
                         break;
-                    case 3: 
+                    case 3:
                         bestMove = DOUBLE_BACK_4;
                         break;
-                    case 4: 
+                    case 4:
                         bestMove = DOUBLE_BACK_5;
                         break;
                     default:
@@ -283,58 +265,19 @@ PlaceId convertBestLocToMove(DraculaView dv, MoveWeight *MvArray, int MvArraySiz
             else {
                 if (index < MvArraySize - 1) index++;
                 else return bestMove; // none of the mvarray moves can be done, this case shouldn't happen
-                return convertBestLocToMove(dv, MvArray, MvArraySize, MvArray[index-1]->location, index);
+                return convertBestLocToMove(dv, MvArray, MvArraySize,
+                    MvArray[index-1]->location, index);
             }
         }
     }
-    
-
     if (canFree) free(trail);
     return bestMove;
 }
 
-// Returns the placeid of a random place reachable by drac this turn
-//-------------------------------------------------------------------------------UNUSED
-
-PlaceId getRandomMove(DraculaView dv) {
-	//for ultimate randomness. comment out if you want repeateability
-	srand ( time(0) );
-	int r = rand();
-	if (DvGetRound(dv) == 0){
-		PlaceId location = r % NUM_REAL_PLACES;
-//drac doesnt like spain or ireland or on top of hunters or cagliarya
-		 while(placeIdToType(location) == SEA || location == GALWAY || location == HOSPITAL_PLACE ||location == DUBLIN
-		 || location == SARAGOSSA || location == ALICANTE || location == BARCELONA || location == SANTANDER
-		 || location == MADRID || location == GRANADA || location == CADIZ || location == LISBON || location == CAGLIARI
-	 	 || location == DvGetPlayerLocation(dv, PLAYER_LORD_GODALMING) || location
-		 == DvGetPlayerLocation(dv, PLAYER_DR_SEWARD) || location ==
-		 DvGetPlayerLocation(dv, PLAYER_VAN_HELSING) || location == DvGetPlayerLocation(dv, PLAYER_MINA_HARKER)) {
-			 location = spawnDracula(dv);
-			//printf("attempting to spawn at %s\n", placeIdToName(location));
-		}
-		//printf("successfully spawned at %s\n", placeIdToName(location));
-		return location;
-	}
-	//printf("Current Location: %s\n", placeIdToName(DvGetPlayerLocation(dv, PLAYER_DRACULA)));
-	int numPossibleMoves;
-	PlaceId *possibleMoves =DvGetValidMoves(dv, &numPossibleMoves);
-	//printf("\nPossible moves are:       ");
-	//for (int i = 0; i < numPossibleMoves; i ++) {
-	//	printf("%s, ", placeIdToName(possibleMoves[i]));
-	//}
-	//int numPossibleLocations;
-	//PlaceId *possibleLocations =DvWhereCanIGo(dv, &numPossibleLocations);
-	//printf("\nPossible locations are:   ");
-	//for (int i = 0; i < numPossibleLocations; i ++) {
-	//	printf("%s, ", placeIdToName(possibleLocations[i]));
-	//}
-	//printf("\n");
-	int random = r % numPossibleMoves;
-	//printf("RNG: %d\n", random);
-	return possibleMoves[random];
-}
 
 //Checks if any hunter is present at a particula locations
+// INPUT: Dracview, Location
+// OUTPUT: true if hunter is in the location, false otherwise
 // Potentially unused?
 bool isHunterPresent (DraculaView dv, PlaceId location) {
 	Player hunter = PLAYER_LORD_GODALMING;
@@ -345,8 +288,12 @@ bool isHunterPresent (DraculaView dv, PlaceId location) {
 	return false;
 }
 
-// weight dracula's possible moves based on if a hunter is currently there or reaachable by
-PlaceId weightMovesByLocation(DraculaView dv, MoveWeight * mw, int mwSize, PlaceId *possibleLocations) {
+// Weight dracula's possible moves based on hunters & other environment factors
+// INPUT: newly initialised moveweight array & size, list of possible locations
+// OUPUT: NOWHERE if a heal move is not necessary, PlaceID location for the best
+// heal move if required
+PlaceId weightMovesByLocation(DraculaView dv, MoveWeight * mw, int mwSize,
+    PlaceId *possibleLocations) {
 
 	assert(mwSize > 0);
 	//associate a certain weight to each location
@@ -356,17 +303,25 @@ PlaceId weightMovesByLocation(DraculaView dv, MoveWeight * mw, int mwSize, Place
 		//if hunter is already at location, decrease weight even further
 		if (isHunterPresent(dv,possibleLocations[i]) == true) {
             mw[i]->weight *= 0.3;
+            //if it is a location dracula is in as well as hunter, decrease even more!
             if (mw[i]->location == DvGetPlayerLocation(dv, PLAYER_DRACULA)) {
                 mw[i]->weight *= 0.1;
             }
         }
+        //make sea locations undersirable
 		if (placeIdToType(possibleLocations[i]) == SEA) mw[i]->weight *= 0.8;
 
+        //conditions for drac move if he is at CD
         if (DvGetPlayerLocation(dv, PLAYER_DRACULA) == CASTLE_DRACULA ) {
-            //If drac is at castle dracula, then we want to make double backs worth more (just to get away)
-            if (possibleLocations[i] >= DOUBLE_BACK_2 &&  possibleLocations[i] <= DOUBLE_BACK_5)  mw[i]->weight *= ( 1 + 0.1 * (possibleLocations[i] - DOUBLE_BACK_1));
+            //If drac is at CD, make double backs worth more (just to get away)
+            if (possibleLocations[i] >= DOUBLE_BACK_2 &&
+                possibleLocations[i] <= DOUBLE_BACK_5) {
+                mw[i]->weight *= ( 1 + 0.1 * (possibleLocations[i] - DOUBLE_BACK_1));
+            }
             //If drac is at castle dracula, never make a d1 or hide move
-            if (possibleLocations[i] == HIDE ||  possibleLocations[i] == DOUBLE_BACK_1) mw[i]->weight = 0;
+            if (possibleLocations[i] == HIDE ||  possibleLocations[i] == DOUBLE_BACK_1) {
+                mw[i]->weight = 0;
+            }
         }
 	}
 
@@ -379,17 +334,20 @@ PlaceId weightMovesByLocation(DraculaView dv, MoveWeight * mw, int mwSize, Place
 	int numHunterLocations = -1;
     int found = 0;
     int j = 0;
+
 	for (Player hunter = PLAYER_LORD_GODALMING; hunter < PLAYER_DRACULA; hunter++) {
 		numHunterLocations = -1;
 		possibleMovesHunter = DvWhereCanTheyGo(dv, hunter, &numHunterLocations);
 		if (numHunterLocations != 0) {
+            //MW is already sorted, sort possible moves for easy searching
 			sortPlaces(possibleMovesHunter,numHunterLocations);
-			//both MW already sorted as possibleLocations is sorted.
 
-            if (DvGetHealth(dv,PLAYER_DRACULA) <= 30 && DvGetHealth(dv,PLAYER_DRACULA) >= 20 && pathLength != -1) {
-              while (j < numHunterLocations) {
+            //certain conditions for drac to consider healing
+            if (DvGetHealth(dv,PLAYER_DRACULA) <= 30 && DvGetHealth(dv,PLAYER_DRACULA)
+                >= 20 && pathLength != -1) {
+                //checking for number of collisions with hunter
+                while (j < numHunterLocations) {
                 //hunter is in the location or reachable
-
                 if(pathToCD[0] == possibleMovesHunter[j]) found++;
                 printf("path is %s\n", placeIdToName(pathToCD[0]));
                 printf("comparing to %s\n", placeIdToName(possibleMovesHunter[j]));
@@ -397,30 +355,29 @@ PlaceId weightMovesByLocation(DraculaView dv, MoveWeight * mw, int mwSize, Place
               }
 
             }
-
+            //adjust move weights by location of hunters
 			applyHunterFactor(mw, mwSize, possibleMovesHunter,numHunterLocations);
 		}
     }
 
-    // Drac being low on health possible moves -> depending on how well this does; maybe less than 30 but more than   20? idk i dont want him cramped in
-    // Also if we go there with like 10 health and get interepted on the way, we die. If we go there and theres more than 1 hunter there, we die; , maybe
-
-    if ((found < pathLength || found <= 6) && pathLength >= 0 ) {
-        printf("lets heal!\n");
+    //if the number of hunter collisions is higher than the amount of moves to get to CD
+    // and pathLength is non negative, less than 4 possible interactions with hunters
+    if ((found < pathLength || found <= 4) && pathLength >= 0 ) {
+        //checking that these calculations are valid and assessed against a valid
+        //array of possible hunter mvoes (non zero)
         if (j > 0) {
-            printf("possible!\n");
+            //return function with best place to move to heal
             return pathToCD[0];
         }
     }
-
-
-
-
+    //otherwise heal move is not needed, return nowhere
     return NOWHERE;
 }
 
-//slightly better than n^2 complexity now since both pointers are bumped
+// Looks for any matches with hunter locations and reduce weighting of that location
+// O(n) complexity at max
 // INPUT: two sorted arrays, oneof MoveWeight type and oneof PlaceId
+// OUTPUT: void; adjusts weight of each moved based on distance from hunters
 void applyHunterFactor(MoveWeight *mw, int mwSize,
 	PlaceId *hunterArray, int hunterSize) {
 	int i = 0;
@@ -444,7 +401,6 @@ void applyHunterFactor(MoveWeight *mw, int mwSize,
 
 }
 
-
 // MEMORY ERROR: Helper function to check correct memory allocation. Exits if
 // memory was not correctly allocated
 // -- INPUT: pointer to a malloced object
@@ -457,6 +413,7 @@ static void memoryError (const void * input) {
     return;
 }
 
+// Iterative binary Search - unused
 int binarySearch(MoveWeight * array, int l, int r, PlaceId match)
 {
     while (l <= r) {
@@ -468,9 +425,7 @@ int binarySearch(MoveWeight * array, int l, int r, PlaceId match)
         // If x is smaller, ignore right half
         else r = m - 1;
     }
-
-    // if we reach here, then element was
-    // not present
+    // if we reach here, then element was not present
 	return -1;
 }
 
