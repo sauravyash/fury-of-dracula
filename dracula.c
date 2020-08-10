@@ -43,25 +43,34 @@ struct moveweight {
 } ;
 
 // Private Function Prototypes
-
 static void memoryError (const void * input);
-//PlaceId *getPossibleMoves(DraculaView dv, int *numPossibleMoves);
-static PlaceId getRandomMove();
-static void applyHunterFactor(MoveWeight *mw, int numPossibleMoves,
-    PlaceId *possibleMovesHunter, int numPossibleMovesHunter);
-static PlaceId weightMovesByLocation(DraculaView dv, MoveWeight *mw,
-    int numPossibleLocations, PlaceId *possibleLocations);
+static void printMW (MoveWeight * mw, int size);
+
+static MoveWeight MVNewNode(void);
+static MoveWeight * MvArrayNew(int size);
+static void freeArray (MoveWeight * array, int size);
+
 static void sortMVbyWeight(MoveWeight *array, int arraySize);
 static int  MVWeightcompare(const void *p, const void *q);
 static int placeIdCmp(const void *p, const void *q);
 static void sortPlaces(PlaceId *places, int numPlaces);
+
+static PlaceId spawnDracula (DraculaView dv);
+void decideDraculaMove(DraculaView dv);
+
+static void applyHunterFactor(MoveWeight *mw, int numPossibleMoves,
+    PlaceId *possibleMovesHunter, int numPossibleMovesHunter);
+static bool isHunterPresent (DraculaView dv, PlaceId location);
+
+static PlaceId weightMovesByLocation(DraculaView dv, MoveWeight *mw,
+    int numPossibleLocations, PlaceId *possibleLocations);
 static PlaceId convertBestLocToMove(DraculaView dv, MoveWeight *mvArray,
     int MvArraySize, PlaceId bestMove, int index);
 
 // Make new MoveWeight Struct item
 // INPUT: void
 // OUTPUT: Newly created item
-MoveWeight MVNewNode(void){
+static MoveWeight MVNewNode(void){
 	MoveWeight new = malloc(sizeof(*new));
 	memoryError(new);
 	new->location = NOWHERE;
@@ -72,7 +81,7 @@ MoveWeight MVNewNode(void){
 //Free a given array of type MoveWeight *
 // INPUT: array to be freed, size of array
 // OUTPUT: void
-void freeArray (MoveWeight * array, int size) {
+static void freeArray (MoveWeight * array, int size) {
 	for(int i = 0; i < size; i++){
 		free(array[i]);
 	}
@@ -83,7 +92,7 @@ void freeArray (MoveWeight * array, int size) {
 // Create a array of MoveWeight items
 // INPUT: Size of array
 // OUTPUT: newly created array
-MoveWeight * MvArrayNew(int size) {
+static MoveWeight * MvArrayNew(int size) {
 	MoveWeight * arrayWeightedMoves = malloc(size * sizeof(MoveWeight));
 	for (int i = 0; i < size; i++){
 		arrayWeightedMoves[i] = MVNewNode();
@@ -95,7 +104,7 @@ MoveWeight * MvArrayNew(int size) {
 // Ireland, Spain, Cagliari, a place a hunter is in or can reach
 // INPUT: DraculaView
 // OUTPUT: random spawn location with constraints
-PlaceId spawnDracula (DraculaView dv) {
+static PlaceId spawnDracula (DraculaView dv) {
 	PlaceId unwantedPlaces[] = {SPAIN_MOVES,IRELAND_MOVES,BRITAIN_MOVES,ITALY_MOVES,
 		ATHENS,HOSPITAL_PLACE,CASTLE_DRACULA};
 
@@ -144,7 +153,7 @@ PlaceId spawnDracula (DraculaView dv) {
 
 // Debug Print function of locations and corresponding weights
 // INPUT: MW array, size of array
-void printMW (MoveWeight * mw, int size) {
+static void printMW (MoveWeight * mw, int size) {
 	printf("\nMW is:   \n");
 	for (int i = 0; i < size; i++) {
 		printf("%s; %lf\n", placeIdToName(mw[i]->location), mw[i]->weight);
@@ -155,8 +164,7 @@ void printMW (MoveWeight * mw, int size) {
 //Decides drac move
 // INPUT: draculaView
 // OUTPUT: Changes "register best play" output string
-void decideDraculaMove(DraculaView dv)
-{
+void decideDraculaMove(DraculaView dv) {
     //if it is the first round, call spawn drac function
     if (DvGetRound(dv) == 0) {
         registerBestPlay(placeIdToAbbrev(spawnDracula(dv)), "Happy Birthday To Me!");
@@ -222,7 +230,7 @@ void decideDraculaMove(DraculaView dv)
 // INPUT: Dracula View, Array of Weighted Moves/locations , Size of Array,
 // Location of best move, Index of best move in array (should always be one)
 // OUPTUT: move in either City name format or as a hide/ double back
-PlaceId convertBestLocToMove(DraculaView dv, MoveWeight *MvArray, int MvArraySize,
+static PlaceId convertBestLocToMove(DraculaView dv, MoveWeight *MvArray, int MvArraySize,
     PlaceId bestMove, int index) {
     int trailSize;
     bool canFree;
@@ -279,7 +287,7 @@ PlaceId convertBestLocToMove(DraculaView dv, MoveWeight *MvArray, int MvArraySiz
 // INPUT: Dracview, Location
 // OUTPUT: true if hunter is in the location, false otherwise
 // Potentially unused?
-bool isHunterPresent (DraculaView dv, PlaceId location) {
+static bool isHunterPresent (DraculaView dv, PlaceId location) {
 	Player hunter = PLAYER_LORD_GODALMING;
 	while (hunter < PLAYER_DRACULA) {
 		if(DvGetPlayerLocation(dv,hunter) == location) return true;
@@ -292,7 +300,7 @@ bool isHunterPresent (DraculaView dv, PlaceId location) {
 // INPUT: newly initialised moveweight array & size, list of possible locations
 // OUPUT: NOWHERE if a heal move is not necessary, PlaceID location for the best
 // heal move if required
-PlaceId weightMovesByLocation(DraculaView dv, MoveWeight * mw, int mwSize,
+static PlaceId weightMovesByLocation(DraculaView dv, MoveWeight * mw, int mwSize,
     PlaceId *possibleLocations) {
 
 	assert(mwSize > 0);
@@ -378,7 +386,7 @@ PlaceId weightMovesByLocation(DraculaView dv, MoveWeight * mw, int mwSize,
 // O(n) complexity at max
 // INPUT: two sorted arrays, oneof MoveWeight type and oneof PlaceId
 // OUTPUT: void; adjusts weight of each moved based on distance from hunters
-void applyHunterFactor(MoveWeight *mw, int mwSize,
+static void applyHunterFactor(MoveWeight *mw, int mwSize,
 	PlaceId *hunterArray, int hunterSize) {
 	int i = 0;
 	int j = 0;
@@ -411,22 +419,6 @@ static void memoryError (const void * input) {
         exit(EXIT_FAILURE);
     }
     return;
-}
-
-// Iterative binary Search - unused
-int binarySearch(MoveWeight * array, int l, int r, PlaceId match)
-{
-    while (l <= r) {
-        int m = l + (r - l) / 2;
-        // Check if x is present at mid
-        if (array[m]->location == match) return m;
-        // If x greater, ignore left half
-        if (array[m]->location < match) l = m + 1;
-        // If x is smaller, ignore right half
-        else r = m - 1;
-    }
-    // if we reach here, then element was not present
-	return -1;
 }
 
 
