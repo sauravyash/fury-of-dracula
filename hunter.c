@@ -25,23 +25,32 @@ typedef struct moveweight *MoveWeight;
 struct moveweight {
     PlaceId location;
     double weight;
-    PlaceId moveType;
 };
 
-// FUNCTION DEC:
-PlaceId DraculaHunt (HunterView hv, PlaceId bestMove, Player current_player);
+// Private Function Prototypes
+static void printMW (MoveWeight * mw, int size);
+static void memoryError (const void *input);
+//static PlaceId MapSleuth (HunterView hv);
 
-void printMwArray(MoveWeight *mw, int size);
-Player findClosestPlayer(HunterView hv, PlaceId pID);
-Player *findClosestPlayers(HunterView hv, PlaceId pID);
-int findMoveWeightIndex(MoveWeight *mw, int mwSize, PlaceId pID);
+static void freeArray (MoveWeight * array, int size);
+static MoveWeight MVNewNode(void);
+static MoveWeight *MvArrayNew(int size);
+
 static void sortMVbyWeight(MoveWeight *array, int arraySize);
 static int MVWeightcompare(const void *p, const void *q);
-void weightMovesByLocation(HunterView hv, MoveWeight *mw, int mwSize, PlaceId *possibleLocations);
-MoveWeight MVNewNode(void);
-MoveWeight *MvArrayNew(int size);
-static void memoryError (const void *input);
 
+static PlaceId DraculaHunt (HunterView hv, PlaceId bestMove, Player current_player);
+static Player findClosestPlayer(HunterView hv, PlaceId pID);
+static Player *findClosestPlayers(HunterView hv, PlaceId pID);
+static int findMoveWeightIndex(MoveWeight *mw, int mwSize, PlaceId pID);
+static void weightMovesByLocation(HunterView hv, MoveWeight *mw, int mwSize,
+    PlaceId *possibleLocations);
+
+void decideHunterMove(HunterView hv);
+
+//Decides hunter move
+// INPUT: hunterview
+// OUTPUT: Changes "register best play" output string
 void decideHunterMove(HunterView hv)
 {
 	// First things first:
@@ -68,7 +77,7 @@ void decideHunterMove(HunterView hv)
 		// Checking that the player has a place to move to...
 		if (bestMove == NOWHERE) printf("ERROR: No place allocated...\n");
 
-	    registerBestPlay(placeIdToAbbrev(bestMove), "Lol we moving");
+	    registerBestPlay(placeIdToAbbrev(bestMove), "Researching....");
 	    return;
 	}
 
@@ -78,12 +87,16 @@ void decideHunterMove(HunterView hv)
     bestMove = DraculaHunt(hv, bestMove, current_player);
 
 	// Return that move...
-	registerBestPlay(placeIdToAbbrev(bestMove), "Lol we moving");
+	registerBestPlay(placeIdToAbbrev(bestMove), "Researching...");
 	return;
 
 }
 
-PlaceId DraculaHunt (HunterView hv, PlaceId bestMove, Player current_player) {
+// Set a certain hunter to chase dracula as leader,
+// otherwise hunters converge to lord g in center
+// INPUT: hunterview, current best move/location of hunter, hunter
+// OUTPUT: next plave for hunter to go to
+static PlaceId DraculaHunt (HunterView hv, PlaceId bestMove, Player current_player) {
     // NOW FIND OUT WHERE DRAC IS FOR CHASING:
     // Basically, whoever is closest to Drac becomes Leader...
     // (or if drac is unknown, then Lord G)
@@ -97,11 +110,16 @@ PlaceId DraculaHunt (HunterView hv, PlaceId bestMove, Player current_player) {
 
     // sort by weight
     sortMVbyWeight(MvArray, numPossibleLocations);
-    printMwArray(MvArray, numPossibleLocations);
+    printMW(MvArray, numPossibleLocations);
     PlaceId best = MvArray[0]->location;
+
+    freeArray(MvArray,numPossibleLocations);
     return best;
 }
 
+// Check the map on possible locations for hunter
+// INPUT:  hunterview
+// OUTPUT: valid place
 PlaceId MapSleuth (HunterView hv) {
     int numPossibleLocations = 0;
     PlaceId *possible_places = HvWhereCanIGoByType(hv, true, false,
@@ -119,11 +137,12 @@ PlaceId MapSleuth (HunterView hv) {
     else return possible_places[0];
 }
 
-// weight dracula's possible moves based on if dracula is currently there or reachable
-// Usage:
-/* */
-void weightMovesByLocation(HunterView hv, MoveWeight *mw, int mwSize, PlaceId *possibleLocations) {
-    srand(time(NULL));
+// weight hunters's possible moves based on if dracula is currently there or reachable
+// INPUT: newly initialised moveweight array & size, list of possible locations
+// OUPUT: void
+static void weightMovesByLocation(HunterView hv, MoveWeight *mw, int mwSize,
+    PlaceId *possibleLocations) {
+
     assert(mwSize > 0);
 
     bool isLeader = false;
@@ -131,17 +150,16 @@ void weightMovesByLocation(HunterView hv, MoveWeight *mw, int mwSize, PlaceId *p
     int round;
     PlaceId dracLastKnownLoc = HvGetLastKnownDraculaLocation(hv, &round);
     Player leader = findClosestPlayer(hv, dracLastKnownLoc);
+    //set who the leader is
     if (leader == currentPlayer) isLeader = true;
 
     // associate a certain weight to each location
     for (int i = 0; i < mwSize; i++) {
-        //srand(time(NULL));
         mw[i]->location = possibleLocations[i];
-        mw[i]->weight = 10; //* ((rand() % 50) / 10);
-        
-        // Generally keep away from the sea:
+        mw[i]->weight = 10;
+        // Generally keep away from the sea on patrol, unless heading to certain place
         if (placeIdToType(possibleLocations[i]) == SEA) {
-            mw[i]->weight *= 0.3;  
+            mw[i]->weight *= 0.3;
         }
 
         // if dracula is already at location, increase weight
@@ -149,7 +167,9 @@ void weightMovesByLocation(HunterView hv, MoveWeight *mw, int mwSize, PlaceId *p
         PlaceId LastKnownDracLoc = HvGetLastKnownDraculaLocation(hv, &round);
 
         // Leader Chases if last known loc is within 10 moves
-        if (LastKnownDracLoc == possibleLocations[i] && (HvGetRound(hv) - round) < 4 && isLeader) {
+        if (LastKnownDracLoc == possibleLocations[i] &&
+            (HvGetRound(hv) - round) < 4 && isLeader) {
+
             if (placeIdToType(possibleLocations[i]) == SEA) {
                 mw[i]->weight *= 2;
             }
@@ -212,7 +232,7 @@ void weightMovesByLocation(HunterView hv, MoveWeight *mw, int mwSize, PlaceId *p
                     mw[i]->weight *= 20;
                 }
             }
-        } 
+        }
     }
 
     // keep mina close to castle
@@ -228,7 +248,7 @@ void weightMovesByLocation(HunterView hv, MoveWeight *mw, int mwSize, PlaceId *p
             }
         }
     }
-    
+
     // keep lord g in middle near paris
     if (HvGetPlayer(hv) == PLAYER_LORD_GODALMING) {
         int len, round;
@@ -242,7 +262,7 @@ void weightMovesByLocation(HunterView hv, MoveWeight *mw, int mwSize, PlaceId *p
             }
         }
     }
-    
+
     // keep van hell down the back
     if (HvGetPlayer(hv) == PLAYER_VAN_HELSING) {
         int len, round;
@@ -256,7 +276,7 @@ void weightMovesByLocation(HunterView hv, MoveWeight *mw, int mwSize, PlaceId *p
             }
         }
     }
-    
+
     // keep dr s upwards
     if (HvGetPlayer(hv) == PLAYER_DR_SEWARD) {
         int len, round;
@@ -286,7 +306,7 @@ void weightMovesByLocation(HunterView hv, MoveWeight *mw, int mwSize, PlaceId *p
         mw[currPlayerPlaceIndex]->weight *= notOptimal > 1 ? 1.75 :
             notOptimal > 0 ? 1.25 : 0.5;
     }
-    
+
     // Stop going bloody back and fourth like a yo-yo
     int numMoves;
     bool varFree;
@@ -298,7 +318,7 @@ void weightMovesByLocation(HunterView hv, MoveWeight *mw, int mwSize, PlaceId *p
             }
         }
     }
-    
+
     // Keep away from others
     for (int i = 0; i < mwSize; i++) {
         for (int j = 0; j < NUM_PLAYERS - 1; j++) {
@@ -337,15 +357,21 @@ void weightMovesByLocation(HunterView hv, MoveWeight *mw, int mwSize, PlaceId *p
     return;
 }
 
-void printMwArray(MoveWeight *mw, int size) {
-    //for (int i = 0; i < size; i++) {
-        //printf("Loc: %s, Weight: %f\n",
-    //            placeIdToName(mw[i]->location),
-    //            mw[i]->weight);
-    //}
+
+// Debug Print function of locations and corresponding weights
+// INPUT: MW array, size of array
+static void printMW (MoveWeight * mw, int size) {
+	printf("\nMW is:   \n");
+	for (int i = 0; i < size; i++) {
+		printf("%s; %lf\n", placeIdToName(mw[i]->location), mw[i]->weight);
+	}
+	printf("\n");
 }
 
-Player findClosestPlayer(HunterView hv, PlaceId pID) {
+// Find who the closest play is to certain location
+// INPUT: location to search for
+// OUTPUT: either location or LORD G is not a real palce
+static Player findClosestPlayer(HunterView hv, PlaceId pID) {
     if (!placeIsReal(pID)) return PLAYER_LORD_GODALMING;
     Player *list = findClosestPlayers(hv, pID);
     Player leader = list[0];
@@ -353,9 +379,10 @@ Player findClosestPlayer(HunterView hv, PlaceId pID) {
     return leader;
 }
 
-// returns a list of the closest players
-// return MUST BE FREED
-Player *findClosestPlayers(HunterView hv, PlaceId pID) {
+// Returns a list of the closest players to certain location
+// INPUT: location to seach for
+// OUTPUT: return array of cloest player MUST BE FREED
+static Player *findClosestPlayers(HunterView hv, PlaceId pID) {
     Player *closest = malloc(sizeof(Player) * (NUM_PLAYERS - 1));
     int playerMoveLen[NUM_PLAYERS - 1] = {0,1,2,3};
 
@@ -381,8 +408,10 @@ Player *findClosestPlayers(HunterView hv, PlaceId pID) {
     return closest;
 }
 
-// ALL FUNCTIONS BELOW COPIED FROM dracula.c
-MoveWeight *MvArrayNew(int size) {
+// Create a array of MoveWeight items
+// INPUT: Size of array
+// OUTPUT: newly created array
+static MoveWeight *MvArrayNew(int size) {
     MoveWeight *arrayWeightedMoves = malloc(size * sizeof(MoveWeight));
     for (int i = 0; i < size; i++){
         arrayWeightedMoves[i] = MVNewNode();
@@ -390,12 +419,14 @@ MoveWeight *MvArrayNew(int size) {
     return arrayWeightedMoves;
 }
 
-MoveWeight MVNewNode(void){
+// Make new MoveWeight Struct item
+// INPUT: void
+// OUTPUT: Newly created item
+static MoveWeight MVNewNode(void){
     MoveWeight new = malloc(sizeof(*new));
     memoryError(new);
     new->location = NOWHERE;
     new->weight = -1;
-    new->moveType = NOWHERE;
     return new;
 }
 
@@ -420,7 +451,10 @@ static void sortMVbyWeight(MoveWeight *array, int arraySize) {
     return;
 }
 
-int findMoveWeightIndex(MoveWeight *mw, int mwSize, PlaceId pID) {
+// Find the index number of a location in move weight array
+// INPUT: array, array size & location to search for
+// OUTPUT: either the index of -1 if not found
+static int findMoveWeightIndex(MoveWeight *mw, int mwSize, PlaceId pID) {
     for (int i = 0; i < mwSize; i++) {
         if (mw[i]->location == pID) return i;
     }
@@ -436,5 +470,16 @@ static void memoryError (const void *input) {
         fprintf(stderr, "Couldn't Allocate Memory!\n");
         exit(EXIT_FAILURE);
     }
+    return;
+}
+
+//Free a given array of type MoveWeight *
+// INPUT: array to be freed, size of array
+// OUTPUT: void
+static void freeArray (MoveWeight * array, int size) {
+	for(int i = 0; i < size; i++){
+		free(array[i]);
+	}
+	free(array);
     return;
 }
